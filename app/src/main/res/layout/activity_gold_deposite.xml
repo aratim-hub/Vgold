@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.GoldDepositeActivity">
+
+    <LinearLayout
+        android:id="@+id/agd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_10"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gold weight gm"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <EditText
+            android:id="@+id/edtgoldWeight"
+            android:backgroundTint="@color/colorblack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/height_10"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:entries="@array/GoldWeight_array">
+        </EditText>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tennure"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/spinner_tennure_deposite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/Tennure_array">
+        </Spinner>
+
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_10"
+            android:orientation="vertical">
+            <RadioButton android:id="@+id/radio_withBank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="With Bank Guarantee"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/radio_withoutBank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Without Bank Guarantee"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maturity Weight"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_15"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtMaturityWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:textSize="@dimen/height_20"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Willing To Deposit"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/spinner_willingToDeposite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/Tennure_array">
+        </Spinner>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnSendDepositeRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/agd"
+        android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:background="@drawable/border_for_button"
+        android:text="Send Request"
+        android:textColor="@color/colorwhite"/>
+
+</RelativeLayout>

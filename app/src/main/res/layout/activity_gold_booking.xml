@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context="com.cognifygroup.vgold.GoldBookingActivity">
+
+    <LinearLayout
+        android:id="@+id/llgb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/height_10">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gold in gm"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/spinner_goldWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/GoldWeight_array1">
+        </Spinner>
+
+<LinearLayout
+    android:id="@+id/llCustom"
+    android:layout_marginTop="@dimen/height_10"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tvGoldWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom Quantity in gm"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/height_10"
+        android:layout_marginLeft="@dimen/height_10"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <EditText
+        android:id="@+id/edtCustomGoldWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="@dimen/height_10"
+        android:layout_marginLeft="@dimen/height_10"
+        android:backgroundTint="@color/colorblack"
+        android:hint="Enter Quantity in gm (more than 10 gm)"/>
+</LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tenure"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <Spinner
+            android:id="@+id/spinner_tennure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/Tennure_array">
+        </Spinner>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Promo Code"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <EditText
+            android:id="@+id/edtPromoCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Promo Code (optional)"/>
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_below="@+id/llgb"
+        android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:background="@drawable/border_for_button"
+        android:textColor="@color/colorwhite"/>
+
+</RelativeLayout>

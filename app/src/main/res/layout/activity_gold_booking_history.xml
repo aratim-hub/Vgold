@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.GoldBookingHistoryActivity">
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGoldBookingHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btnBookGold">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/txtGoldDepositeBenfit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/height_10"
+        android:layout_marginLeft="@dimen/height_10"
+        android:text=" # Book your eGold just at Rs. 1000/- per 10 grams\n
+# Price, Qty, and Quality Lock Facility\n
+# No Cost EMI\n
+# EMI's upto 36 months\n
+# Gold Purity 99.5%\n
+# Delivery from your choice Vendor - across India"/>
+
+    <Button
+        android:id="@+id/btnBookGold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Book Gold"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:layout_marginBottom="@dimen/height_5"
+        android:background="@drawable/border_for_button"
+        android:textColor="@color/colorwhite"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.BookingDetailActivity">
+
+
+    <LinearLayout
+        android:id="@+id/llbookingDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_10"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Booking Value"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtBookingValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gold Rate/gm "
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtGoldRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Down Payment"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtDownPayment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Booking Charges"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtBookingCharge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Monthly installment"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtMonthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+
+
+    </LinearLayout>
+
+<!--
+
+    <CheckBox
+        android:id="@+id/checkboxWallet"
+        android:layout_below="@+id/llbookingDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_10"
+        android:layout_marginLeft="@dimen/height_10"/>
+
+    <TextView
+        android:layout_below="@+id/llbookingDetail"
+        android:layout_toRightOf="@+id/checkboxWallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Use Wallet Balance (Rs 530)"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/height_12"
+        android:layout_marginLeft="@dimen/height_10"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+-->
+
+    <LinearLayout
+        android:id="@+id/llbd"
+        android:layout_below="@+id/llbookingDetail"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/height_10"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_payment_option"
+            android:padding="@dimen/height_5"
+            android:layout_marginTop="@dimen/height_10"
+            android:entries="@array/payment_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Spinner>
+
+        <LinearLayout
+            android:id="@+id/llCheque"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edtBankDetail"
+                android:hint="Enter Bank Details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/edtChequeNo"
+                android:hint="Enter Cheque Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llRTGS"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edtRtgsBankDetail"
+                android:hint="Enter Bank Details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/edtTxnId"
+                android:hint="Enter Transaction Id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnPayOnline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pay"
+        android:layout_below="@+id/llbd"
+        android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:background="@drawable/border_for_button"
+        android:textColor="@color/colorwhite"/>
+
+
+
+</RelativeLayout>

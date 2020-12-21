@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.AddMoneyActivity">
+
+    <EditText
+        android:id="@+id/edtAddMoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint=" Enter Amount "
+        android:padding="@dimen/height_10"
+        android:textColorHint="@color/colorblack"
+        android:inputType="numberDecimal"
+        android:layout_marginRight="@dimen/height_10"
+        android:layout_marginLeft="@dimen/height_10"
+        android:background="@drawable/border_for_edittext_pay_money"
+        android:layout_marginTop="@dimen/height_20"/>
+
+
+    <LinearLayout
+        android:id="@+id/lladdmoney"
+        android:layout_below="@+id/edtAddMoney"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/height_15"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spinner_payment_option1"
+            android:padding="@dimen/height_5"
+            android:layout_marginTop="@dimen/height_10"
+            android:entries="@array/payment_option1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </Spinner>
+
+        <LinearLayout
+            android:id="@+id/llCheque"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edtBankDetail1"
+                android:hint="Enter Bank Details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/edtChequeNo1"
+                android:hint="Enter Cheque Number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llRTGS"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/edtRtgsBankDetail1"
+                android:hint="Enter Bank Details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/edtTxnId1"
+                android:hint="Enter Transaction Id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btnAddMoney"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lladdmoney"
+        android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:background="@drawable/border_for_button"
+        android:text="Add Money"
+        android:textColor="@color/colorwhite"/>
+
+</RelativeLayout>

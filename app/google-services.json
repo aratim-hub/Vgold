@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "662356780573",
+    "project_id": "vgold-8d3b5",
+    "storage_bucket": "vgold-8d3b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662356780573:android:34a5eeacb89af7b0c508f4",
+        "android_client_info": {
+          "package_name": "com.cognifygroup.vgold"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662356780573-f76rct7mt7h9gr20h24vpkams39l313b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPYuePfD3caR4gCi6O2W5Ln6k7r9FkfN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662356780573-f76rct7mt7h9gr20h24vpkams39l313b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.GoldDepositeHistoryActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGoldDepositeHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+
+    <Button
+        android:id="@+id/btnDepositeGold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deposit Gold"
+        android:textColor="@color/colorwhite"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:layout_marginBottom="@dimen/height_5"
+        android:background="@drawable/border_for_button"
+        android:layout_alignParentBottom="true"/>
+
+
+</RelativeLayout>

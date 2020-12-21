@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cognifygroup.vgold.GoldWalletActivity">
+
+
+    <LinearLayout
+        android:id="@+id/goldll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/txtCurrentBal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/height_20"
+                android:gravity="center"
+                android:text="Current balance"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorwhite"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtWalletGoldWeight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtCurrentBal"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text=""
+                android:textColor="@color/colorwhite"
+                android:textSize="22dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnAddGoldToWallet"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_below="@+id/txtWalletGoldWeight"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/height_40"
+                android:layout_marginTop="@dimen/height_10"
+                android:background="@color/colorOrange"
+                android:paddingLeft="@dimen/height_15"
+                android:paddingRight="@dimen/height_15"
+                android:text="Add Gold"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:id="@+id/txtSaleRate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/height_20"
+                android:gravity="center"
+                android:text="Selling Rate"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorwhite"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txSaleAmt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtSaleRate"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text=""
+                android:textColor="@color/colorwhite"
+                android:textSize="22dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnSell"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_below="@+id/txSaleAmt"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/height_40"
+                android:layout_marginTop="@dimen/height_10"
+                android:background="@color/colorOrange"
+                android:paddingLeft="@dimen/height_15"
+                android:paddingRight="@dimen/height_15"
+                android:text="Sell"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGoldWallet"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/goldll"
+        android:layout_height="wrap_content">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

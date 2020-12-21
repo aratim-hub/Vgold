@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">VGold</string>
+    <string name="btn_ok">OK</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string-array name="GoldWeight_array">
+        <item>--Data Not Available--</item>
+    </string-array>
+
+    <string-array name="GoldWeight_array1">
+        <item>--select--</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+        <item>custom</item>
+    </string-array>
+
+    <string-array name="Tennure_array">
+        <item>--select--</item>
+        <item>12 month</item>
+        <item>24 month</item>
+        <item>36 month</item>
+        <item>48 month</item>
+        <item>60 month</item>
+    </string-array>
+
+    <string-array name="Bank_array">
+        <item>--No Bank Found--</item>
+    </string-array>
+    <string-array name="payment_option">
+        <item>--Please select Payment Option--</item>
+        <item>cheque</item>
+        <item>NEFT/RTGS/Online Transfer</item>
+        <item>Wallet</item>
+<!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
+    </string-array>
+
+    <string-array name="payment_option1">
+        <item>--Please select Payment Option--</item>
+        <item>cheque</item>
+        <item>NEFT/RTGS/Online Transfer</item>
+<!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
+    </string-array>
+</resources>

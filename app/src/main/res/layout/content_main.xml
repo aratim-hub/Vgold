@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.cognifygroup.vgold.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/height_5"
+            android:layout_marginRight="@dimen/height_5"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/height_10"
+                android:orientation="horizontal"
+                android:padding="@dimen/height_5"
+                android:weightSum="4">
+
+                <RelativeLayout
+                    android:id="@+id/rleGoldWallet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgGoldWallet"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/height_25"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/goldwallet" />
+
+                    <TextView
+                        android:id="@+id/txtGoldWallet"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/imgGoldWallet"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="eGold Wallet"
+                        android:textSize="@dimen/height_10" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorLittleGraylight" />
+
+                <!--  <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/height_10"
+            android:layout_weight="wrap_content"
+            android:layout_height="match_parent">
+            <View
+                android:layout_width="1dp"
+                android:background="@color/colorblack"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>-->
+
+
+                <RelativeLayout
+                    android:id="@+id/rlAddGold"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/height_5"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/imgAddGold"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/height_25"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/adddgold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/imgAddGold"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Add"
+                        android:textSize="@dimen/height_10" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rleTransferGold"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgTransferGold"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/height_25"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/transfergold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/imgTransferGold"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Gift"
+                        android:textSize="@dimen/height_10" />
+                    <!--                        android:text="Transfer"-->
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlSellGold"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgSaleGold"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/height_25"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/goldsell" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/imgSaleGold"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Sell"
+                        android:textSize="@dimen/height_10" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLittleGraylight" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/height_10"
+                android:orientation="horizontal"
+                android:padding="@dimen/height_5"
+
+                android:weightSum="4">
+
+                <RelativeLayout
+                    android:id="@+id/rlMoneyWallet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgMoneyWallet"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/height_25"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/moneywallet" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/imgMoneyWallet"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Money Wallet"
+                        android:textSize="@dimen/height_10" />
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorLittleGraylight" />
+
+                <!--   <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_marginRight="@dimen/height_10"
+            android:layout_weight="wrap_content"
+            android:layout_height="match_parent">
+            <View
+                android:layout_width="1dp"
+                android:background="@color/colorblack"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>-->
+
+
+                <RelativeLayout
+                    android:id="@+id/rlAddMoney"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/height_5"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgAddMoney"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/addmoney" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgAddMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Add"
+                        android:textSize="@dimen/height_10" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlTransferMoney"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgTransferMoney"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/moneytransfer" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@+id/imgTransferMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Transfer"
+                        android:textSize="@dimen/height_10" />
+                    <!--                        android:text="Transfer"-->
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlWithdrawMoney"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/imgWithdrawMoney"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_centerHorizontal="true"
+
+                        android:src="@drawable/withdrawmoney" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Withdraw"
+                        android:textSize="@dimen/height_10" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLittleGraylight" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:text="Services"
+                android:textColor="@color/colorblack"
+                android:textSize="@dimen/height_15"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgGoldBooking"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/booking" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgGoldDeposite"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/deposit" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgOurVenders"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:padding="1dp"
+                        android:background="@drawable/rounded_search"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/associate" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgReferEarn"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:padding="1dp"
+                        android:background="@drawable/rounded_search"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/refer_earn" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txtVendorOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:text="Offers"
+                android:visibility="gone"
+                android:textColor="@color/colorblack"
+                android:textSize="@dimen/height_15"
+                android:textStyle="bold" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rc_vendorOffer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginRight="@dimen/height_10"
+                android:visibility="gone">
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:text="Membership"
+                android:textColor="@color/colorblack"
+                android:textSize="@dimen/height_15"
+                android:textStyle="bold" />
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardTransactionHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="#fff"
+                app:cardCornerRadius="1dp"
+                app:cardElevation="10dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:id="@+id/rlMembershipCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/membershipcardlifetime">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="88dp" />
+
+                    <ImageView
+                        android:id="@+id/imgClient"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/height_20"
+                        android:layout_marginLeft="250dp"
+                        android:layout_marginTop="65dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/grayavator" />
+
+                    <TextView
+                        android:id="@+id/txtClientName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignStart="@+id/imgClient"
+                        android:layout_below="@+id/imgClient"
+                        android:singleLine="true"
+                        android:text="shivraj babule"
+                        android:textColor="@color/colorblack"
+                        android:textSize="@dimen/height_10" />
+
+                    <TextView
+                        android:id="@+id/txtCrnNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtClientName"
+                        android:layout_alignStart="@+id/imgClient"
+                        android:layout_marginTop="0dp"
+                        android:text="CRN-405"
+                        android:textColor="@color/colorblack"
+                        android:textSize="@dimen/height_10" />
+
+                    <TextView
+                        android:id="@+id/txtValiditydate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/txtCrnNo"
+                        android:layout_marginTop="25dp"
+                        android:text="20-10-2018"
+                        android:layout_marginBottom="7dp"
+                        android:textColor="@color/colorwhite"
+                        android:layout_marginRight="@dimen/height_10"
+                        android:textSize="@dimen/height_12"/>
+
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

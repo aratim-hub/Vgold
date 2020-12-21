@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.AddBankActivity">
+
+    <LinearLayout
+        android:id="@+id/lladd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/height_10">
+
+        <EditText
+            android:id="@+id/edtBankName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Enter Bank Name"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:layout_marginTop="@dimen/height_5"/>
+
+        <EditText
+            android:id="@+id/edtBranch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Enter Branch"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:layout_marginTop="@dimen/height_5"/>
+
+        <EditText
+            android:id="@+id/edtAcc_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Enter Account Number"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:layout_marginTop="@dimen/height_5"/>
+
+        <EditText
+            android:id="@+id/edtAcc_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Enter Account type"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:layout_marginTop="@dimen/height_5"/>
+
+
+        <EditText
+            android:id="@+id/edtIfsc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:hint="Enter IFSC code"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
+            android:layout_marginTop="@dimen/height_5"/>
+
+        <EditText
+            android:id="@+id/edtAcc_holder_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorblack"
+            android:singleLine="true"
+            android:hint="Enter Account Holders Name"
+            android:imeOptions="actionDone"
+            android:layout_marginTop="@dimen/height_5"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lladd"
+        android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
+        android:layout_marginRight="@dimen/height_10"
+        android:background="@drawable/border_for_button"
+        android:text="Submit"
+        android:textColor="@color/colorwhite"/>
+
+</RelativeLayout>
