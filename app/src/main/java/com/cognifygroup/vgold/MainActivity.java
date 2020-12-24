@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -52,8 +53,10 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.sunfusheng.marqueeview.MarqueeView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -118,8 +121,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.inject(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setSubtitle("Welcome " + VGoldApp.onGetFirst());
-        // getSupportActionBar().setTitle("Welcome "+ VGoldApp.onGetFirst());
+        //   getSupportActionBar().setSubtitle("Welcome " + VGoldApp.onGetFirst());
+        MarqueeView textView = (MarqueeView) toolbar.findViewById(R.id.toolbar_title);
+        List<String> list = new ArrayList<>();
+        list.add("Welcome");
+        list.add(VGoldApp.onGetFirst());
+        textView.startWithList(list);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -388,7 +395,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
 
     }
-
 
 
     @OnClick(R.id.rleTransferGold)

@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorblack"
                     android:hint="Enter Mobile Number"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:imeOptions="actionNext"
                     android:singleLine="true"
                     android:textSize="15sp"/>
