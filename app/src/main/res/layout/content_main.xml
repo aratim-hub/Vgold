@@ -19,6 +19,21 @@
             android:layout_marginRight="@dimen/height_5"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/rate_scroll_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+               android:layout_margin="8dp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@android:color/black" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,8 +52,8 @@
                         android:id="@+id/imgGoldWallet"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="@dimen/height_25"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/height_25"
                         android:src="@drawable/goldwallet" />
 
                     <TextView
@@ -81,8 +96,8 @@
                         android:id="@+id/imgAddGold"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="@dimen/height_25"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/height_25"
                         android:src="@drawable/adddgold" />
 
                     <TextView
@@ -106,8 +121,8 @@
                         android:id="@+id/imgTransferGold"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="@dimen/height_25"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/height_25"
                         android:src="@drawable/transfergold" />
 
                     <TextView
@@ -132,8 +147,8 @@
                         android:id="@+id/imgSaleGold"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="@dimen/height_25"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/height_25"
                         android:src="@drawable/goldsell" />
 
                     <TextView
@@ -173,8 +188,8 @@
                         android:id="@+id/imgMoneyWallet"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="@dimen/height_25"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginLeft="@dimen/height_25"
                         android:src="@drawable/moneywallet" />
 
                     <TextView
@@ -246,8 +261,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_below="@+id/imgTransferMoney"
+                        android:layout_alignParentBottom="true"
                         android:layout_marginTop="@dimen/height_5"
                         android:gravity="center_horizontal"
                         android:text="Transfer"
@@ -301,9 +316,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="120dp"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -314,7 +329,7 @@
                     <ImageView
                         android:id="@+id/imgGoldBooking"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:src="@drawable/booking" />
                 </LinearLayout>
@@ -328,9 +343,23 @@
                     <ImageView
                         android:id="@+id/imgGoldDeposite"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:src="@drawable/deposit" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgPlan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/plan" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -351,8 +380,8 @@
                         android:id="@+id/imgOurVenders"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:padding="1dp"
                         android:background="@drawable/rounded_search"
+                        android:padding="1dp"
                         android:scaleType="fitXY"
                         android:src="@drawable/associate" />
                 </LinearLayout>
@@ -367,8 +396,8 @@
                         android:id="@+id/imgReferEarn"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:padding="1dp"
                         android:background="@drawable/rounded_search"
+                        android:padding="1dp"
                         android:scaleType="fitXY"
                         android:src="@drawable/refer_earn" />
                 </LinearLayout>
@@ -383,10 +412,10 @@
                 android:layout_marginLeft="@dimen/height_10"
                 android:layout_marginTop="@dimen/height_10"
                 android:text="Offers"
-                android:visibility="gone"
                 android:textColor="@color/colorblack"
                 android:textSize="@dimen/height_15"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -395,8 +424,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/height_10"
                 android:layout_marginRight="@dimen/height_10"
-                android:visibility="gone">
-            </androidx.recyclerview.widget.RecyclerView>
+                android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
 
 
             <TextView
@@ -438,9 +466,9 @@
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:layout_alignParentRight="true"
-                        android:layout_marginRight="@dimen/height_20"
                         android:layout_marginLeft="250dp"
                         android:layout_marginTop="65dp"
+                        android:layout_marginRight="@dimen/height_20"
                         android:scaleType="fitXY"
                         android:src="@drawable/grayavator" />
 
@@ -448,8 +476,8 @@
                         android:id="@+id/txtClientName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignStart="@+id/imgClient"
                         android:layout_below="@+id/imgClient"
+                        android:layout_alignStart="@+id/imgClient"
                         android:singleLine="true"
                         android:text="shivraj babule"
                         android:textColor="@color/colorblack"
@@ -470,14 +498,14 @@
                         android:id="@+id/txtValiditydate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
                         android:layout_below="@+id/txtCrnNo"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginTop="25dp"
-                        android:text="20-10-2018"
-                        android:layout_marginBottom="7dp"
-                        android:textColor="@color/colorwhite"
                         android:layout_marginRight="@dimen/height_10"
-                        android:textSize="@dimen/height_12"/>
+                        android:layout_marginBottom="7dp"
+                        android:text="20-10-2018"
+                        android:textColor="@color/colorwhite"
+                        android:textSize="@dimen/height_12" />
 
 
                 </RelativeLayout>

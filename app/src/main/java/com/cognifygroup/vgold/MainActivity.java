@@ -36,10 +36,14 @@ import android.widget.ViewFlipper;
 
 import com.cognifygroup.vgold.Adapter.VendorOfferAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.addGold.AddGoldServiceProvider;
 import com.cognifygroup.vgold.getReferCode.ReferModel;
 import com.cognifygroup.vgold.getReferCode.ReferServiceProvider;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
 import com.cognifygroup.vgold.getVendorOffer.VendorOfferModel;
 import com.cognifygroup.vgold.getVendorOffer.VendorOfferServiceProvider;
+import com.cognifygroup.vgold.plan.PlanActivity;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
@@ -106,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ImageView imgClient;
     private String referCode = "";
 
+    @InjectView(R.id.rate_scroll_title)
+    TextView rate_scroll_title;
+
+    @InjectView(R.id.imgPlan)
+    ImageView imgPlan;
+
     AlertDialogs mAlert;
     private VendorOfferAdapter vendorOfferAdapter;
     private VendorOfferServiceProvider vendorOfferServiceProvider;
@@ -114,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
 
+    GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
+    AddGoldServiceProvider addGoldServiceProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,12 +134,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.inject(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //   getSupportActionBar().setSubtitle("Welcome " + VGoldApp.onGetFirst());
-        MarqueeView textView = (MarqueeView) toolbar.findViewById(R.id.toolbar_title);
+        getSupportActionBar().setSubtitle("Welcome " + VGoldApp.onGetFirst());
+        /*MarqueeView textView = (MarqueeView) toolbar.findViewById(R.id.toolbar_title);
         List<String> list = new ArrayList<>();
         list.add("Welcome");
+        list.add("Today - 24/12/2020 (99.5ct Gold Rate)");
         list.add(VGoldApp.onGetFirst());
-        textView.startWithList(list);
+        textView.startWithList(list);*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -140,13 +154,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         init();
 
-
+        AttemptToGetTodayGoldRate();
     }
 
     private void init() {
 
 //        Log.d("USerRole", VGoldApp.onGetUserRole());
 
+        rate_scroll_title.setSelected(true);
         progressDialog = new TransparentProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
         setFinishOnTouchOutside(false);
@@ -156,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         vendorOfferServiceProvider = new VendorOfferServiceProvider(this);
         referServiceProvider = new ReferServiceProvider(this);
+
+        getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
+        addGoldServiceProvider = new AddGoldServiceProvider(this);
 
         txtCrnNo.setText("CRN - " + VGoldApp.onGetUerId());
         txtClientName.setText("" + VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast());
@@ -472,9 +490,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+    @OnClick(R.id.imgPlan)
+    public void onClickImgPlan() {
+        Intent intent = new Intent(MainActivity.this, PlanActivity.class);
+        startActivity(intent);
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
+
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -677,5 +702,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDialogOk(int resultCode) {
 
+    }
+
+    private void AttemptToGetTodayGoldRate() {
+        // progressDialog.show();
+        getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((GetTodayGoldRateModel) serviceResponse).getStatus();
+                    String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    //   todayGoldRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
+                    //   todayGoldRateWithGst = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst();
+//                    txtGoldRate.setText("₹ " + todayGoldRate + "/GM");
+                    //  txtGoldRate.setText("₹ " + todayGoldRateWithGst + "/GM");
+
+                    if (status.equals("200")) {
+                        // mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                        rate_scroll_title.setText("Today - 24/12/2020 (99.5ct Gold Rate) Purchase Rate: Rs. " + ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst() + "/gm" + "  Sale Rate: Rs. " + ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst() + "/gm              ");
+
+                    } else {
+                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 }

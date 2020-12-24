@@ -41,13 +41,13 @@
         <item>cheque</item>
         <item>NEFT/RTGS/Online Transfer</item>
         <item>Wallet</item>
-<!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
+        <!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
     </string-array>
 
     <string-array name="payment_option1">
         <item>--Please select Payment Option--</item>
         <item>cheque</item>
         <item>NEFT/RTGS/Online Transfer</item>
-<!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
+        <!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
     </string-array>
 </resources>
