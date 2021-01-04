@@ -1,3 +1,4 @@
+
 package com.cognifygroup.vgold;
 
 import android.content.Intent;

@@ -16,7 +16,7 @@ public interface RegService {
                           @Field("last") String last,
                           @Field("email") String email,
                           @Field("no") String no,
-                          @Field("pass") String pass,
+//                          @Field("pass") String pass,
                           @Field("pancard") String pancard,
                           @Field("refer_code") String refer_code);
 }

@@ -307,7 +307,7 @@
 
                 </LinearLayout>-->
 
-                <com.google.android.material.textfield.TextInputLayout
+                <!--<com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layout_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -334,7 +334,7 @@
                         android:textCursorDrawable="@color/colorfaintblack"
                         app:met_textColor="@color/colorfaintblack"
                         android:ems="10" />
-                </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>-->
 
                <!-- <LinearLayout
                     android:id="@+id/layout_password"

@@ -81,7 +81,7 @@ public class GetAllTransactionGoldModel {
         @SerializedName("payment_method")
         private String payment_method;
         @Expose
-        @SerializedName("transafer_to")
+        @SerializedName("transfer_to")
         private String transafer_to;
         @Expose
         @SerializedName("received_from")

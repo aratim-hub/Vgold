@@ -191,7 +191,6 @@
 
     </LinearLayout>
 
-
     <Button
         android:id="@+id/btnProceedToPayment"
         android:layout_width="match_parent"
@@ -203,6 +202,16 @@
         android:background="@drawable/border_for_button"
         android:text="Proceed to Payment"
         android:textColor="@color/colorwhite" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/vgold_bank"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnProceedToPayment"
+        android:layout_alignParentBottom="true" />
 
 
 </RelativeLayout>

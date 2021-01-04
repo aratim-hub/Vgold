@@ -32,6 +32,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
+                android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
             <LinearLayout
@@ -316,7 +317,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -324,42 +325,94 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="@dimen/height_10">
 
                     <ImageView
                         android:id="@+id/imgGoldBooking"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:src="@drawable/booking" />
+                        android:src="@drawable/book" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="My Booking"
+                        android:textSize="@dimen/height_10" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="0.8dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorLittleGraylight"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
                     android:padding="@dimen/height_10">
 
                     <ImageView
                         android:id="@+id/imgGoldDeposite"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:src="@drawable/deposit" />
+                        android:src="@drawable/depos" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="My Deposit"
+                        android:textSize="@dimen/height_10" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="0.8dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorLittleGraylight"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="@dimen/height_10">
 
                     <ImageView
                         android:id="@+id/imgPlan"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:src="@drawable/plan" />
+                        android:src="@drawable/plan1" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Plan"
+                        android:textSize="@dimen/height_10" />
                 </LinearLayout>
 
             </LinearLayout>

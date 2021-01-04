@@ -33,6 +33,8 @@ import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldServ
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
 import com.cognifygroup.vgold.getTodaySellRate.GetTodayGoldSellModel;
 import com.cognifygroup.vgold.getTodaySellRate.GetTodayGoldSellRateServiceProvider;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
@@ -56,14 +58,15 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
     TextView txSaleAmt;
     @InjectView(R.id.btnAddGoldToWallet)
     Button btnAddGoldToWallet;
-    @InjectView(R.id.btnSell)
-    Button btnSell;
+  /*  @InjectView(R.id.btnSell)
+    Button btnSell;*/
     @InjectView(R.id.recyclerViewGoldWallet)
     RecyclerView recyclerViewGoldWallet;
     Dialog dialog;
     AlertDialogs mAlert;
     GetAllTransactionGoldServiceProvider getAllTransactionGoldServiceProvider;
     GetTodayGoldSellRateServiceProvider getTodayGoldSellRateServiceProvider;
+    GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
 
     private String GetAmount;
     private TransparentProgressDialog progressDialog;
@@ -89,6 +92,7 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
 
         getAllTransactionGoldServiceProvider = new GetAllTransactionGoldServiceProvider(this);
         getTodayGoldSellRateServiceProvider = new GetTodayGoldSellRateServiceProvider(this);
+        getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
     }
 
     @Override
@@ -102,10 +106,10 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
         }
     }
 
-    @OnClick(R.id.btnSell)
+  /*  @OnClick(R.id.btnSell)
     public void BtnSell() {
         startActivity(new Intent(GoldWalletActivity.this, SellGoldActivity.class));
-    }
+    }*/
 
 
     @OnClick(R.id.btnAddGoldToWallet)
@@ -188,15 +192,15 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
     private void
     AttemptToGetTodayGoldRate(double gold) {
         // mAlert.onShowProgressDialog(SellGoldActivity.this, true);
-        getTodayGoldSellRateServiceProvider.getTodayGoldRate(new APICallback() {
+        getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
-                    String status = ((GetTodayGoldSellModel) serviceResponse).getStatus();
-                    String message = ((GetTodayGoldSellModel) serviceResponse).getMessage();
-                    String todayGoldSellRate = ((GetTodayGoldSellModel) serviceResponse).getGold_sale_rate();
+                    String status = ((GetTodayGoldRateModel) serviceResponse).getStatus();
+                    String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
+                    String todayGoldPurchaseRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
 
-                    double sellingRate = gold * Double.parseDouble(todayGoldSellRate);
+                    double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
 
                     String amt =  new DecimalFormat("##.##").format(sellingRate);
                     txSaleAmt.setText("₹ " + amt);

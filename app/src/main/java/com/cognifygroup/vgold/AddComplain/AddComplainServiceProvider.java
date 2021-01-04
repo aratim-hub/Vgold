@@ -50,4 +50,30 @@ public class AddComplainServiceProvider {
             }
         });
     }
+
+    public void addReview(String user_id, String comment, final APICallback apiCallback) {
+        Call<AddComplainModel> call = null;
+        call = addComplainService.AddReview(user_id,comment);
+        String url = call.request().url().toString();
+
+        call.enqueue(new Callback<AddComplainModel>() {
+            @Override
+            public void onResponse(Call<AddComplainModel> call, Response<AddComplainModel> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("200")) {
+                    apiCallback.onSuccess(response.body());
+                } else if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("400")) {
+                    apiCallback.onSuccess(response.body());
+                } else {
+                    BaseServiceResponseModel model = ErrorUtils.parseError(response);
+                    apiCallback.onFailure(model, response.errorBody());
+                    // apiCallback.onFailure(response.body(), response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddComplainModel> call, Throwable t) {
+                apiCallback.onFailure(null, null);
+            }
+        });
+    }
 }

@@ -59,8 +59,12 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.sunfusheng.marqueeview.MarqueeView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -126,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
     AddGoldServiceProvider addGoldServiceProvider;
+    private int pressBack = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         init();
 
-        AttemptToGetTodayGoldRate();
+        AttemptToGetTodayGoldRate();    
     }
 
     private void init() {
@@ -265,7 +270,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (status.equals("200")) {
                         if (data.equalsIgnoreCase("true")) {
 
-                            addMembershipDialog();
+                            if (VGoldApp.onGetUserRole().equals("Customer")) {
+                                addMembershipDialog();
+                            }
                         }
                     } /*else {
                         mAlert.onShowToastNotification(MainActivity.this, message);
@@ -402,7 +409,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            pressBack++;
+            if (pressBack == 1) {
+                Toast.makeText(getApplicationContext(), "Press once again to exit !", Toast.LENGTH_SHORT).show();
+            } else {
+                super.onBackPressed();
+            }
+//            super.onBackPressed();
         }
     }
 
@@ -535,6 +548,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             logoutAlert();
         } else if (id == R.id.nav_addComplain) {
             startActivity(new Intent(this, ComplainActivity.class));
+        } else if (id == R.id.nav_review) {
+            startActivity(new Intent(this, ReviewActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -725,7 +740,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (status.equals("200")) {
                         // mAlert.onShowToastNotification(AddGoldActivity.this, message);
 
-                        rate_scroll_title.setText("Today - 24/12/2020 (99.5ct Gold Rate) Purchase Rate: Rs. " + ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst() + "/gm" + "  Sale Rate: Rs. " + ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst() + "/gm              ");
+                        Date c = Calendar.getInstance().getTime();
+                        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+//                        String formattedDate = df.format(c);
+
+                        rate_scroll_title.setText("Today -" + df.format(c) + "(99.5ct Gold Rate) Purchase Rate: " + getResources().getString(R.string.rs) + ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate_with_gst() + "/gm" + "  Sale Rate: " + getResources().getString(R.string.rs) + ((GetTodayGoldRateModel) serviceResponse).getGold_sale_rate() + "/gm              ");
 
                     } else {
                         AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,

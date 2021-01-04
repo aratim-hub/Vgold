@@ -36,6 +36,11 @@
             android:id="@+id/nav_addBank"
             android:icon="@drawable/bank"
             android:title="AddBank" />
+
+        <item
+            android:id="@+id/nav_review"
+            android:icon="@drawable/ic_baseline_comment_24"
+            android:title="Review" />
         <item
             android:id="@+id/nav_addComplain"
             android:icon="@drawable/ic_menu_send"
