@@ -1,3 +1,4 @@
+
 package com.cognifygroup.vgold;
 
 import android.content.Intent;
@@ -269,7 +270,6 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
         });
 
     }
-
 
     private void AttemptToGetMaturityWeight(String gold_weight, String tennure, String guarantee) {
       //  progressDialog.show();

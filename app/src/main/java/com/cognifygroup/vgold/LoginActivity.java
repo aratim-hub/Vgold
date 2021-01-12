@@ -458,6 +458,9 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
                         progressDialog.hide();
 
+                        edtEmail.setText("");
+                        edtLoginOTP.setText("");
+
                         VGoldApp.onSetUserDetails(loginModelArrayList.get(0).getUser_ID(), loginModelArrayList.get(0).getFirst_Name(), loginModelArrayList.get(0).getLast_Name(), loginModelArrayList.get(0).getEmail(), loginModelArrayList.get(0).getMobile_no(), loginModelArrayList.get(0).getQrcode(),
                                 loginModelArrayList.get(0).getPan_no(), loginModelArrayList.get(0).getAddress(), loginModelArrayList.get(0).getProfile_photo());
 

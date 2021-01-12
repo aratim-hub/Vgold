@@ -17,4 +17,9 @@ public interface AddComplainService {
     @FormUrlEncoded
     Call<AddComplainModel> AddComplain(@Field("user_id") String user_id,
                                          @Field("complaint") String complaint);
+
+    @POST("user_notes.php?")
+    @FormUrlEncoded
+    Call<AddComplainModel> AddReview(@Field("user_id") String user_id,
+                                       @Field("notes") String complaint);
 }

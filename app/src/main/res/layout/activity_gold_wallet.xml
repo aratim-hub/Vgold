@@ -13,12 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5">
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/goldgrm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:layout_weight="0.5"
+                android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtCurrentBal"
@@ -33,7 +41,7 @@
 
             <TextView
                 android:id="@+id/txtWalletGoldWeight"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtCurrentBal"
                 android:gravity="center"
@@ -43,24 +51,62 @@
                 android:textSize="22dp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnAddGoldToWallet"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_below="@+id/txtWalletGoldWeight"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="@dimen/height_40"
-                android:layout_marginTop="@dimen/height_10"
-                android:background="@color/colorOrange"
-                android:paddingLeft="@dimen/height_15"
-                android:paddingRight="@dimen/height_15"
-                android:text="Add Gold"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:background="@color/colorPrimary"
+                android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/txtSaleRate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/height_20"
+                android:gravity="center"
+                android:text="Value"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/white" />
+                android:textColor="@color/colorwhite"
+                android:textStyle="bold" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/txSaleAmt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtSaleRate"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text=""
+                android:textColor="@color/colorwhite"
+                android:textSize="22dp"
+                android:textStyle="bold" />
 
-        <RelativeLayout
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnAddGoldToWallet"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/height_40"
+            android:layout_marginTop="@dimen/height_10"
+            android:background="@color/colorOrange"
+            android:paddingLeft="@dimen/height_15"
+            android:paddingRight="@dimen/height_15"
+            android:text="Add Gold"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5">
@@ -71,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/height_20"
                 android:gravity="center"
-                android:text="Selling Rate"
+                android:text="Value"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorwhite"
                 android:textStyle="bold" />
@@ -100,10 +146,11 @@
                 android:paddingLeft="@dimen/height_15"
                 android:paddingRight="@dimen/height_15"
                 android:text="Sell"
+                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/white" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
     </LinearLayout>
 

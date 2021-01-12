@@ -2,6 +2,7 @@ package com.cognifygroup.vgold.Adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class GoldTransactionAdapter extends RecyclerView.Adapter<GoldTransaction
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.gold_booking_history_adapter,null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gold_booking_history_adapter, null);
 
         return new MyViewHolder(view);
     }
@@ -44,26 +45,26 @@ public class GoldTransactionAdapter extends RecyclerView.Adapter<GoldTransaction
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        if (!goldTransactionArraylist.get(position).getTransaction_id().equals("")){
+        if (!goldTransactionArraylist.get(position).getTransaction_id().equals("")) {
             holder.txtTxnIdMoney1.setText(goldTransactionArraylist.get(position).getTransaction_id());
-        }else if (!goldTransactionArraylist.get(position).getOnline_transaction_id().equals("")){
+        } else if (!goldTransactionArraylist.get(position).getOnline_transaction_id().equals("")) {
             holder.txtTxnIdMoney1.setText(goldTransactionArraylist.get(position).getOnline_transaction_id());
-        }else {
+        } else {
             holder.txtTxnIdMoney1.setText(goldTransactionArraylist.get(position).getCheque_no());
         }
 
-        double gold= Double.parseDouble(goldTransactionArraylist.get(position).getGold());
+        double gold = Double.parseDouble(goldTransactionArraylist.get(position).getGold());
         DecimalFormat numberFormat = new DecimalFormat("#.000");
-        gold= Double.parseDouble(numberFormat.format(gold));
-        holder.txtgoldBalance.setText(gold+" GM");
+        gold = Double.parseDouble(numberFormat.format(gold));
+        holder.txtgoldBalance.setText(gold + " GM");
         holder.txtTimeDateMoney1.setText(goldTransactionArraylist.get(position).getTransaction_date());
         holder.txtPaymentThrough.setText(goldTransactionArraylist.get(position).getPayment_method());
-        if (!goldTransactionArraylist.get(position).getReceived_from().equals("")){
+        if (!goldTransactionArraylist.get(position).getReceived_from().equals("")) {
             holder.txtPaymentFromTo.setText(goldTransactionArraylist.get(position).getReceived_from());
-        }else {
+        } else {
             holder.txtPaymentFromTo.setText(goldTransactionArraylist.get(position).getTransafer_to());
         }
-        holder.txtStatus1.setText(goldTransactionArraylist.get(position).getStatus());
+//        holder.txtStatus1.setText(goldTransactionArraylist.get(position).getStatus());
 
     }
 
@@ -72,7 +73,7 @@ public class GoldTransactionAdapter extends RecyclerView.Adapter<GoldTransaction
         return goldTransactionArraylist.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder {
         @InjectView(R.id.txtTxnIdMoney1)
         TextView txtTxnIdMoney1;
         @InjectView(R.id.txtgoldBalance)
@@ -88,7 +89,7 @@ public class GoldTransactionAdapter extends RecyclerView.Adapter<GoldTransaction
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.inject(this,itemView);
+            ButterKnife.inject(this, itemView);
         }
     }
 }

@@ -16,96 +16,97 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
-            android:layout_marginTop="@dimen/height_10"
             android:text="Gold weight gm"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <EditText
             android:id="@+id/edtgoldWeight"
+            android:backgroundTint="@color/colorblack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/height_10"
-            android:backgroundTint="@color/colorblack"
-            android:entries="@array/GoldWeight_array"
+            android:inputType="number"
             android:imeOptions="actionDone"
-            android:inputType="number"/>
+            android:entries="@array/GoldWeight_array">
+        </EditText>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
-            android:layout_marginTop="@dimen/height_10"
             android:text="Tennure"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
             android:id="@+id/spinner_tennure_deposite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
             android:layout_marginTop="@dimen/height_5"
-            android:entries="@array/Tennure_array"/>
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/Tennure_array">
+        </Spinner>
 
 
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/height_10"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radio_withBank"
+            <RadioButton android:id="@+id/radio_withBank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onRadioButtonClicked"
-                android:text="With Bank Guarantee" />
+                android:text="With Bank Guarantee"
+                android:onClick="onRadioButtonClicked"/>
 
-            <RadioButton
-                android:id="@+id/radio_withoutBank"
+            <RadioButton android:id="@+id/radio_withoutBank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onRadioButtonClicked"
-                android:text="Without Bank Guarantee" />
+                android:text="Without Bank Guarantee"
+                android:onClick="onRadioButtonClicked"/>
+
         </RadioGroup>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
-            android:layout_marginTop="@dimen/height_15"
             android:text="Maturity Weight"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_15"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/txtMaturityWeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
-            android:backgroundTint="@color/colorblack"
             android:inputType="numberDecimal"
-            android:textSize="@dimen/height_20" />
+            android:textSize="@dimen/height_20"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
-            android:layout_marginTop="@dimen/height_10"
             android:text="Willing To Deposit"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <Spinner
             android:id="@+id/spinner_willingToDeposite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/height_10"
             android:layout_marginTop="@dimen/height_5"
-            android:entries="@array/Tennure_array"/>
+            android:layout_marginLeft="@dimen/height_10"
+            android:entries="@array/Tennure_array">
+        </Spinner>
 
     </LinearLayout>
 
@@ -115,11 +116,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/agd"
-        android:layout_marginLeft="@dimen/height_10"
         android:layout_marginTop="@dimen/height_20"
+        android:layout_marginLeft="@dimen/height_10"
         android:layout_marginRight="@dimen/height_10"
         android:background="@drawable/border_for_button"
         android:text="Send Request"
-        android:textColor="@color/colorwhite" />
+        android:textColor="@color/colorwhite"/>
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/vgold_bank"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnSendDepositeRequest"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

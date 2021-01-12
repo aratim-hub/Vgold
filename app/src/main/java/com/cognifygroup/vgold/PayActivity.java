@@ -691,10 +691,16 @@ public class PayActivity extends AppCompatActivity implements AlertDialogOkListe
                 startActivity(intent);
                 break;
             case 1:
+
+                walletbalence = Double.parseDouble(balance);
+//                 GoldW = goldWeight;
+
+
+
                 startActivity(new Intent(PayActivity.this, Otp1Activity.class)
                         .putExtra("OTP", otp)
                         .putExtra("AMOUNT", "" + result)
-                        .putExtra("Weight", weight)
+                        .putExtra("Weight", goldWeight)
                         .putExtra("NO", txtMobile.getText().toString())
                         .putExtra("moveFrom", "payActivity")
                 );

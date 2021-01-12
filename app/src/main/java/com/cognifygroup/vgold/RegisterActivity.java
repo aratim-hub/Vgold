@@ -59,8 +59,8 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
     MaterialEditText edtmail;
     @InjectView(R.id.edtno)
     MaterialEditText edtno;
-    @InjectView(R.id.edtPass)
-    MaterialEditText edtPass;
+   /* @InjectView(R.id.edtPass)
+    MaterialEditText edtPass;*/
     @InjectView(R.id.edtPancard)
     MaterialEditText edtPancard;
     @InjectView(R.id.edtReferCode)
@@ -137,11 +137,11 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         String last = edtlast1.getText().toString();
         String email = edtmail.getText().toString();
         String no = edtno.getText().toString();
-        String pass = edtPass.getText().toString();
+//        String pass = edtPass.getText().toString();
         String pancard = edtPancard.getText().toString();
         String refercode = edtReferCode.getText().toString();
 
-        if (first.length() == 0 && last.length() == 0 && email.length() == 0 && no.length() == 0 && pass.length() == 0 && pancard.length() == 0) {
+        if (first.length() == 0 && last.length() == 0 && email.length() == 0 && no.length() == 0  && pancard.length() == 0) {
             AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "All data required",
                     getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //            mAlert.onShowToastNotification(RegisterActivity.this, "All data required");
@@ -153,18 +153,19 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             edtmail.setError("Enter valid email");
         } else if (no.length() < 10) {
             edtno.setError("Enter 10 digit contact number");
-        } else if (edtPass.length() == 0) {
+        } /*else if (edtPass.length() == 0) {
             edtPass.setError("Enter confirm password");
-        } else if (edtPancard.length() == 0) {
+        }*/ else if (edtPancard.length() == 0) {
             edtPancard.setError("Enter vaild Pancard Number");
         } else {
-            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
+//            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
+            AttemptToRegisterApi(first, last, email, no,  pancard, refercode);
         }
     }
 
-    private void AttemptToRegisterApi(String first, String last, String email, String no, String pass, String pancard, String refer_code) {
+    private void AttemptToRegisterApi(String first, String last, String email, String no, String pancard, String refer_code) {
         progressDialog.show();
-        regServiceProvider.getReg(first, last, email, no, pass, pancard, refer_code, new APICallback() {
+        regServiceProvider.getReg(first, last, email, no, pancard, refer_code, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {

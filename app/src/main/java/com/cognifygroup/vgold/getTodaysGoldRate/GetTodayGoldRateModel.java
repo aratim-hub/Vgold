@@ -17,6 +17,9 @@ public class GetTodayGoldRateModel {
     @SerializedName("Gold_purchase_rate_with_gst")
     private String Gold_purchase_rate_with_gst;
     @Expose
+    @SerializedName("Gold_sale_rate")
+    private String Gold_sale_rate;
+    @Expose
     @SerializedName("Message")
     private String Message;
     @Expose
@@ -53,5 +56,13 @@ public class GetTodayGoldRateModel {
 
     public void setGold_purchase_rate_with_gst(String gold_purchase_rate_with_gst) {
         Gold_purchase_rate_with_gst = gold_purchase_rate_with_gst;
+    }
+
+    public String getGold_sale_rate() {
+        return Gold_sale_rate;
+    }
+
+    public void setGold_sale_rate(String gold_sale_rate) {
+        Gold_sale_rate = gold_sale_rate;
     }
 }

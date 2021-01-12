@@ -22,9 +22,9 @@ public class RegServiceProvider {
         regService = APIServiceFactory.createService(RegService.class, context);
     }
 
-    public void getReg(String first, String last, String email, String no, String pass,String pancard,String refer_code,final APICallback apiCallback) {
+    public void getReg(String first, String last, String email, String no, String pancard,String refer_code,final APICallback apiCallback) {
         Call<RegModel> call = null;
-        call = regService.getReg(first,last,email,no,pass,pancard,refer_code);
+        call = regService.getReg(first,last,email,no,pancard,refer_code);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<RegModel>() {

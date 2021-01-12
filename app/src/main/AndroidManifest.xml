@@ -191,6 +191,10 @@
             android:label="Complain"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ReviewActivity"
+            android:label="Review"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ForgotPasswordActivity"
             android:label="Forgot Password"
             android:screenOrientation="portrait" />
