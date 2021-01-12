@@ -228,9 +228,9 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     String data = ((VersionModel) serviceResponse).getData();
                     if (status.equals("200")) {
 //                        VGoldApp.onSetVersionCode(data);
-                        checkAppVersion(data);
+                  //     checkAppVersion(data);
 
-                    } /*else {
+                    } /*else {2
                         mAlert.onShowToastNotification(LoginActivity.this, message);
 
                     }*/

@@ -116,6 +116,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @InjectView(R.id.imgPlan)
     ImageView imgPlan;
 
+    @InjectView(R.id.imgPay)
+    ImageView imgPay;
+
+
     AlertDialogs mAlert;
     private VendorOfferAdapter vendorOfferAdapter;
     private VendorOfferServiceProvider vendorOfferServiceProvider;
@@ -135,12 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setSubtitle("Welcome " + VGoldApp.onGetFirst());
-        /*MarqueeView textView = (MarqueeView) toolbar.findViewById(R.id.toolbar_title);
-        List<String> list = new ArrayList<>();
-        list.add("Welcome");
-        list.add("Today - 24/12/2020 (99.5ct Gold Rate)");
-        list.add(VGoldApp.onGetFirst());
-        textView.startWithList(list);*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -494,6 +492,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onClickImgPlan() {
         Intent intent = new Intent(MainActivity.this, PlanActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.imgPay)
+    public void onClickImgPay() {
+        startActivity(new Intent(this, PayInstallmentActivity.class));
     }
 
 

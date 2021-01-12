@@ -5,6 +5,8 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +35,8 @@ import com.cognifygroup.vgold.vendorForDeeposite.VendorForDepositeModel;
 import com.cognifygroup.vgold.vendorForDeeposite.VendorForDepositeServiceProvider;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -61,6 +65,9 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
 
+    public Timer timer = new Timer();
+    public final long DELAY = 1000; // milliseconds
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +77,38 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
+
+        edtgoldWeight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() != 0) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    // TODO: do what you need here (refresh list)
+                                    // you will probably need to use runOnUiThread(Runnable action) for some specific actions (e.g. manipulating views)
+                                    AttemptToGetMaturityWeight(s.toString(), tennure, "yes");
+
+                                }
+                            },
+                            DELAY
+                    );
+
+                }
+            }
+        });
+
     }
 
     public void init() {
@@ -113,6 +152,9 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                 } else {
                     tennure = "";
                 }
+
+                AttemptToGetMaturityWeight(edtgoldWeight.getText().toString(), tennure, "yes");
+
             }
 
             @Override
@@ -132,7 +174,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     @OnClick(R.id.btnSendDepositeRequest)
     public void onClickOfBtnSendRequest() {
-        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(), edtgoldWeight.getText().toString(), tennure, txtMaturityWeight.getText().toString(), vendor_id, bankGurantee);
+        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(), edtgoldWeight.getText().toString(), tennure, txtMaturityWeight.getText().toString(), vendor_id, "yes");
     }
 
 
@@ -230,7 +272,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
 
     private void AttemptToGetMaturityWeight(String gold_weight, String tennure, String guarantee) {
-        progressDialog.show();
+      //  progressDialog.show();
         maturityWeightServiceProvider.getMaturityWeight(gold_weight, tennure, guarantee, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
@@ -273,7 +315,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                     e.printStackTrace();
                     PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
                 } finally {
-                    progressDialog.hide();
+                  //  progressDialog.hide();
                 }
             }
         });

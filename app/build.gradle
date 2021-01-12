@@ -10,6 +10,7 @@ android {
         versionName "1.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     lintOptions {
         checkReleaseBuilds false
@@ -103,5 +104,7 @@ dependencies {
 
     implementation 'com.sunfusheng:marqueeview:1.2.0'
 
+
 }
+
 apply plugin: 'com.google.gms.google-services'
