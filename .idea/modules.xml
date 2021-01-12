@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/vgold.iml" filepath="$PROJECT_DIR$/.idea/modules/vgold.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/VGold.iml" filepath="$PROJECT_DIR$/.idea/modules/VGold.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/vgold.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/vgold.app.iml" />
     </modules>
   </component>
