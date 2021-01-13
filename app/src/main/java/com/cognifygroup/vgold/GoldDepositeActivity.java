@@ -229,7 +229,6 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     }
 
-
     private void AttemptToGetMaturityWeight(String gold_weight, String tennure, String guarantee) {
         progressDialog.show();
         maturityWeightServiceProvider.getMaturityWeight(gold_weight, tennure, guarantee, new APICallback() {
