@@ -137,7 +137,7 @@ public class WithdrawActivity extends AppCompatActivity implements AlertDialogOk
                     if (status.equals("200")) {
                         ArrayAdapter<GetBankModel.Data> adapter =
                                 new ArrayAdapter<GetBankModel.Data>(WithdrawActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         spinnerBank.setAdapter(adapter);
                         spinnerBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override

@@ -130,7 +130,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Tennure_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_tennure_deposite.setAdapter(adapter);
         spinner_tennure_deposite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -218,7 +218,8 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                     if (status.equals("200")) {
                         ArrayAdapter<VendorForDepositeModel.Data> adapter =
                                 new ArrayAdapter<VendorForDepositeModel.Data>(GoldDepositeActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         spinner_willingToDeposite.setAdapter(adapter);
                         spinner_willingToDeposite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override

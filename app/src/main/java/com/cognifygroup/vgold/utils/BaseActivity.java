@@ -1,3 +1,4 @@
+
 package com.cognifygroup.vgold.utils;
 
 
@@ -19,9 +20,11 @@ import android.widget.Toast;
 import com.cognifygroup.vgold.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 
@@ -113,11 +116,13 @@ public class BaseActivity extends AppCompatActivity {
 	}*/
 
     public static String getDate() {
-        Calendar calendar = Calendar.getInstance();
+//        Calendar calendar = Calendar.getInstance();
 
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
-        LocalDateTime now = LocalDateTime.now();
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+        Date date = new Date();
+//        LocalDateTime now = LocalDateTime.now();
 //        System.out.println(dtf.format(now));
 //
 //        String strMonth = String.valueOf(calendar.get(Calendar.MONTH));
@@ -130,9 +135,8 @@ public class BaseActivity extends AppCompatActivity {
 //
 //        return String.valueOf(calendar.get(Calendar.YEAR)) + "-" + strMonth + "-" + strDay;
 
-        return dtf.format(now);
+        return formatter.format(date);
     }
 
 
 }
-

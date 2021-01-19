@@ -115,7 +115,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.payment_option, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_payment_option.setAdapter(adapter);
         spinner_payment_option.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -383,7 +383,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     if (status.equals("200")) {
                         ArrayAdapter<GetBookingIdModel.Data> adapter =
                                 new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         spinner_goldBookingId.setAdapter(adapter);
                         spinner_goldBookingId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override

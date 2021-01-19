@@ -142,7 +142,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.payment_option, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_payment_option.setAdapter(adapter);
         spinner_payment_option.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

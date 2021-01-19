@@ -71,7 +71,7 @@ public class ItemOneFragment extends Fragment {
        /* ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.GoldWeight_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_goldWeight.setAdapter(adapter);
         spinner_goldWeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -94,7 +94,7 @@ public class ItemOneFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getContext(),
                 R.array.Tennure_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter1.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_tennure.setAdapter(adapter1);
         spinner_tennure.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
