@@ -131,9 +131,13 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
         try {
             String playVersion = versionChecker.execute().get();
 
-            String mobVersion;
+            if (playVersion != null && !TextUtils.isEmpty(playVersion)) {
+                getLatestVersion(playVersion);
+            }
+
+            /*String mobVersion;
             PackageInfo pInfo = null;
-            try {
+
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                 mobVersion = pInfo.versionName;
 //                updatedversioncode = Double.parseDouble(VGoldApp.onGetVersionCode());
@@ -142,15 +146,10 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     getLatestVersion(playVersion);
                 } else {
                     if (Double.parseDouble(playVersion) > Double.parseDouble(mobVersion)) {
-
                         getLatestVersion(playVersion);
-//                    UpdateAppAlert();
                     }
-                }
+                }*/
 
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -226,14 +225,9 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     String status = ((VersionModel) serviceResponse).getStatus();
                     String message = ((VersionModel) serviceResponse).getMessage();
                     String data = ((VersionModel) serviceResponse).getData();
-                    if (status.equals("200")) {
-//                        VGoldApp.onSetVersionCode(data);
-                  //     checkAppVersion(data);
+                    if (status.equals("200"))
+                        checkAppVersion(data);
 
-                    } /*else {2
-                        mAlert.onShowToastNotification(LoginActivity.this, message);
-
-                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -263,12 +257,12 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
     @Override
     public void onDialogOk(int resultCode) {
-        switch (resultCode) {
+        /*switch (resultCode) {
             case 1:
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 break;
-        }
+        }*/
 
     }
 
@@ -302,7 +296,6 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
             double appVersion = Double.parseDouble(version);
-
 
             updatedversioncode = Double.parseDouble(playVersion);
 
@@ -346,6 +339,7 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
         alertDialog.show();
 
     }
+
 
     @OnClick(R.id.BtnLogin)
     public void OnLoginBtnClick() {
@@ -470,8 +464,11 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
 //                        VGoldApp.onSetVersionCode(loginModelArrayList.get(0).getVersion_code());
 
-                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", "Login successfully",
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", "Login successfully",
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
 
                       /*  mAlert.onShowToastNotification(LoginActivity.this, "Login successfully");
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

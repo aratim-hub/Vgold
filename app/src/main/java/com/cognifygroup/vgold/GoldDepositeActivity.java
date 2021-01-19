@@ -45,6 +45,7 @@ import butterknife.OnClick;
 
 public class GoldDepositeActivity extends AppCompatActivity implements AlertDialogOkListener {
 
+
     @InjectView(R.id.edtgoldWeight)
     EditText edtgoldWeight;
     @InjectView(R.id.spinner_tennure_deposite)

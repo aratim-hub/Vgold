@@ -107,7 +107,6 @@
                 android:gravity="center"
                 android:layout_marginLeft="@dimen/height_25"
                 android:layout_below="@+id/txtPaymentThrough"
-                android:text="Success"
                 android:textAllCaps="true"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
