@@ -360,6 +360,40 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/height_10">
+
+                    <ImageView
+                        android:id="@+id/imgPay"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/installment"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:ellipsize="end"
+                        android:text="Pay Installment"
+                        android:textSize="@dimen/height_10" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.8dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorLittleGraylight"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:layout_gravity="center"
                     android:orientation="vertical"
                     android:padding="@dimen/height_10">
@@ -415,39 +449,7 @@
                         android:textSize="@dimen/height_10" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="0.8dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorLittleGraylight"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="@dimen/height_10">
-
-                    <ImageView
-                        android:id="@+id/imgPay"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/installment"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/imgWithdrawMoney"
-                        android:layout_marginTop="@dimen/height_5"
-                        android:gravity="center_horizontal"
-                        android:ellipsize="end"
-                        android:text="Pay Installment"
-                        android:textSize="@dimen/height_10" />
-                </LinearLayout>
 
             </LinearLayout>
 

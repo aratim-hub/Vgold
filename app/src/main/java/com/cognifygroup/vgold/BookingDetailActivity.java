@@ -189,27 +189,38 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "");
 
         } else if (payment_option.equals("GPay")) {
-            integrateGpay(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()));
+            integrateGpay(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()),
+                    gold_rate,quantity);
         }
 
     }
 
-    private void integrateGpay(double amt) {
+    private void integrateGpay(double amt, String goldRate, String weight) {
         String no = "00000";
         if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
             no = VGoldApp.onGetNo().substring(0, 5);
         }
 
-        String transNo = VGoldApp.onGetUerId() + "-" + no + "-" + BaseActivity.getDate();
+        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
+
+        String name;
+        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
+            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
+                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
+            } else {
+                name = VGoldApp.onGetFirst();
+            }
+        } else {
+            name = "NA";
+        }
 
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", "9881136531@okbizaxis")
-//                        .appendQueryParameter("pa", "7057576531@okbizaxis")
-                .appendQueryParameter("pn", "VGold")
+                .appendQueryParameter("pn", name)
                 .appendQueryParameter("mc", "")//"28-4092-313-2021-00-14")
                 //.appendQueryParameter("tid", "02125412")
                 .appendQueryParameter("tr", transNo)
-                .appendQueryParameter("tn", "Gold Booking")
+                .appendQueryParameter("tn", "GB_" + weight + "_" + goldRate + " " + name + "(" + VGoldApp.onGetUerId() + ")")
                 .appendQueryParameter("am", String.valueOf(amt))
 //                .appendQueryParameter("am", "10.0")
                 .appendQueryParameter("cu", "INR")

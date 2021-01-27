@@ -217,7 +217,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
                 AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, payment_option, "", "", "");
 
             } else if (payment_option.equals("GPay")) {
-                integrateGpay(amount);
+                integrateGpay(amount, goldWeight);
 
             } else if (payment_option.equals("Payumoney")) {
                 startActivity(new Intent(AddGoldActivity.this, PayUMoneyActivity.class)
@@ -241,22 +241,33 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
     }
 
-    private void integrateGpay(double amount) {
+    private void integrateGpay(double amount, String weight) {
         String no = "00000";
         if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
             no = VGoldApp.onGetNo().substring(0, 5);
         }
+        String name;
+        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
+            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
+                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
+            } else {
+                name = VGoldApp.onGetFirst();
+            }
+        } else {
+            name = "NA";
+        }
 
-        String transNo = VGoldApp.onGetUerId() + "-" + no + "-" + BaseActivity.getDate();
+
+        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
 
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", "9881136531@okbizaxis")
-//                        .appendQueryParameter("pa", "7057576531@okbizaxis")
-                .appendQueryParameter("pn", "VGold")
+//                .appendQueryParameter("pa", "7057576531@okbizaxis")
+                .appendQueryParameter("pn", name)
                 .appendQueryParameter("mc", "")
                 //.appendQueryParameter("tid", "02125412")
                 .appendQueryParameter("tr", transNo)
-                .appendQueryParameter("tn", "Gold Purchase")
+                .appendQueryParameter("tn", "GP_ " + weight + "_" + todayGoldRateWithGst + " " + name + "(" + VGoldApp.onGetUerId() + ")")
                 .appendQueryParameter("am", String.valueOf(amount))
                 .appendQueryParameter("cu", "INR")
                 //.appendQueryParameter("refUrl", "blueapp")
@@ -277,7 +288,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("main ", "response " + resultCode);
+//        Log.e("main ", "response " + data);
         switch (requestCode) {
             case UPI_PAYMENT:
                 if ((RESULT_OK == resultCode) || (resultCode == 11)) {
@@ -308,6 +319,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
         if (isConnectionAvailable(AddGoldActivity.this)) {
             String str = data.get(0);
             Log.e("UPIPAY", "upiPaymentDataOperation: " + str);
+
             String paymentCancel = "";
             if (str == null) str = "discard";
             String status = "";
@@ -327,8 +339,6 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
             }
             if (status.equals("success")) {
                 //Code to handle successful transaction here.
-//                Toast.makeText(AddGoldActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
-
 //                Log.e("UPI", "payment successfull: "+approvalRefNo);
 
 
@@ -425,14 +435,14 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
                         succesMsg = message;
 
-                        AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                       /* AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);*/
 
 //                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
-                       /* Intent intent = new Intent(AddGoldActivity.this, SuccessActivity.class);
+                        Intent intent = new Intent(AddGoldActivity.this, SuccessActivity.class);
                         intent.putExtra("message", message);
                         startActivity(intent);
-                        finish();*/
+                        finish();
                     } else {
 
                         AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,

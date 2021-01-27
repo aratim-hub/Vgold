@@ -116,25 +116,8 @@ public class BaseActivity extends AppCompatActivity {
 	}*/
 
     public static String getDate() {
-//        Calendar calendar = Calendar.getInstance();
-
-
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
         Date date = new Date();
-//        LocalDateTime now = LocalDateTime.now();
-//        System.out.println(dtf.format(now));
-//
-//        String strMonth = String.valueOf(calendar.get(Calendar.MONTH));
-//        if (strMonth.length() == 1)
-//            strMonth = "0" + String.valueOf(calendar.get(Calendar.MONTH));
-//
-//        String strDay = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-//        if (strDay.length() == 1)
-//            strDay = "0" + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-//
-//        return String.valueOf(calendar.get(Calendar.YEAR)) + "-" + strMonth + "-" + strDay;
-
         return formatter.format(date);
     }
 

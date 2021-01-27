@@ -178,7 +178,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", "", "");
 
             } else if (payment_option.equals("GPay")) {
-                integrateGpay(txtAmount.getText().toString());
+                integrateGpay(bookingId,txtAmount.getText().toString());
 
             } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                 startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
@@ -201,22 +201,32 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     }
 
-    private void integrateGpay(String amount) {
+    private void integrateGpay(String bookingId,String amount) {
         String no = "00000";
         if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
             no = VGoldApp.onGetNo().substring(0, 5);
         }
 
-        String transNo = VGoldApp.onGetUerId() + "-" + no + "-" + BaseActivity.getDate();
+        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
+
+        String name;
+        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
+            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
+                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
+            } else {
+                name = VGoldApp.onGetFirst();
+            }
+        } else {
+            name = "NA";
+        }
 
         Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", "9881136531@okbizaxis")
-//                        .appendQueryParameter("pa", "7057576531@okbizaxis")
-                .appendQueryParameter("pn", "VGold")
+                .appendQueryParameter("pn", name)
                 .appendQueryParameter("mc", "")
                 //.appendQueryParameter("tid", "02125412")
                 .appendQueryParameter("tr", transNo)
-                .appendQueryParameter("tn", "Pay Installment")
+                .appendQueryParameter("tn", "Inst " + name + "(" + bookingId + ")")
                 .appendQueryParameter("am", amount)
                 .appendQueryParameter("cu", "INR")
                 //.appendQueryParameter("refUrl", "blueapp")
@@ -452,13 +462,13 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     if (status.equals("200")) {
                         msg = message;
 
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayInstallmentActivity.this, message);
-//                        Intent intent=new Intent(PayInstallmentActivity.this,SuccessActivity.class);
-//                        intent.putExtra("message",message);
-//                        startActivity(intent);
+                        Intent intent=new Intent(PayInstallmentActivity.this,SuccessActivity.class);
+                        intent.putExtra("message",message);
+                        startActivity(intent);
                     } else {
 
                         AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,

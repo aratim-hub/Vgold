@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (status.equals("200")) {
                         if (data.equalsIgnoreCase("true")) {
 
-                            if (VGoldApp.onGetUserRole().equals("Customer")) {
+                            if (VGoldApp.onGetUserRole().equalsIgnoreCase("Customer")) {
                                 addMembershipDialog();
                             }
                         }
