@@ -36,6 +36,8 @@ import android.widget.ViewFlipper;
 
 import com.cognifygroup.vgold.Adapter.VendorOfferAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.addGold.AddGoldServiceProvider;
 import com.cognifygroup.vgold.getReferCode.ReferModel;
 import com.cognifygroup.vgold.getReferCode.ReferServiceProvider;
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AlertDialogOkListener alertDialogOkListener = this;
 
     GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
+    LoginStatusServiceProvider  loginStatusServiceProvider;
     AddGoldServiceProvider addGoldServiceProvider;
     private int pressBack = 0;
 
@@ -159,7 +162,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         init();
 
+        checkLoginSession();
+
         AttemptToGetTodayGoldRate();    
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if(!data){
+                            AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     private void init() {
@@ -177,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         vendorOfferServiceProvider = new VendorOfferServiceProvider(this);
         referServiceProvider = new ReferServiceProvider(this);
 
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
         getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
         addGoldServiceProvider = new AddGoldServiceProvider(this);
 
@@ -716,6 +777,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onDialogOk(int resultCode) {
+        if (resultCode==11){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 
