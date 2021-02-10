@@ -1,15 +1,21 @@
 package com.cognifygroup.vgold;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +40,7 @@ import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
+import com.cognifygroup.vgold.utils.BaseActivity;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
@@ -71,6 +78,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
     @InjectView(R.id.edtTxnId)
     EditText edtTxnId;
 
+    final int UPI_PAYMENT = 0;
     private String succesMsg;
 
     AlertDialogs mAlert;
@@ -134,7 +142,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.payment_option, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_payment_option.setAdapter(adapter);
         spinner_payment_option.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,6 +163,10 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
                     llRTGS.setVisibility(View.GONE);
                 } else if (paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                     payment_option = "Payumoney";
+                    llCheque.setVisibility(View.GONE);
+                    llRTGS.setVisibility(View.GONE);
+                } else if (paymentoption.equals("GPay")) {
+                    payment_option = "GPay";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
                 }
@@ -204,6 +216,9 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
                 AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, payment_option, "", "", "");
 
+            } else if (payment_option.equals("GPay")) {
+                integrateGpay(amount, goldWeight);
+
             } else if (payment_option.equals("Payumoney")) {
                 startActivity(new Intent(AddGoldActivity.this, PayUMoneyActivity.class)
                         .putExtra("AMOUNT", "" + amount)
@@ -224,6 +239,135 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
         }
 
 
+    }
+
+    private void integrateGpay(double amount, String weight) {
+        String no = "00000";
+        if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
+            no = VGoldApp.onGetNo().substring(0, 5);
+        }
+        String name;
+        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
+            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
+                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
+            } else {
+                name = VGoldApp.onGetFirst();
+            }
+        } else {
+            name = "NA";
+        }
+
+
+        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
+
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", "9881136531@okbizaxis")
+//                .appendQueryParameter("pa", "7057576531@okbizaxis")
+                .appendQueryParameter("pn", name)
+                .appendQueryParameter("mc", "")
+                //.appendQueryParameter("tid", "02125412")
+                .appendQueryParameter("tr", transNo)
+                .appendQueryParameter("tn", "GP_ " + weight + "_" + todayGoldRateWithGst + " " + name + "(" + VGoldApp.onGetUerId() + ")")
+                .appendQueryParameter("am", String.valueOf(amount))
+                .appendQueryParameter("cu", "INR")
+                //.appendQueryParameter("refUrl", "blueapp")
+                .build();
+
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(AddGoldActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        Log.e("main ", "response " + data);
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.e("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.e("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    //when user simply back without payment
+                    Log.e("UPI", "onActivityResult: " + "Return data is null");
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    upiPaymentDataOperation(dataList);
+                }
+                break;
+        }
+    }
+
+    private void upiPaymentDataOperation(ArrayList<String> data) {
+        if (isConnectionAvailable(AddGoldActivity.this)) {
+            String str = data.get(0);
+            Log.e("UPIPAY", "upiPaymentDataOperation: " + str);
+
+            String paymentCancel = "";
+            if (str == null) str = "discard";
+            String status = "";
+            String approvalRefNo = "";
+            String response[] = str.split("&");
+            for (int i = 0; i < response.length; i++) {
+                String equalStr[] = response[i].split("=");
+                if (equalStr.length >= 2) {
+                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
+                        status = equalStr[1].toLowerCase();
+                    } else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
+                        approvalRefNo = equalStr[1];
+                    }
+                } else {
+                    paymentCancel = "Payment cancelled by user.";
+                }
+            }
+            if (status.equals("success")) {
+                //Code to handle successful transaction here.
+//                Log.e("UPI", "payment successfull: "+approvalRefNo);
+
+
+                AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, payment_option, "", approvalRefNo, "");
+
+            } else if ("Payment cancelled by user.".equals(paymentCancel)) {
+                Toast.makeText(AddGoldActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Log.e("UPI", "Cancelled by user: " + approvalRefNo);
+            } else {
+                Toast.makeText(AddGoldActivity.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Log.e("UPI", "failed payment: " + approvalRefNo);
+            }
+        } else {
+            Log.e("UPI", "Internet issue: ");
+            Toast.makeText(AddGoldActivity.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void AttemptToGetTodayGoldRate() {
@@ -291,14 +435,14 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
                         succesMsg = message;
 
-                        AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                       /* AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);*/
 
 //                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
-                       /* Intent intent = new Intent(AddGoldActivity.this, SuccessActivity.class);
+                        Intent intent = new Intent(AddGoldActivity.this, SuccessActivity.class);
                         intent.putExtra("message", message);
                         startActivity(intent);
-                        finish();*/
+                        finish();
                     } else {
 
                         AlertDialogs.alertDialogOk(AddGoldActivity.this, "Alert", message,

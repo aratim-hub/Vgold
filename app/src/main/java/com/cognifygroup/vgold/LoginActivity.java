@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import com.cognifygroup.vgold.loginImage.LoginImageServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
+import com.cognifygroup.vgold.utils.BaseActivity;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
@@ -62,6 +65,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -131,9 +135,13 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
         try {
             String playVersion = versionChecker.execute().get();
 
-            String mobVersion;
+            if (playVersion != null && !TextUtils.isEmpty(playVersion)) {
+                getLatestVersion(playVersion);
+            }
+
+            /*String mobVersion;
             PackageInfo pInfo = null;
-            try {
+
                 pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
                 mobVersion = pInfo.versionName;
 //                updatedversioncode = Double.parseDouble(VGoldApp.onGetVersionCode());
@@ -142,15 +150,10 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     getLatestVersion(playVersion);
                 } else {
                     if (Double.parseDouble(playVersion) > Double.parseDouble(mobVersion)) {
-
                         getLatestVersion(playVersion);
-//                    UpdateAppAlert();
                     }
-                }
+                }*/
 
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -226,14 +229,9 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     String status = ((VersionModel) serviceResponse).getStatus();
                     String message = ((VersionModel) serviceResponse).getMessage();
                     String data = ((VersionModel) serviceResponse).getData();
-                    if (status.equals("200")) {
-//                        VGoldApp.onSetVersionCode(data);
+                    if (status.equals("200"))
                         checkAppVersion(data);
 
-                    } /*else {
-                        mAlert.onShowToastNotification(LoginActivity.this, message);
-
-                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -263,14 +261,15 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
     @Override
     public void onDialogOk(int resultCode) {
-        switch (resultCode) {
+        /*switch (resultCode) {
             case 1:
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 break;
-        }
+        }*/
 
     }
+
 
     public class VersionChecker extends AsyncTask<String, String, String> {
 
@@ -302,7 +301,6 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
             double appVersion = Double.parseDouble(version);
-
 
             updatedversioncode = Double.parseDouble(playVersion);
 
@@ -346,6 +344,7 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
         alertDialog.show();
 
     }
+
 
     @OnClick(R.id.BtnLogin)
     public void OnLoginBtnClick() {
@@ -470,8 +469,11 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
 //                        VGoldApp.onSetVersionCode(loginModelArrayList.get(0).getVersion_code());
 
-                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", "Login successfully",
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", "Login successfully",
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
 
                       /*  mAlert.onShowToastNotification(LoginActivity.this, "Login successfully");
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -571,6 +573,5 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
             }
         });
     }
-
 
 }

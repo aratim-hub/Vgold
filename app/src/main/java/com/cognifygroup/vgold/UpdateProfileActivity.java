@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import android.view.MenuItem;
@@ -95,23 +96,26 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         edtMobileNumber.setText(VGoldApp.onGetNo());
         edtAddress.setText(VGoldApp.onGetAddress());
 
-
-        Picasso.with(UpdateProfileActivity.this)
-                .load(VGoldApp.onGetUserImg())
-                .fit()
-                .into(userImg, new Callback() {
-                    @Override
-                    public void onSuccess() {
+        if (VGoldApp.onGetUserImg() != null && !TextUtils.isEmpty(VGoldApp.onGetUserImg()) && !VGoldApp.onGetUserImg().equalsIgnoreCase("null")) {
+            Picasso.with(UpdateProfileActivity.this)
+                    .load(VGoldApp.onGetUserImg())
+                    .fit()
+                    .into(userImg, new Callback() {
+                        @Override
+                        public void onSuccess() {
                         /*if (progressbar_category !=null){
                             progressbar_category.setVisibility(View.GONE);
                         }*/
-                    }
+                        }
 
-                    @Override
-                    public void onError() {
+                        @Override
+                        public void onError() {
 
-                    }
-                });
+                        }
+                    });
+        }
+
+
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,12 +36,15 @@ import com.cognifygroup.vgold.vendorForDeeposite.VendorForDepositeModel;
 import com.cognifygroup.vgold.vendorForDeeposite.VendorForDepositeServiceProvider;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class GoldDepositeActivity extends AppCompatActivity implements AlertDialogOkListener {
+
 
     @InjectView(R.id.edtgoldWeight)
     EditText edtgoldWeight;
@@ -62,6 +67,9 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
 
+    public Timer timer = new Timer();
+    public final long DELAY = 1000; // milliseconds
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +79,38 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         init();
+
+        edtgoldWeight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() != 0) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    // TODO: do what you need here (refresh list)
+                                    // you will probably need to use runOnUiThread(Runnable action) for some specific actions (e.g. manipulating views)
+                                    AttemptToGetMaturityWeight(s.toString(), tennure, "yes");
+
+                                }
+                            },
+                            DELAY
+                    );
+
+                }
+            }
+        });
+
     }
 
     public void init() {
@@ -90,7 +130,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Tennure_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_tennure_deposite.setAdapter(adapter);
         spinner_tennure_deposite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -114,6 +154,9 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                 } else {
                     tennure = "";
                 }
+
+                AttemptToGetMaturityWeight(edtgoldWeight.getText().toString(), tennure, "yes");
+
             }
 
             @Override
@@ -133,7 +176,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     @OnClick(R.id.btnSendDepositeRequest)
     public void onClickOfBtnSendRequest() {
-        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(), edtgoldWeight.getText().toString(), tennure, txtMaturityWeight.getText().toString(), vendor_id, bankGurantee);
+        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(), edtgoldWeight.getText().toString(), tennure, txtMaturityWeight.getText().toString(), vendor_id, "yes");
     }
 
 
@@ -175,7 +218,8 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                     if (status.equals("200")) {
                         ArrayAdapter<VendorForDepositeModel.Data> adapter =
                                 new ArrayAdapter<VendorForDepositeModel.Data>(GoldDepositeActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+//                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         spinner_willingToDeposite.setAdapter(adapter);
                         spinner_willingToDeposite.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -229,9 +273,8 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     }
 
-
     private void AttemptToGetMaturityWeight(String gold_weight, String tennure, String guarantee) {
-        progressDialog.show();
+      //  progressDialog.show();
         maturityWeightServiceProvider.getMaturityWeight(gold_weight, tennure, guarantee, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
@@ -274,7 +317,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                     e.printStackTrace();
                     PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
                 } finally {
-                    progressDialog.hide();
+                  //  progressDialog.hide();
                 }
             }
         });

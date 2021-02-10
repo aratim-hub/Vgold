@@ -107,7 +107,7 @@ public class OurVendersActivity extends AppCompatActivity implements AlertDialog
                         rc_vendorOffer.setVisibility(View.VISIBLE);
                         vendorOfferAdapter = new VendorOfferAdapter(OurVendersActivity.this, mArrSaloonServices, "venders");
 //                        rc_vendorOffer.setLayoutManager(new LinearLayoutManager(OurVendersActivity.this, LinearLayoutManager.VERTICAL, false));
-                        rc_vendorOffer.setLayoutManager(new GridLayoutManager(OurVendersActivity.this, 2));
+                        rc_vendorOffer.setLayoutManager(new GridLayoutManager(OurVendersActivity.this, 5));
                         rc_vendorOffer.setAdapter(vendorOfferAdapter);
 
                     } else {

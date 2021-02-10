@@ -1,10 +1,16 @@
 package com.cognifygroup.vgold;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +36,7 @@ import com.cognifygroup.vgold.payInstallment.PayInstallmentServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
+import com.cognifygroup.vgold.utils.BaseActivity;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
@@ -65,6 +72,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     EditText edtRtgsBankDetail;
     @InjectView(R.id.edtTxnId)
     EditText edtTxnId;
+
+
+    final int UPI_PAYMENT = 0;
 
     double result = 0;
     double amount = 0;
@@ -105,7 +115,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.payment_option, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
         spinner_payment_option.setAdapter(adapter);
         spinner_payment_option.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -126,6 +136,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     llRTGS.setVisibility(View.GONE);
                 } else if (paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                     payment_option = "Credit/Debit/Net Banking(Payment Gateway)";
+                    llCheque.setVisibility(View.GONE);
+                    llRTGS.setVisibility(View.GONE);
+                } else if (paymentoption.equals("GPay")) {
+                    payment_option = "GPay";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
                 }
@@ -163,6 +177,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", "", "");
 
+            } else if (payment_option.equals("GPay")) {
+                integrateGpay(bookingId,txtAmount.getText().toString());
+
             } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                 startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
                         .putExtra("AMOUNT", "" + txtAmount.getText().toString())
@@ -182,6 +199,133 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         }
 
 
+    }
+
+    private void integrateGpay(String bookingId,String amount) {
+        String no = "00000";
+        if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
+            no = VGoldApp.onGetNo().substring(0, 5);
+        }
+
+        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
+
+        String name;
+        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
+            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
+                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
+            } else {
+                name = VGoldApp.onGetFirst();
+            }
+        } else {
+            name = "NA";
+        }
+
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", "9881136531@okbizaxis")
+                .appendQueryParameter("pn", name)
+                .appendQueryParameter("mc", "")
+                //.appendQueryParameter("tid", "02125412")
+                .appendQueryParameter("tr", transNo)
+                .appendQueryParameter("tn", "Inst " + name + "(" + bookingId + ")")
+                .appendQueryParameter("am", amount)
+                .appendQueryParameter("cu", "INR")
+                //.appendQueryParameter("refUrl", "blueapp")
+                .build();
+
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(PayInstallmentActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("main ", "response " + resultCode);
+        switch (requestCode) {
+            case UPI_PAYMENT:
+                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
+                    if (data != null) {
+                        String trxt = data.getStringExtra("response");
+                        Log.e("UPI", "onActivityResult: " + trxt);
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add(trxt);
+                        upiPaymentDataOperation(dataList);
+                    } else {
+                        Log.e("UPI", "onActivityResult: " + "Return data is null");
+                        ArrayList<String> dataList = new ArrayList<>();
+                        dataList.add("nothing");
+                        upiPaymentDataOperation(dataList);
+                    }
+                } else {
+                    //when user simply back without payment
+                    Log.e("UPI", "onActivityResult: " + "Return data is null");
+                    ArrayList<String> dataList = new ArrayList<>();
+                    dataList.add("nothing");
+                    upiPaymentDataOperation(dataList);
+                }
+                break;
+        }
+    }
+
+    private void upiPaymentDataOperation(ArrayList<String> data) {
+        if (isConnectionAvailable(PayInstallmentActivity.this)) {
+            String str = data.get(0);
+            Log.e("UPIPAY", "upiPaymentDataOperation: " + str);
+            String paymentCancel = "";
+            if (str == null) str = "discard";
+            String status = "";
+            String approvalRefNo = "";
+            String response[] = str.split("&");
+            for (int i = 0; i < response.length; i++) {
+                String equalStr[] = response[i].split("=");
+                if (equalStr.length >= 2) {
+                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
+                        status = equalStr[1].toLowerCase();
+                    } else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
+                        approvalRefNo = equalStr[1];
+                    }
+                } else {
+                    paymentCancel = "Payment cancelled by user.";
+                }
+            }
+            if (status.equals("success")) {
+                //Code to handle successful transaction here.
+//                Toast.makeText(PayInstallmentActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
+//                Log.e("UPI", "payment successfull: "+approvalRefNo);
+
+                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", approvalRefNo, "");
+
+            } else if ("Payment cancelled by user.".equals(paymentCancel)) {
+                Toast.makeText(PayInstallmentActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
+                Log.e("UPI", "Cancelled by user: " + approvalRefNo);
+            } else {
+                Toast.makeText(PayInstallmentActivity.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
+                Log.e("UPI", "failed payment: " + approvalRefNo);
+            }
+        } else {
+            Log.e("UPI", "Internet issue: ");
+            Toast.makeText(PayInstallmentActivity.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -249,7 +393,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     if (status.equals("200")) {
                         ArrayAdapter<GetBookingIdModel.Data> adapter =
                                 new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         spinner_goldBookingId.setAdapter(adapter);
                         spinner_goldBookingId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -271,7 +415,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     } else {
 
                         AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                                getResources().getString(R.string.btn_ok), 4, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(PayInstallmentActivity.this, message);
                     }
 
@@ -318,13 +462,13 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     if (status.equals("200")) {
                         msg = message;
 
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayInstallmentActivity.this, message);
-//                        Intent intent=new Intent(PayInstallmentActivity.this,SuccessActivity.class);
-//                        intent.putExtra("message",message);
-//                        startActivity(intent);
+                        Intent intent=new Intent(PayInstallmentActivity.this,SuccessActivity.class);
+                        intent.putExtra("message",message);
+                        startActivity(intent);
                     } else {
 
                         AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
@@ -367,6 +511,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 Intent intent = new Intent(PayInstallmentActivity.this, SuccessActivity.class);
                 intent.putExtra("message", msg);
                 startActivity(intent);
+                break;
+            case 4:
+                Intent intentHome = new Intent(PayInstallmentActivity.this, MainActivity.class);
+                startActivity(intentHome);
                 break;
         }
 

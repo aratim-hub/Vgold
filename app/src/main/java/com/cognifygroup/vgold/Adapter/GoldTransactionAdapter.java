@@ -64,7 +64,13 @@ public class GoldTransactionAdapter extends RecyclerView.Adapter<GoldTransaction
         } else {
             holder.txtPaymentFromTo.setText(goldTransactionArraylist.get(position).getTransafer_to());
         }
-//        holder.txtStatus1.setText(goldTransactionArraylist.get(position).getStatus());
+
+        if (goldTransactionArraylist.get(position).getAdmin_status().equals("0")) {
+            holder.txtStatus1.setText("Pending");
+        } else {
+            holder.txtStatus1.setText("Success");
+        }
+
 
     }
 
