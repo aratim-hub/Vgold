@@ -20,5 +20,7 @@ public interface DepositeRequestService {
                                @Field("tennure") String tennure,
                                @Field("cmw") String cmw,
                                @Field("vendor_id") String vendor_id,
+                               @Field("addpurity") String add_purity,
+                               @Field("remark") String remark,
                                @Field("guarantee") String guarantee);
 }

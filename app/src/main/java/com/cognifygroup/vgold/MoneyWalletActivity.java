@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 import com.cognifygroup.vgold.Adapter.GoldBookingHistoryAdapter;
 import com.cognifygroup.vgold.Adapter.MoneyTransactionAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyServiceProvider;
 import com.cognifygroup.vgold.getGoldBookingHistory.GetGoldBookingHistoryModel;
@@ -46,6 +50,7 @@ public class MoneyWalletActivity extends AppCompatActivity implements AlertDialo
     private String GetAmount;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,65 @@ public class MoneyWalletActivity extends AppCompatActivity implements AlertDialo
 
         mAlert = AlertDialogs.getInstance();
         getAllTransactionMoneyServiceProvider=new GetAllTransactionMoneyServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
     }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(MoneyWalletActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(MoneyWalletActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MoneyWalletActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MoneyWalletActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MoneyWalletActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -178,6 +241,12 @@ public class MoneyWalletActivity extends AppCompatActivity implements AlertDialo
 
     @Override
     public void onDialogOk(int resultCode) {
-
+        switch (resultCode) {
+            case 11:
+                Intent LogIntent = new Intent(MoneyWalletActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
+                break;
+        }
     }
 }

@@ -34,6 +34,7 @@ public class GetSingleImageServiceProvider0 {
             public void onResponse(Call<GetSingleImage0> call, Response<GetSingleImage0> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("200")) {
                     apiCallback.onSuccess(response.body());
+
                 } else if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("400")) {
                     apiCallback.onSuccess(response.body());
                 } else {

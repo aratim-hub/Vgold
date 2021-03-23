@@ -25,9 +25,10 @@ public class DepositeRequestServiceProvider {
         depositeRequestService = APIServiceFactory.createService(DepositeRequestService.class, context);
     }
 
-    public void getDepositeRequest(String user_id, String gw, String tennure, String cmw, String vendor_id, String guarantee, final APICallback apiCallback) {
+    public void getDepositeRequest(String user_id, String gw, String tennure, String cmw, String vendor_id,
+                                   String add_purity, String remark,String guarantee, final APICallback apiCallback) {
         Call<DepositeRequestModel> call = null;
-        call = depositeRequestService.addGold(user_id,gw,tennure,cmw,vendor_id,guarantee);
+        call = depositeRequestService.addGold(user_id,gw,tennure,cmw,vendor_id,add_purity,remark,guarantee);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<DepositeRequestModel>() {

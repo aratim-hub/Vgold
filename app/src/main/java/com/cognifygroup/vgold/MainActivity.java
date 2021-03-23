@@ -160,65 +160,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         init();
 
-        checkLoginSession();
 
-        AttemptToGetTodayGoldRate();    
     }
 
-    private void checkLoginSession() {
-        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    progressDialog.hide();
-                    String status = ((LoginSessionModel) serviceResponse).getStatus();
-                    String message = ((LoginSessionModel) serviceResponse).getMessage();
-                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
 
-                    Log.i("TAG", "onSuccess: " + status);
-                    Log.i("TAG", "onSuccess: " + message);
-
-                    if (status.equals("200")) {
-
-                        if(!data){
-                            AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message + ",  Please relogin to app",
-                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
-                        }
-
-                    } else {
-                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
-
-                    }
-                } catch (Exception e) {
-                    //  progressDialog.hide();
-                    e.printStackTrace();
-                } finally {
-                    //  progressDialog.hide();
-                }
-            }
-
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
-
-                try {
-                    progressDialog.hide();
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
-                    }
-                } catch (Exception e) {
-                    progressDialog.hide();
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
-    }
 
     private void init() {
 
@@ -309,9 +254,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+        checkLoginSession();
+        AttemptToGetTodayGoldRate();
         checkWalletAmt(VGoldApp.onGetUerId());
+    }
 
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
 
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if(!data){
+                            AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     private void checkWalletAmt(String userId) {
@@ -462,28 +462,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            pressBack++;
-            if (pressBack == 1) {
-                Toast.makeText(getApplicationContext(), "Press once again to exit !", Toast.LENGTH_SHORT).show();
-            } else {
-                super.onBackPressed();
-            }
-//            super.onBackPressed();
-        }
-    }
-
     @OnClick(R.id.rleGoldWallet)
     public void onClickGoldWallet() {
-
         Intent intent = new Intent(MainActivity.this, GoldWalletActivity.class);
         startActivity(intent);
-
     }
 
 
@@ -571,54 +553,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @OnClick(R.id.imgPay)
     public void onClickImgPay() {
         startActivity(new Intent(this, PayInstallmentActivity.class));
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            startActivity(new Intent(this, MainActivity.class));
-
-        } else if (id == R.id.nav_profile) {
-
-            startActivity(new Intent(this, ProfileActivity.class));
-
-        } else if (id == R.id.nav_eGoldWallet) {
-            startActivity(new Intent(this, GoldWalletActivity.class));
-
-        } else if (id == R.id.nav_moneyWallet) {
-            startActivity(new Intent(this, MoneyWalletActivity.class));
-        } else if (id == R.id.nav_addBank) {
-            startActivity(new Intent(this, AddBankActivity.class));
-        } else if (id == R.id.nav_goldBookingHistory) {
-            startActivity(new Intent(this, GoldBookingHistoryActivity.class));
-        } else if (id == R.id.nav_goldDepositeHistory) {
-            startActivity(new Intent(this, GoldDepositeHistoryActivity.class));
-        } else if (id == R.id.nav_payInstallment) {
-            startActivity(new Intent(this, PayInstallmentActivity.class));
-
-        } else if (id == R.id.nav_Share) {
-            OnShare();
-
-        } else if (id == R.id.nav_refer) {
-            startActivity(new Intent(this, ReferActivity.class));
-
-        } else if (id == R.id.nav_logout) {
-            logoutAlert();
-        } else if (id == R.id.nav_addComplain) {
-            startActivity(new Intent(this, ComplainActivity.class));
-        } else if (id == R.id.nav_review) {
-            startActivity(new Intent(this, ReviewActivity.class));
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     public void OnShare() {
@@ -777,17 +711,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
     }
 
-
-    @Override
-    public void onDialogOk(int resultCode) {
-        if (resultCode==11){
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
-    }
-
     private void AttemptToGetTodayGoldRate() {
         // progressDialog.show();
         getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
@@ -848,5 +771,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         });
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            startActivity(new Intent(this, MainActivity.class));
+
+        } else if (id == R.id.nav_profile) {
+
+            startActivity(new Intent(this, ProfileActivity.class));
+
+        } else if (id == R.id.nav_eGoldWallet) {
+            startActivity(new Intent(this, GoldWalletActivity.class));
+
+        } else if (id == R.id.nav_moneyWallet) {
+            startActivity(new Intent(this, MoneyWalletActivity.class));
+        } else if (id == R.id.nav_addBank) {
+            startActivity(new Intent(this, AddBankActivity.class));
+        } else if (id == R.id.nav_goldBookingHistory) {
+            startActivity(new Intent(this, GoldBookingHistoryActivity.class));
+        } else if (id == R.id.nav_goldDepositeHistory) {
+            startActivity(new Intent(this, GoldDepositeHistoryActivity.class));
+        } else if (id == R.id.nav_payInstallment) {
+            startActivity(new Intent(this, PayInstallmentActivity.class));
+
+        } else if (id == R.id.nav_Share) {
+            OnShare();
+
+        } else if (id == R.id.nav_refer) {
+            startActivity(new Intent(this, ReferActivity.class));
+
+        } else if (id == R.id.nav_logout) {
+            logoutAlert();
+        } else if (id == R.id.nav_addComplain) {
+            startActivity(new Intent(this, ComplainActivity.class));
+        } else if (id == R.id.nav_review) {
+            startActivity(new Intent(this, ReviewActivity.class));
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onDialogOk(int resultCode) {
+        if (resultCode==11){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            pressBack++;
+            if (pressBack == 1) {
+                Toast.makeText(getApplicationContext(), "Press once again to exit !", Toast.LENGTH_SHORT).show();
+            } else {
+                super.onBackPressed();
+            }
+//            super.onBackPressed();
+        }
     }
 }

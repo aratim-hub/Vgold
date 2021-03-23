@@ -150,8 +150,22 @@
                 android:paddingRight="10dp"
                 android:layout_marginTop="5dp"
                 android:text="Forgot Password ?"
+                android:visibility="gone"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 />
+
+            <Button
+                android:id="@+id/btnGpay"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="GPAY"
+                android:textColor="@color/colorwhite"
+                android:gravity="center"
+                android:background="@drawable/border_for_button"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
 
             <!--<RelativeLayout
                 android:layout_width="150dp"

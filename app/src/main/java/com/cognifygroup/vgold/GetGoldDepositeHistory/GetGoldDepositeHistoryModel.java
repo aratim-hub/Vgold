@@ -90,6 +90,18 @@ public class GetGoldDepositeHistoryModel {
         @Expose
         @SerializedName("gold_deposite_id")
         private String gold_deposite_id;
+        @Expose
+        @SerializedName("current_value_amount")
+        private String current_value_amount;
+        @Expose
+        @SerializedName("status_name")
+        private String status_name;
+        @Expose
+        @SerializedName("addpurity")
+        private String addpurity;
+        @Expose
+        @SerializedName("remark")
+        private String remark;
 
         public String getAccount_status() {
             return account_status;
@@ -201,6 +213,38 @@ public class GetGoldDepositeHistoryModel {
 
         public void setGold_deposite_id(String gold_deposite_id) {
             this.gold_deposite_id = gold_deposite_id;
+        }
+
+        public String getCurrent_value_amount() {
+            return current_value_amount;
+        }
+
+        public void setCurrent_value_amount(String current_value_amount) {
+            this.current_value_amount = current_value_amount;
+        }
+
+        public String getStatus_name() {
+            return status_name;
+        }
+
+        public void setStatus_name(String status_name) {
+            this.status_name = status_name;
+        }
+
+        public String getAddpurity() {
+            return addpurity;
+        }
+
+        public void setAddpurity(String addpurity) {
+            this.addpurity = addpurity;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
         }
     }
 }

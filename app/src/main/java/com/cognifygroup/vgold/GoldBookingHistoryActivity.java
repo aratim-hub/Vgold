@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import com.cognifygroup.vgold.Adapter.GoldBookingHistoryAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.getGoldBookingHistory.GetGoldBookingHistoryModel;
 import com.cognifygroup.vgold.getGoldBookingHistory.GetGoldBookingHistoryServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
@@ -38,6 +42,8 @@ public class GoldBookingHistoryActivity extends AppCompatActivity implements Ale
     TextView txtGoldDepositeBenfit;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,66 @@ public class GoldBookingHistoryActivity extends AppCompatActivity implements Ale
         getGoldBookingHistoryServiceProvider=new GetGoldBookingHistoryServiceProvider(this);
 
         //AttemptToGetGoldBookingHistory(VGoldApp.onGetUerId());
+
+
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+
+        checkLoginSession();
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(GoldBookingHistoryActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(GoldBookingHistoryActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(GoldBookingHistoryActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(GoldBookingHistoryActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(GoldBookingHistoryActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -137,6 +203,12 @@ public class GoldBookingHistoryActivity extends AppCompatActivity implements Ale
 
     @Override
     public void onDialogOk(int resultCode) {
-
+        switch (resultCode){
+            case 11:
+                Intent LogIntent = new Intent(GoldBookingHistoryActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
+                break;
+        }
     }
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.cognifygroup.vgold.Adapter.GoldTransactionAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.addGold.AddGoldModel;
 import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldModel;
 import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldServiceProvider;
@@ -74,6 +77,7 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
     GetTodayGoldSellRateServiceProvider getTodayGoldSellRateServiceProvider;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
 
     @Override
@@ -95,7 +99,8 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
         getBankServiceProvider = new GetBankServiceProvider(this);
         getAllTransactionGoldServiceProvider = new GetAllTransactionGoldServiceProvider(this);
         getTodayGoldSellRateServiceProvider = new GetTodayGoldSellRateServiceProvider(this);
-
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
         AttemptToGetTodayGoldRate();
         AttemptToGetGoldTransactionHistory(VGoldApp.onGetUerId());
 
@@ -131,6 +136,61 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
         };
 
         edtGoldWeight.addTextChangedListener(textWatcher);
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(SellGoldActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(SellGoldActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(SellGoldActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(SellGoldActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(SellGoldActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -394,6 +454,12 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
                         .putExtra("Weight", goldWeight)
                         .putExtra("AMOUNT", amt)
                 );
+                break;
+
+            case 11:
+                Intent LogIntent = new Intent(SellGoldActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
                 break;
         }
     }

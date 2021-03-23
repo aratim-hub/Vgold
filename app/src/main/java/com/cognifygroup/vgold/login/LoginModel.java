@@ -88,6 +88,12 @@ public class LoginModel {
         @SerializedName("Address")
         private String address;
         @Expose
+        @SerializedName("City")
+        private String City;
+        @Expose
+        @SerializedName("State")
+        private String State;
+        @Expose
         @SerializedName("validity_date")
         private String validity_date;
         @Expose
@@ -212,6 +218,22 @@ public class LoginModel {
 
         public void setUser_ID(String User_ID) {
             this.User_ID = User_ID;
+        }
+
+        public String getCity() {
+            return City;
+        }
+
+        public void setCity(String city) {
+            City = city;
+        }
+
+        public String getState() {
+            return State;
+        }
+
+        public void setState(String state) {
+            State = state;
         }
     }
 }

@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.addGold.AddGoldModel;
 import com.cognifygroup.vgold.goldbookingrequest.GoldBookingRequestModel;
 import com.cognifygroup.vgold.goldbookingrequest.GoldBookingRequestServiceProvider;
@@ -83,10 +85,14 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     String booking_charge;
     final int UPI_PAYMENT = 0;
 
+    String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
+    int GOOGLE_PAY_REQUEST_CODE = 123;
+
     AlertDialogs mAlert;
     GoldBookingRequestServiceProvider goldBookingRequestServiceProvider;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,8 +176,65 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                 }
             });
 
+            loginStatusServiceProvider = new LoginStatusServiceProvider(this);
 
+            checkLoginSession();
         }
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btnPayOnline)
@@ -214,7 +277,21 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             name = "NA";
         }
 
-        Uri uri = Uri.parse("upi://pay").buildUpon()
+        Uri uri =
+                new Uri.Builder()
+                        .scheme("upi")
+                        .authority("pay")
+                        .appendQueryParameter("pa", "9881136531@okbizaxis")
+                        .appendQueryParameter("pn", "VGold Pvt. Ltd.")
+                        .appendQueryParameter("mc", "101222")
+                        .appendQueryParameter("tr", transNo)
+                        .appendQueryParameter("tn", "GB_" + weight + "_" + goldRate + " " + name + "(" + VGoldApp.onGetUerId() + ")")
+                        .appendQueryParameter("am", String.valueOf(amt))
+                        .appendQueryParameter("cu", "INR")
+                        .appendQueryParameter("url", "your-transaction-url")
+                        .build();
+
+        /*Uri uri = Uri.parse("upi://pay").buildUpon()
                 .appendQueryParameter("pa", "9881136531@okbizaxis")
                 .appendQueryParameter("pn", name)
                 .appendQueryParameter("mc", "")//"28-4092-313-2021-00-14")
@@ -225,9 +302,9 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
 //                .appendQueryParameter("am", "10.0")
                 .appendQueryParameter("cu", "INR")
                 //.appendQueryParameter("refUrl", "blueapp")
-                .build();
+                .build();*/
 
-        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+       /* Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
         upiPayIntent.setData(uri);
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
         // check if intent resolves
@@ -236,7 +313,12 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
         } else {
             Toast.makeText(BookingDetailActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
 
-        }
+        }*/
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
+        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
     }
 
     @Override
@@ -379,6 +461,11 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             case 1:
                 Intent intent = new Intent(BookingDetailActivity.this, MainActivity.class);
                 startActivity(intent);
+                break;
+            case 11:
+                Intent LogIntent = new Intent(BookingDetailActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
                 break;
         }
 

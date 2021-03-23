@@ -88,6 +88,10 @@ public class GoldDepositeHistoryAdapter extends RecyclerView.Adapter<GoldDeposit
         holder.txtAmount1.setText(goldBookingHistoryArrayList.get(position).getAmount());
         holder.txtgold_quality.setText(goldBookingHistoryArrayList.get(position).getGold_quality());
         holder.txtTenure1.setText(goldBookingHistoryArrayList.get(position).getTennure());
+        holder.totDepoAmt.setText(goldBookingHistoryArrayList.get(position).getCurrent_value_amount());
+        holder.txtStatus.setText(goldBookingHistoryArrayList.get(position).getStatus_name());
+        holder.txtPurity.setText(goldBookingHistoryArrayList.get(position).getAddpurity());
+        holder.txtRemark.setText(goldBookingHistoryArrayList.get(position).getRemark());
 
         if (goldBookingHistoryArrayList.get(position).getAccount_status().equals("1")) {
             holder.txtAccountStatus.setText("Active");
@@ -168,6 +172,14 @@ public class GoldDepositeHistoryAdapter extends RecyclerView.Adapter<GoldDeposit
         TextView txtTenure1;
         @InjectView(R.id.txtAccountStatus)
         TextView txtAccountStatus;
+        @InjectView(R.id.totDepoAmt)
+        TextView totDepoAmt;
+        @InjectView(R.id.txtStatus)
+        TextView txtStatus;
+        @InjectView(R.id.txtPurity)
+        TextView txtPurity;
+        @InjectView(R.id.txtRemark)
+        TextView txtRemark;
         @InjectView(R.id.imgGoldDepositeHistory)
         ImageView imgGoldDepositeHistory;
 

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.getImageUpload.GetSingleImage0;
 import com.cognifygroup.vgold.getImageUpload.GetSingleImageServiceProvider0;
 import com.cognifygroup.vgold.updateProfile.UpdateUserModel;
@@ -68,6 +71,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     private Bitmap bitmap;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
 
     //String name,email,mobile;
@@ -95,6 +99,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         edtEmail.setText(VGoldApp.onGetEmail());
         edtMobileNumber.setText(VGoldApp.onGetNo());
         edtAddress.setText(VGoldApp.onGetAddress());
+        edtCity.setText(VGoldApp.onGetCity());
+        edtState.setText(VGoldApp.onGetState());
 
         if (VGoldApp.onGetUserImg() != null && !TextUtils.isEmpty(VGoldApp.onGetUserImg()) && !VGoldApp.onGetUserImg().equalsIgnoreCase("null")) {
             Picasso.with(UpdateProfileActivity.this)
@@ -115,7 +121,63 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                     });
         }
 
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
+    }
 
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(UpdateProfileActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(UpdateProfileActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(UpdateProfileActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -267,7 +329,12 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
                     if (status.equals("200")) {
                         progressDialog.hide();
-                        VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(), VGoldApp.onGetLast(), VGoldApp.onGetEmail(), VGoldApp.onGetNo(), VGoldApp.onGetQrCode(), VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(), url);
+                        VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                                VGoldApp.onGetLast(), VGoldApp.onGetEmail(),
+                                VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
+                                VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(),
+                                VGoldApp.onGetCity(),VGoldApp.onGetState(),
+                                url);
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
@@ -309,8 +376,17 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 Intent intent = new Intent(UpdateProfileActivity.this, MainActivity.class);
                 startActivity(intent);
 
-                VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(), VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
-                        VGoldApp.onGetPanNo(), first_name + " " + city + " " + state, "");
+                VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                        VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
+                        VGoldApp.onGetPanNo(),
+                        first_name , city , state,
+                        VGoldApp.onGetUserImg());
+                break;
+
+            case 11:
+                Intent LogIntent = new Intent(UpdateProfileActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
                 break;
         }
     }

@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.cognifygroup.vgold.AddBank.AddBankModel;
 import com.cognifygroup.vgold.AddBank.AddBankServiceProvider;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.getReferCode.ReferModel;
 import com.cognifygroup.vgold.getReferCode.ReferServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
@@ -50,6 +52,7 @@ public class ReferActivity extends AppCompatActivity implements AlertDialogOkLis
     String no;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,64 @@ public class ReferActivity extends AppCompatActivity implements AlertDialogOkLis
 
         edtMobileR.setText(no);
 
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
+
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(ReferActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(ReferActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(ReferActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(ReferActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(ReferActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btnSubmitR)
@@ -245,6 +306,12 @@ public class ReferActivity extends AppCompatActivity implements AlertDialogOkLis
             case 1:
                 Intent intent = new Intent(ReferActivity.this, MainActivity.class);
                 startActivity(intent);
+                break;
+
+            case 11:
+                Intent LogIntent = new Intent(ReferActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
                 break;
         }
     }

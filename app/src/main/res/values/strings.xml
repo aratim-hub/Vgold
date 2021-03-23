@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">VGold</string>
     <string name="btn_ok">OK</string>
+    <string name="add_remark">Remark</string>
+    <string name="add_purity">Purity</string>
     <string name="rs">\u20B9</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

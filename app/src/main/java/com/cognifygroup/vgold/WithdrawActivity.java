@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.cognifygroup.vgold.Adapter.MoneyTransactionAdapter;
 import com.cognifygroup.vgold.AddBank.AddBankModel;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.WithdrawMoney.WithdrawMoneyModel;
 import com.cognifygroup.vgold.WithdrawMoney.WithdrawMoneyServiceProvider;
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
@@ -65,6 +68,7 @@ public class WithdrawActivity extends AppCompatActivity implements AlertDialogOk
     String balance;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +88,67 @@ public class WithdrawActivity extends AppCompatActivity implements AlertDialogOk
         getBankServiceProvider = new GetBankServiceProvider(this);
         withdrawMoneyServiceProvider = new WithdrawMoneyServiceProvider(this);
         getAllTransactionMoneyServiceProvider = new GetAllTransactionMoneyServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
 
         AttemptToGetMoneyTransactionHistory(VGoldApp.onGetUerId());
         AttemptToBank(VGoldApp.onGetUerId());
+
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(WithdrawActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(WithdrawActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(WithdrawActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(WithdrawActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(WithdrawActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -293,6 +355,12 @@ public class WithdrawActivity extends AppCompatActivity implements AlertDialogOk
 
     @Override
     public void onDialogOk(int resultCode) {
-
+        switch (resultCode) {
+            case 11:
+                Intent LogIntent = new Intent(WithdrawActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
+                break;
+        }
     }
 }

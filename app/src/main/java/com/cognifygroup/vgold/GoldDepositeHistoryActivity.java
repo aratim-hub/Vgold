@@ -9,12 +9,15 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 
 import com.cognifygroup.vgold.Adapter.GoldBookingHistoryAdapter;
 import com.cognifygroup.vgold.Adapter.GoldDepositeHistoryAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.GetGoldDepositeHistory.GetGoldDepositeHistoryModel;
 import com.cognifygroup.vgold.GetGoldDepositeHistory.GetGoldDepositeHistoryServiceProvider;
 import com.cognifygroup.vgold.getGoldBookingHistory.GetGoldBookingHistoryModel;
@@ -43,6 +46,7 @@ public class GoldDepositeHistoryActivity extends AppCompatActivity implements Al
     RecyclerView rvGoldDepositeHistory;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +75,68 @@ public class GoldDepositeHistoryActivity extends AppCompatActivity implements Al
         mAlert = AlertDialogs.getInstance();
 
         getGoldDepositeHistoryServiceProvider = new GetGoldDepositeHistoryServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
 
         AttemptToGetGoldDepositeHistory(VGoldApp.onGetUerId());
 
+
+
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(GoldDepositeHistoryActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(GoldDepositeHistoryActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(GoldDepositeHistoryActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(GoldDepositeHistoryActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(GoldDepositeHistoryActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @OnClick(R.id.btnDepositeGold)
@@ -135,5 +198,12 @@ public class GoldDepositeHistoryActivity extends AppCompatActivity implements Al
 
     @Override
     public void onDialogOk(int resultCode) {
+        switch (resultCode) {
+            case 11:
+                Intent LogIntent = new Intent(GoldDepositeHistoryActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
+                break;
+        }
     }
 }

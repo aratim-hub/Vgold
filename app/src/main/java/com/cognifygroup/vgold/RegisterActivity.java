@@ -133,13 +133,13 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
 
     @OnClick(R.id.btnRegister)
     public void onClickOfBtnRegister() {
-        String first = edtfirst.getText().toString();
-        String last = edtlast1.getText().toString();
-        String email = edtmail.getText().toString();
-        String no = edtno.getText().toString();
+        String first = edtfirst.getText().toString().trim();
+        String last = edtlast1.getText().toString().trim();
+        String email = edtmail.getText().toString().trim();
+        String no = edtno.getText().toString().trim();
 //        String pass = edtPass.getText().toString();
-        String pancard = edtPancard.getText().toString();
-        String refercode = edtReferCode.getText().toString();
+        String pancard = edtPancard.getText().toString().trim();
+        String refercode = edtReferCode.getText().toString().trim();
 
         if (first.length() == 0 && last.length() == 0 && email.length() == 0 && no.length() == 0  && pancard.length() == 0) {
             AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "All data required",

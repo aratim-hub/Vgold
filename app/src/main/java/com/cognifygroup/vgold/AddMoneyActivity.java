@@ -1,8 +1,11 @@
 package com.cognifygroup.vgold;
 
 import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.Payumoney.PayUMoneyActivity;
 import com.cognifygroup.vgold.addGold.AddGoldModel;
 import com.cognifygroup.vgold.addMoney.AddMoneyModel;
@@ -59,6 +64,7 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
     AddMoneyServiceProvider addMoneyServiceProvider;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
 
     @Override
@@ -69,13 +75,14 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-          progressDialog = new TransparentProgressDialog(AddMoneyActivity.this);
+        progressDialog = new TransparentProgressDialog(AddMoneyActivity.this);
         progressDialog.setCancelable(false);
         setFinishOnTouchOutside(false);
 
         mAlert = AlertDialogs.getInstance();
 
-        addMoneyServiceProvider=new AddMoneyServiceProvider(this);
+        addMoneyServiceProvider = new AddMoneyServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
 
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -87,21 +94,21 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
         spinner_payment_option1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String paymentoption= (String) parent.getItemAtPosition(pos);
-                if (paymentoption.equals("cheque")){
-                    payment_option="Cheque";
+                String paymentoption = (String) parent.getItemAtPosition(pos);
+                if (paymentoption.equals("cheque")) {
+                    payment_option = "Cheque";
                     llCheque.setVisibility(View.VISIBLE);
                     llRTGS.setVisibility(View.GONE);
-                }else if(paymentoption.equals("NEFT/RTGS/Online Transfer")){
-                    payment_option="Online";
+                } else if (paymentoption.equals("NEFT/RTGS/Online Transfer")) {
+                    payment_option = "Online";
                     llRTGS.setVisibility(View.VISIBLE);
                     llCheque.setVisibility(View.GONE);
-                }else if(paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")){
-                    payment_option="Payu";
+                } else if (paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
+                    payment_option = "Payu";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
-                }else {
-                    payment_option="";
+                } else {
+                    payment_option = "";
                 }
             }
 
@@ -110,28 +117,83 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
 
             }
         });
-
+        checkLoginSession();
 
     }
 
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(AddMoneyActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(AddMoneyActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(AddMoneyActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(AddMoneyActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(AddMoneyActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
     @OnClick(R.id.btnAddMoney)
-    public void onClickOfBtnAddMoney(){
+    public void onClickOfBtnAddMoney() {
 
-        if (payment_option.equals("Cheque")){
+        if (payment_option.equals("Cheque")) {
 
-            AttemptToAddMoney(VGoldApp.onGetUerId(),""+edtAddMoney.getText().toString(),payment_option,edtBankDetail1.getText().toString(),"",edtChequeNo1.getText().toString());
+            AttemptToAddMoney(VGoldApp.onGetUerId(), "" + edtAddMoney.getText().toString(), payment_option, edtBankDetail1.getText().toString(), "", edtChequeNo1.getText().toString());
 
 
-        }else if (payment_option.equals("Online")){
+        } else if (payment_option.equals("Online")) {
 
-            AttemptToAddMoney(VGoldApp.onGetUerId(),""+edtAddMoney.getText().toString(),payment_option,edtRtgsBankDetail1.getText().toString(),edtTxnId1.getText().toString(),"");
+            AttemptToAddMoney(VGoldApp.onGetUerId(), "" + edtAddMoney.getText().toString(), payment_option, edtRtgsBankDetail1.getText().toString(), edtTxnId1.getText().toString(), "");
 
-        }else if (payment_option.equals("Payu")){
-            Intent intent=new Intent(AddMoneyActivity.this, PayUMoneyActivity.class);
-            intent.putExtra("AMOUNT",edtAddMoney.getText().toString())
-            .putExtra("whichActivity","money");
+        } else if (payment_option.equals("Payu")) {
+            Intent intent = new Intent(AddMoneyActivity.this, PayUMoneyActivity.class);
+            intent.putExtra("AMOUNT", edtAddMoney.getText().toString())
+                    .putExtra("whichActivity", "money");
             startActivity(intent);
-        }else {
+        } else {
 
             AlertDialogs.alertDialogOk(AddMoneyActivity.this, "Alert", "Please select payment option",
                     getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
@@ -151,7 +213,7 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
 
     private void AttemptToAddMoney(String user_id, String amount, String payment_option, String bank_details, String tr_id, String cheque_no) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
-        addMoneyServiceProvider.getAddBankDetails(user_id,amount,payment_option,bank_details,tr_id,cheque_no, new APICallback() {
+        addMoneyServiceProvider.getAddBankDetails(user_id, amount, payment_option, bank_details, tr_id, cheque_no, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
@@ -160,9 +222,9 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
 
                     if (status.equals("200")) {
 
-                      //  mAlert.onShowToastNotification(AddMoneyActivity.this, message);
-                        Intent intent=new Intent(AddMoneyActivity.this,SuccessActivity.class);
-                        intent.putExtra("message",message);
+                        //  mAlert.onShowToastNotification(AddMoneyActivity.this, message);
+                        Intent intent = new Intent(AddMoneyActivity.this, SuccessActivity.class);
+                        intent.putExtra("message", message);
                         startActivity(intent);
                         finish();
                     } else {
@@ -200,6 +262,12 @@ public class AddMoneyActivity extends AppCompatActivity implements AlertDialogOk
 
     @Override
     public void onDialogOk(int resultCode) {
-
+        switch (resultCode) {
+            case 11:
+                Intent LogIntent = new Intent(AddMoneyActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
+                break;
+        }
     }
 }

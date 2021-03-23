@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.cognifygroup.vgold.Adapter.VendorOfferAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.deleteVenderAdv.VendorAdvDeleteServiceProvider;
 import com.cognifygroup.vgold.deleteVenderAdv.VendorAdvModel;
 import com.cognifygroup.vgold.utils.APICallback;
@@ -68,6 +70,7 @@ public class OfferLetterActivity extends AppCompatActivity implements AlertDialo
     private String flagVal = null;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +155,65 @@ public class OfferLetterActivity extends AppCompatActivity implements AlertDialo
                     flag = false;
                 }
 
+            }
+        });
+
+
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(OfferLetterActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(OfferLetterActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(OfferLetterActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(OfferLetterActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(OfferLetterActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
             }
         });
     }
@@ -420,6 +482,12 @@ public class OfferLetterActivity extends AppCompatActivity implements AlertDialo
             case 1:
                 Intent intent = new Intent(OfferLetterActivity.this, OurVendersActivity.class);
                 startActivity(intent);
+                finish();
+                break;
+
+            case 11:
+                Intent LogIntent = new Intent(OfferLetterActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
                 finish();
                 break;
         }

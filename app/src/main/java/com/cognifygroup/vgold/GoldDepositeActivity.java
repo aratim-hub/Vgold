@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,8 @@ import android.widget.TextView;
 import com.cognifygroup.vgold.AddBank.AddBankModel;
 import com.cognifygroup.vgold.AddBank.AddBankServiceProvider;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
+import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.getBankDetails.GetBankModel;
 import com.cognifygroup.vgold.getMaturityWeight.MaturityWeightModel;
 import com.cognifygroup.vgold.getMaturityWeight.MaturityWeightServiceProvider;
@@ -56,6 +59,10 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
     Spinner spinner_willingToDeposite;
     @InjectView(R.id.btnSendDepositeRequest)
     Button btnSendDepositeRequest;
+    @InjectView(R.id.edtRemark)
+    EditText edtRemark;
+    @InjectView(R.id.edtPurity)
+    EditText edtPurity;
 
     String tennure, bankGurantee, vendor_id, firmName;
     private String msg;
@@ -69,6 +76,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     public Timer timer = new Timer();
     public final long DELAY = 1000; // milliseconds
+    private LoginStatusServiceProvider loginStatusServiceProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +172,64 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
             }
         });
+
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        checkLoginSession();
+    }
+
+    private void checkLoginSession() {
+        loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((LoginSessionModel) serviceResponse).getStatus();
+                    String message = ((LoginSessionModel) serviceResponse).getMessage();
+                    Boolean data = ((LoginSessionModel) serviceResponse).getData();
+
+                    Log.i("TAG", "onSuccess: " + status);
+                    Log.i("TAG", "onSuccess: " + message);
+
+                    if (status.equals("200")) {
+
+                        if (!data) {
+                            AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message + ",  Please relogin to app",
+                                    getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(AddGoldActivity.this, message);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(GoldDepositeActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -176,7 +242,11 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
 
     @OnClick(R.id.btnSendDepositeRequest)
     public void onClickOfBtnSendRequest() {
-        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(), edtgoldWeight.getText().toString(), tennure, txtMaturityWeight.getText().toString(), vendor_id, "yes");
+        AttemptToGetDepositeRequest(VGoldApp.onGetUerId(),
+                edtgoldWeight.getText().toString(), tennure,
+                txtMaturityWeight.getText().toString(), vendor_id,
+                edtPurity.getText().toString().trim(), edtRemark.getText().toString().trim(),
+                "yes");
     }
 
 
@@ -274,7 +344,7 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
     }
 
     private void AttemptToGetMaturityWeight(String gold_weight, String tennure, String guarantee) {
-      //  progressDialog.show();
+        //  progressDialog.show();
         maturityWeightServiceProvider.getMaturityWeight(gold_weight, tennure, guarantee, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
@@ -317,65 +387,69 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                     e.printStackTrace();
                     PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
                 } finally {
-                  //  progressDialog.hide();
+                    //  progressDialog.hide();
                 }
             }
         });
     }
 
-    private void AttemptToGetDepositeRequest(String user_id, String gw, String tennure, String cmw, String vendor_id, String guarantee) {
+    private void AttemptToGetDepositeRequest(String user_id, String gw, String tennure,
+                                             String cmw, String vendor_id,
+                                             String add_purity, String remark,
+                                             String guarantee) {
         progressDialog.show();
-        depositeRequestServiceProvider.getDepositeRequest(user_id, gw, tennure, cmw, vendor_id, guarantee, new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    String status = ((DepositeRequestModel) serviceResponse).getStatus();
-                    String message = ((DepositeRequestModel) serviceResponse).getMessage();
+        depositeRequestServiceProvider.getDepositeRequest(user_id, gw, tennure, cmw, vendor_id,
+                add_purity, remark, guarantee, new APICallback() {
+                    @Override
+                    public <T> void onSuccess(T serviceResponse) {
+                        try {
+                            String status = ((DepositeRequestModel) serviceResponse).getStatus();
+                            String message = ((DepositeRequestModel) serviceResponse).getMessage();
 
-                    msg = message;
+                            msg = message;
 
-                    if (status.equals("200")) {
+                            if (status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
                        /* mAlert.onShowToastNotification(GoldDepositeActivity.this, message);
                         Intent intent=new Intent(GoldDepositeActivity.this,MainActivity.class);
                         startActivity(intent);*/
-                    } else {
+                            } else {
 
-                        AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 2, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(GoldDepositeActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 2, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(GoldDepositeActivity.this, message);
                         /*Intent intent=new Intent(GoldDepositeActivity.this,SuccessActivity.class);
                         intent.putExtra("message",message);
                         startActivity(intent);*/
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.hide();
-                }
-            }
 
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
+                    @Override
+                    public <T> void onFailure(T apiErrorModel, T extras) {
 
-                try {
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(GoldDepositeActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
+                        try {
+                            if (apiErrorModel != null) {
+                                PrintUtil.showToast(GoldDepositeActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                            } else {
+                                PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(GoldDepositeActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
+                });
     }
 
     @Override
@@ -389,6 +463,11 @@ public class GoldDepositeActivity extends AppCompatActivity implements AlertDial
                 Intent failIntent = new Intent(GoldDepositeActivity.this, SuccessActivity.class);
                 failIntent.putExtra("message", msg);
                 startActivity(failIntent);
+                break;
+            case 11:
+                Intent LogIntent = new Intent(GoldDepositeActivity.this, LoginActivity.class);
+                startActivity(LogIntent);
+                finish();
                 break;
         }
     }
