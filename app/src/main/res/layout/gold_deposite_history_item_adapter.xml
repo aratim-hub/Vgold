@@ -159,6 +159,29 @@
                         android:layout_weight="2"/>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:text="Gold Deposit Status "
+                        android:layout_marginLeft="@dimen/height_10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/txtStatus"
+                        android:text=""
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"/>
+
+                </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -247,29 +270,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
 
-                    <!--                    (after tennure benfits)"-->
-
-                    <TextView
-                        android:text="Status "
-                        android:layout_marginLeft="@dimen/height_10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/txtStatus"
-                        android:text=""
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -280,7 +281,7 @@
                     <!--                    (after tennure benfits)"-->
 
                     <TextView
-                        android:text="Purity "
+                        android:text="Gold Purity "
                         android:layout_marginLeft="@dimen/height_10"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
