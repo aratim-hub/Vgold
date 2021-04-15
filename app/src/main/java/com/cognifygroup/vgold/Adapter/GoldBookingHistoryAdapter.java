@@ -25,11 +25,14 @@ import com.cognifygroup.vgold.GoldBookingHistoryActivity;
 import com.cognifygroup.vgold.GoldTransactionHistoryActivity;
 import com.cognifygroup.vgold.R;
 import com.cognifygroup.vgold.getGoldBookingHistory.GetGoldBookingHistoryModel;
+import com.cognifygroup.vgold.utils.BaseActivity;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import butterknife.ButterKnife;
@@ -55,6 +58,9 @@ public class GoldBookingHistoryAdapter extends RecyclerView.Adapter<GoldBookingH
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+
+        GetGoldBookingHistoryModel.Data dataList = goldBookingHistoryArrayList.get(position);
+
         /*GetGoldBookingHistoryModel.Data addSaleArrayList = goldBookingHistoryArrayList.get(position);
 
 
@@ -79,9 +85,63 @@ public class GoldBookingHistoryAdapter extends RecyclerView.Adapter<GoldBookingH
         spf = new SimpleDateFormat("dd MMM yyyy");
         String newDateString = spf.format(newDate);*/
 
+
+//        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yy");
+//            Date date = sdf.parse(goldBookingHistoryArrayList.get(position).getAdded_date());
+//            if (date != null && goldBookingHistoryArrayList.get(position).getAdded_date().equals(sdf.format(date))) {
+//                BaseActivity.convertDateTimeFormat(goldBookingHistoryArrayList.get(position).getAdded_date(), "dd-MMM-yy", "yyyy-MM-dd");
+//            }
+//        } catch (ParseException ex) {
+//            ex.printStackTrace();
+//        }
+
+
+//        try {
+//
+//            String addedDate = goldBookingHistoryArrayList.get(position).getAdded_date();
+//
+//            SimpleDateFormat sdf = new SimpleDateFormat("d-MMM-yy");
+//            Date convertedDate = sdf.parse(addedDate);
+//            if (convertedDate != null && addedDate.equals(sdf.format(convertedDate))) {
+//                holder.txtDate1.setText(BaseActivity.convertDateTimeFormat(addedDate, "dd-MMM-yy", "yyyy-MM-dd"));
+//            } else {
+//                holder.txtDate1.setText(addedDate);
+//            }
+//        } catch (ParseException ex) {
+//            ex.printStackTrace();
+//        }
+
+
+        /*Collections.sort(goldBookingHistoryArrayList, new Comparator<GetGoldBookingHistoryModel.Data>() {
+            public int compare(GetGoldBookingHistoryModel.Data o1, GetGoldBookingHistoryModel.Data o2) {
+
+                String o1Date = o1.getAdded_date();
+                String o2Date = o2.getAdded_date();
+
+                Date convertedO1 = null;
+                Date convertedO2 = null;
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("d-MMM-yy");
+                    convertedO1 = sdf.parse(o1Date);
+                    convertedO2 = sdf.parse(o2Date);
+
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (convertedO1 == null || convertedO2 == null)
+                    return 0;
+
+                return (convertedO1.getTime() > convertedO2.getTime() ? -1 : 1);
+            }
+        });*/
+
+
         double gold = Double.parseDouble(goldBookingHistoryArrayList.get(position).getGold());
         DecimalFormat numberFormat = new DecimalFormat("#.000");
         gold = Double.parseDouble(numberFormat.format(gold));
+
 
         holder.txtDate1.setText(goldBookingHistoryArrayList.get(position).getAdded_date());
         holder.txtGoldBookingId1.setText(goldBookingHistoryArrayList.get(position).getGold_booking_id());

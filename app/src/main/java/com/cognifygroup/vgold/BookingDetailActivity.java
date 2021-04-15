@@ -163,8 +163,8 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                         payment_option = "Wallet";
                         llCheque.setVisibility(View.GONE);
                         llRTGS.setVisibility(View.GONE);
-                    } else if (paymentoption.equals("GPay")) {
-                        payment_option = "GPay";
+                    } else if (paymentoption.equals("UPI Payment")) {
+                        payment_option = "UPI Payment";
                         llCheque.setVisibility(View.GONE);
                         llRTGS.setVisibility(View.GONE);
                     }
@@ -251,7 +251,7 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
 
             AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "");
 
-        } else if (payment_option.equals("GPay")) {
+        } else if (payment_option.equals("UPI Payment")) {
             integrateGpay(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()),
                     gold_rate,quantity);
         }
@@ -304,7 +304,7 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                 //.appendQueryParameter("refUrl", "blueapp")
                 .build();*/
 
-       /* Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
         upiPayIntent.setData(uri);
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
         // check if intent resolves
@@ -313,12 +313,12 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
         } else {
             Toast.makeText(BookingDetailActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
 
-        }*/
+        }
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
-        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setData(uri);
+//        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
+//        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
     }
 
     @Override

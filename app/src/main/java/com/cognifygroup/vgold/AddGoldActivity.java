@@ -170,8 +170,8 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
                     payment_option = "Payumoney";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
-                } else if (paymentoption.equals("GPay")) {
-                    payment_option = "GPay";
+                } else if (paymentoption.equals("UPI Payment")) {
+                    payment_option = "UPI Payment";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
                 }
@@ -277,7 +277,7 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
                 AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, payment_option, "", "", "");
 
-            } else if (payment_option.equals("GPay")) {
+            } else if (payment_option.equals("UPI Payment")) {
                 integrateGpay(amount, goldWeight);
 
             } else if (payment_option.equals("Payumoney")) {
@@ -344,22 +344,22 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
                 //.appendQueryParameter("refUrl", "blueapp")
                 .build();*/
 
-//        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-//        upiPayIntent.setData(uri);
-//        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-//        // check if intent resolves
-//        if (null != chooser.resolveActivity(getPackageManager())) {
-//            startActivityForResult(chooser, UPI_PAYMENT);
-//        } else {
-//            Toast.makeText(AddGoldActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
-//
-//        }
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(AddGoldActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
+
+        }
 
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
-        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setData(uri);
+//        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
+//        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
     }
 
     @Override

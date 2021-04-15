@@ -44,7 +44,7 @@
         <item>cheque</item>
         <item>NEFT/RTGS/Online Transfer</item>
         <item>Wallet</item>
-        <item>GPay</item>
+        <item>UPI Payment</item>
         <!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
     </string-array>
 

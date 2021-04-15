@@ -201,6 +201,8 @@ public class GoldBookingHistoryActivity extends AppCompatActivity implements Ale
         });
     }
 
+
+
     @Override
     public void onDialogOk(int resultCode) {
         switch (resultCode){

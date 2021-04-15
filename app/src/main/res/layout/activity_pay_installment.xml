@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Amount"
+            android:text="Minimum Amount"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/height_10"
             android:layout_marginLeft="@dimen/height_10"
@@ -51,7 +51,27 @@
             android:backgroundTint="@color/colorblack"
             android:hint=""/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Other Amount"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
+        <EditText
+            android:id="@+id/txtOtherAmount"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_10"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack"
+            android:hint=""/>
 
     </LinearLayout>
 
@@ -144,5 +164,16 @@
         android:background="@drawable/border_for_button"
         android:text="Pay Installment"
         android:textColor="@color/colorwhite"/>
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/vgold_bank"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnProceedToPayment1"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

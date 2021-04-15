@@ -1,8 +1,10 @@
 package com.cognifygroup.vgold.getGoldBookingHistory;
 
+import com.cognifygroup.vgold.utils.BaseActivity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,8 @@ public class GetGoldBookingHistoryModel {
         this.status = status;
     }
 
-    public static class Data {
+//    public static class Data implements Comparable<Data> {
+    public static class Data  {
         @Expose
         @SerializedName("account_status")
         private String account_status;
@@ -87,6 +90,15 @@ public class GetGoldBookingHistoryModel {
 
         @SerializedName("totalPaidInstallment")
         private String paidInstallmentCount;
+
+
+//        @Override
+//        public int compareTo(Data o) {
+//
+//            if (getAdded_date() == null || o.getAdded_date() == null)
+//                return 0;
+//            return getAdded_date().compareTo(o.getAdded_date());
+//        }
 
         public String getAccount_status() {
             return account_status;

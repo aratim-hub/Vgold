@@ -121,5 +121,16 @@ public class BaseActivity extends AppCompatActivity {
         return formatter.format(date);
     }
 
+    public static String convertDateTimeFormat(String date, String formatFrom, String formatTo) {
+        SimpleDateFormat sdf = new SimpleDateFormat(formatFrom);
+        Date convertedDate = null;
+        try {
+            convertedDate = sdf.parse(date);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat(formatTo);
+        return formatter.format(convertedDate);
+    }
 
 }

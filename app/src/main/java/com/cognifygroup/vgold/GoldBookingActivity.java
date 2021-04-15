@@ -240,7 +240,8 @@ public class GoldBookingActivity extends AppCompatActivity implements AlertDialo
     }
 
 
-    private void AttemptToGetGoldBooking(final String quantity, final String tennure, final String pc) {
+    private void AttemptToGetGoldBooking(final String quantity, final String tennure,
+                                         final String pc) {
         progressDialog.show();
         goldBookingServiceProvider.getAddBankDetails(quantity, tennure, pc, new APICallback() {
             @Override

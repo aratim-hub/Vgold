@@ -44,7 +44,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-//        sharePreferenceUtils = new SharePreferenceUtils(getBaseContext());
 
         if (remoteMessage.getData() != null) {
             if (remoteMessage.getData().size() > 0) {

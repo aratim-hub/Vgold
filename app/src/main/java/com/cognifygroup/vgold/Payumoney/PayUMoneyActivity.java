@@ -438,7 +438,8 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
 
     private void AttemptToAddGold(String user_id, String gold, String amount, String payment_option, String bank_details, String tr_id, String cheque_no) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
-        addGoldServiceProvider.getAddBankDetails(user_id, gold, amount, payment_option, bank_details, tr_id, cheque_no, new APICallback() {
+        addGoldServiceProvider.getAddBankDetails(user_id, gold, amount, payment_option,
+                bank_details, tr_id, cheque_no, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {

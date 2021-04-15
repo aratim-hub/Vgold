@@ -75,6 +75,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     @InjectView(R.id.edtTxnId)
     EditText edtTxnId;
 
+    @InjectView(R.id.txtOtherAmount)
+    EditText txtOtherAmount;
+
 
     final int UPI_PAYMENT = 0;
     String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
@@ -143,8 +146,8 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     payment_option = "Credit/Debit/Net Banking(Payment Gateway)";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
-                } else if (paymentoption.equals("GPay")) {
-                    payment_option = "GPay";
+                } else if (paymentoption.equals("UPI Payment")) {
+                    payment_option = "UPI Payment";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
                 }
@@ -242,8 +245,8 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", "", "");
 
-            } else if (payment_option.equals("GPay")) {
-                integrateGpay(bookingId,txtAmount.getText().toString());
+            } else if (payment_option.equals("UPI Payment")) {
+                integrateGpay(bookingId, txtAmount.getText().toString());
 
             } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                 startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
@@ -266,7 +269,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     }
 
-    private void integrateGpay(String bookingId,String amount) {
+    private void integrateGpay(String bookingId, String amount) {
         String no = "00000";
         if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
             no = VGoldApp.onGetNo().substring(0, 5);
@@ -312,21 +315,21 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 //.appendQueryParameter("refUrl", "blueapp")
                 .build();*/
 
-//        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-//        upiPayIntent.setData(uri);
-//        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-//        // check if intent resolves
-//        if (null != chooser.resolveActivity(getPackageManager())) {
-//            startActivityForResult(chooser, UPI_PAYMENT);
-//        } else {
-//            Toast.makeText(PayInstallmentActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
-//
-//        }
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
+        upiPayIntent.setData(uri);
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
+        // check if intent resolves
+        if (null != chooser.resolveActivity(getPackageManager())) {
+            startActivityForResult(chooser, UPI_PAYMENT);
+        } else {
+            Toast.makeText(PayInstallmentActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
-        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
+        }
+
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setData(uri);
+//        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
+//        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
     }
 
     @Override
@@ -551,8 +554,8 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 //                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayInstallmentActivity.this, message);
-                        Intent intent=new Intent(PayInstallmentActivity.this,SuccessActivity.class);
-                        intent.putExtra("message",message);
+                        Intent intent = new Intent(PayInstallmentActivity.this, SuccessActivity.class);
+                        intent.putExtra("message", message);
                         startActivity(intent);
                     } else {
 
