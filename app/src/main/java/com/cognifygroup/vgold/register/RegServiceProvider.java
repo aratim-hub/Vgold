@@ -1,6 +1,7 @@
 package com.cognifygroup.vgold.register;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.APIServiceFactory;
@@ -22,9 +23,10 @@ public class RegServiceProvider {
         regService = APIServiceFactory.createService(RegService.class, context);
     }
 
-    public void getReg(String first, String last, String email, String no, String pancard,String refer_code,final APICallback apiCallback) {
+    public void getReg(String first, String last, String email, String no, String pancard, String refer_code,
+                       String aadhar_no, String aadharF, String aadharB, String panPic, final APICallback apiCallback) {
         Call<RegModel> call = null;
-        call = regService.getReg(first,last,email,no,pancard,refer_code);
+        call = regService.getReg(first, last, email, no, pancard, refer_code, panPic, aadharF, aadharB, aadhar_no);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<RegModel>() {

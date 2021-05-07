@@ -7,14 +7,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,6 +38,8 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,14 +66,31 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
     MaterialEditText edtmail;
     @InjectView(R.id.edtno)
     MaterialEditText edtno;
-   /* @InjectView(R.id.edtPass)
-    MaterialEditText edtPass;*/
+    /* @InjectView(R.id.edtPass)
+     MaterialEditText edtPass;*/
     @InjectView(R.id.edtPancard)
     MaterialEditText edtPancard;
     @InjectView(R.id.edtReferCode)
     MaterialEditText edtReferCode;
+
+    @InjectView(R.id.edtAadarCard)
+    MaterialEditText edtAadarCard;
+
+    @InjectView(R.id.iv_aadharFront)
+    AppCompatImageView iv_aadharFront;
+
+    @InjectView(R.id.iv_aadharBack)
+    AppCompatImageView iv_aadharBack;
+
+    @InjectView(R.id.iv_pancard)
+    AppCompatImageView iv_pancard;
+
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
+    private static final int IMG_AADHAR_FRONT = 111, IMG_AADHAR_BACK = 222, IMG_PAN = 333;
+    private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
+    public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +124,36 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         regServiceProvider = new RegServiceProvider(this);
 
         checkDeepLink();
+
+        iv_aadharFront.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_AADHAR_FRONT);
+            }
+        });
+
+        iv_aadharBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_AADHAR_BACK);
+            }
+        });
+
+        iv_pancard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_PAN);
+            }
+        });
     }
 
     private void checkDeepLink() {
@@ -141,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         String pancard = edtPancard.getText().toString().trim();
         String refercode = edtReferCode.getText().toString().trim();
 
-        if (first.length() == 0 && last.length() == 0 && email.length() == 0 && no.length() == 0  && pancard.length() == 0) {
+        if (first.length() == 0 && last.length() == 0 && email.length() == 0 && no.length() == 0 && pancard.length() == 0) {
             AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "All data required",
                     getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //            mAlert.onShowToastNotification(RegisterActivity.this, "All data required");
@@ -157,60 +211,75 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             edtPass.setError("Enter confirm password");
         }*/ else if (edtPancard.length() == 0) {
             edtPancard.setError("Enter vaild Pancard Number");
+        } else if (ImageAadharFont.length() == 0) {
+            Toast.makeText(this, "Please add aadhar front pic", Toast.LENGTH_SHORT).show();
+        } else if (ImageAadharBack.length() == 0) {
+            Toast.makeText(this, "Please add aadhar back pic", Toast.LENGTH_SHORT).show();
+        } else if (ImagePanCard.length() == 0) {
+            Toast.makeText(this, "Please add pan card pic", Toast.LENGTH_SHORT).show();
+        } else if (edtAadarCard.getText().toString().length() < 12) {
+            Toast.makeText(this, "Please inter valide aadhar no", Toast.LENGTH_SHORT).show();
         } else {
 //            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
-            AttemptToRegisterApi(first, last, email, no,  pancard, refercode);
+            AttemptToRegisterApi(first, last, email, no, pancard, refercode,
+                    edtAadarCard.getText().toString(),
+                    ImageAadharFont,
+                    ImageAadharBack,
+                    ImagePanCard);
         }
     }
 
-    private void AttemptToRegisterApi(String first, String last, String email, String no, String pancard, String refer_code) {
+    private void AttemptToRegisterApi(String first, String last, String email, String no, String pancard, String refer_code, String aadhar_no, String aadharF, String aadharB, String panCardPic) {
         progressDialog.show();
-        regServiceProvider.getReg(first, last, email, no, pancard, refer_code, new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    String status = ((RegModel) serviceResponse).getStatus();
-                    String message = ((RegModel) serviceResponse).getMessage();
+        regServiceProvider.getReg(first, last, email, no, pancard, refer_code,
+                aadhar_no, aadharF, aadharB, panCardPic, new APICallback() {
+                    @Override
+                    public <T> void onSuccess(T serviceResponse) {
+                        try {
+                            String status = ((RegModel) serviceResponse).getStatus();
+                            String message = ((RegModel) serviceResponse).getMessage();
 
-                    if (status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                            if (status.equals("200")) {
+
+                                AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(RegisterActivity.this, "Registration Successfully done");
 //                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
 //                        startActivity(intent);
-                    } else {
-                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                            } else {
+                                AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(RegisterActivity.this, message);
 //                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
 //                        startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.hide();
-                }
-            }
 
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
-
-                try {
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(RegisterActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
+                    @Override
+                    public <T> void onFailure(T apiErrorModel, T extras) {
+                        try {
+                            if (apiErrorModel != null) {
+                                Log.i("TAGTAG", "onFailure: " + ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                                PrintUtil.showToast(RegisterActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                            } else {
+                                PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Log.i("TAGTAG", "onFailure: " + e.getMessage());
+                            PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
+                });
     }
 
     @Override
@@ -222,4 +291,50 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                 break;
         }
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMG_AADHAR_FRONT && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_aadharFront.setImageBitmap(bitmapAadharFront);
+                ImageAadharFont = imagetostring(bitmapAadharFront);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (requestCode == IMG_AADHAR_BACK && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_aadharBack.setImageBitmap(bitmapAadharBack);
+                ImageAadharBack = imagetostring(bitmapAadharBack);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (requestCode == IMG_PAN && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_pancard.setImageBitmap(bitmapPanCard);
+                ImagePanCard = imagetostring(bitmapPanCard);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private String imagetostring(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] imgbyte = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
+    }
+
 }
