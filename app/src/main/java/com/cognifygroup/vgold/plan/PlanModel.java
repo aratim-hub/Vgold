@@ -65,6 +65,9 @@ public class PlanModel {
         @Expose
         @SerializedName("remaing_amount")
         private String remain_amt;
+        @Expose
+        @SerializedName("pdf_url")
+        private String pdf_url;
 
 
         public String getQuantity() {
@@ -113,6 +116,14 @@ public class PlanModel {
 
         public void setRemain_amt(String remain_amt) {
             this.remain_amt = remain_amt;
+        }
+
+        public String getPdf_url() {
+            return pdf_url;
+        }
+
+        public void setPdf_url(String pdf_url) {
+            this.pdf_url = pdf_url;
         }
     }
 }

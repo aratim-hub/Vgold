@@ -21,5 +21,6 @@ public interface PayInstallmentService {
                                @Field("payment_option") String payment_option,
                                @Field("bank_details") String bank_details,
                                @Field("tr_id") String tr_id,
+                               @Field("amount_other") String amount_other,
                                @Field("cheque_no") String cheque_no);
 }

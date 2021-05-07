@@ -44,6 +44,8 @@ import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 import com.cognifygroup.vgold.version.VersionModel;
 import com.cognifygroup.vgold.version.VersionServiceProvider;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -113,11 +115,6 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
     private TransparentProgressDialog progressDialog;
     private String mInvitationUrl;
     private AlertDialogOkListener alertDialogOkListener = this;
-    final int UPI_PAYMENT = 0;
-
-
-    String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
-    int GOOGLE_PAY_REQUEST_CODE = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,173 +124,7 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
-
-        btnGpay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                integrateGpay(10.00, "10g");
-            }
-        });
     }
-
-
-    private void integrateGpay(double amount, String weight) {
-        String no = "00000";
-        if (VGoldApp.onGetNo() != null && !TextUtils.isEmpty(VGoldApp.onGetNo())) {
-            no = VGoldApp.onGetNo().substring(0, 5);
-        }
-        String name;
-        if (VGoldApp.onGetFirst() != null && !TextUtils.isEmpty(VGoldApp.onGetFirst())) {
-            if (VGoldApp.onGetLast() != null && !TextUtils.isEmpty(VGoldApp.onGetLast())) {
-                name = VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast();
-            } else {
-                name = VGoldApp.onGetFirst();
-            }
-        } else {
-            name = "NA";
-        }
-
-
-        String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
-        String url = "upi://pay?pa=9881136531@okbizaxis&pn=VGoldPvt.Ltd.&tn=transNo&cu=INR";
-
-        Uri uri =
-                new Uri.Builder()
-                        .scheme("upi")
-                        .authority("pay")
-                        .appendQueryParameter("pa", "9881136531@okbizaxis")
-                        .appendQueryParameter("pn", "VGold Pvt. Ltd.")
-//                        .appendQueryParameter("mc", "BCR2DN6TTOF2P5CD")
-                        .appendQueryParameter("mc", "1234")
-//                        .appendQueryParameter("tr", transNo)
-                        .appendQueryParameter("tr", "98765367")
-                        .appendQueryParameter("tn", "EMI pay for test")
-                        .appendQueryParameter("am", "5.00")
-                        .appendQueryParameter("cu", "INR")
-//                        .appendQueryParameter("url", "https://vgold.co.in")
-//                        .appendQueryParameter("url", transNo)
-                        .build();
-
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(uri);
-        intent.setPackage(GOOGLE_PAY_PACKAGE_NAME);
-        startActivityForResult(intent, GOOGLE_PAY_REQUEST_CODE);
-
-
-//        Uri uri = Uri.parse("upi://pay").buildUpon()
-//                .appendQueryParameter("pa", "9881136531@okbizaxis")
-//                .appendQueryParameter("pn", "VGold Pvt. Ltd.")
-////                .appendQueryParameter("mc", "101222")
-////                .appendQueryParameter("tid", "02125412")
-//                .appendQueryParameter("tr", transNo)
-////                .appendQueryParameter("tn", "GP_ " + weight + "_" + todayGoldRateWithGst + " " + name + "(" + VGoldApp.onGetUerId() + ")")
-//                .appendQueryParameter("tn", "1234567895")
-//                .appendQueryParameter("am", String.valueOf(amount))
-//                .appendQueryParameter("cu", "INR")
-//                .appendQueryParameter("refUrl", "blueapp")
-//                .build();
-
-//        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
-//        upiPayIntent.setData(uri);
-//        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");
-//        // check if intent resolves
-//        if (null != chooser.resolveActivity(getPackageManager())) {
-//            startActivityForResult(chooser, UPI_PAYMENT);
-//        } else {
-//            Toast.makeText(LoginActivity.this, "No UPI app found, please install one to continue", Toast.LENGTH_SHORT).show();
-//
-//        }
-
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        Log.e("main ", "response " + data);
-        switch (requestCode) {
-            case UPI_PAYMENT:
-                if ((RESULT_OK == resultCode) || (resultCode == 11)) {
-                    if (data != null) {
-                        String trxt = data.getStringExtra("response");
-                        Log.e("UPI", "onActivityResult: " + trxt);
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add(trxt);
-                        upiPaymentDataOperation(dataList);
-                    } else {
-                        Log.e("UPI", "onActivityResult: " + "Return data is null");
-                        ArrayList<String> dataList = new ArrayList<>();
-                        dataList.add("nothing");
-                        upiPaymentDataOperation(dataList);
-                    }
-                } else {
-                    //when user simply back without payment
-                    Log.e("UPI", "onActivityResult: " + "Return data is null");
-                    ArrayList<String> dataList = new ArrayList<>();
-                    dataList.add("nothing");
-                    upiPaymentDataOperation(dataList);
-                }
-                break;
-        }
-    }
-
-    private void upiPaymentDataOperation(ArrayList<String> data) {
-        if (isConnectionAvailable(LoginActivity.this)) {
-            String str = data.get(0);
-            Log.e("UPIPAY", "upiPaymentDataOperation: " + str);
-
-            String paymentCancel = "";
-            if (str == null) str = "discard";
-            String status = "";
-            String approvalRefNo = "";
-            String response[] = str.split("&");
-            for (int i = 0; i < response.length; i++) {
-                String equalStr[] = response[i].split("=");
-                if (equalStr.length >= 2) {
-                    if (equalStr[0].toLowerCase().equals("Status".toLowerCase())) {
-                        status = equalStr[1].toLowerCase();
-                    } else if (equalStr[0].toLowerCase().equals("ApprovalRefNo".toLowerCase()) || equalStr[0].toLowerCase().equals("txnRef".toLowerCase())) {
-                        approvalRefNo = equalStr[1];
-                    }
-                } else {
-                    paymentCancel = "Payment cancelled by user.";
-                }
-            }
-            if (status.equals("success")) {
-                //Code to handle successful transaction here.
-//                Log.e("UPI", "payment successfull: "+approvalRefNo);
-                Toast.makeText(LoginActivity.this, "Payment successfull", Toast.LENGTH_SHORT).show();
-
-
-//                AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, payment_option, "", approvalRefNo, "");
-
-            } else if ("Payment cancelled by user.".equals(paymentCancel)) {
-                Toast.makeText(LoginActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
-                Log.e("UPI", "Cancelled by user: " + approvalRefNo);
-            } else {
-                Toast.makeText(LoginActivity.this, "Transaction failed.Please try again", Toast.LENGTH_SHORT).show();
-                Log.e("UPI", "failed payment: " + approvalRefNo);
-            }
-        } else {
-            Log.e("UPI", "Internet issue: ");
-            Toast.makeText(LoginActivity.this, "Internet connection is not available. Please check and try again", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public static boolean isConnectionAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()
-                    && netInfo.isConnectedOrConnecting()
-                    && netInfo.isAvailable()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     public void init() {
         progressDialog = new TransparentProgressDialog(LoginActivity.this);
@@ -369,6 +200,7 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 //        progressBar.setMax(10);
     }
 
+
    /* private class GetLatestVersion extends AsyncTask<String, String, String> {
         String latestVersion;
 
@@ -437,12 +269,14 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
     @Override
     public void onDialogOk(int resultCode) {
-        /*switch (resultCode) {
+        switch (resultCode) {
             case 1:
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                Intent i = new Intent(LoginActivity.this, OtpVarificationActivity.class);
+                i.putExtra("mobNo",mEmail);
+                i.putExtra("token",token);
+                startActivity(i);
                 break;
-        }*/
+        }
 
     }
 
@@ -598,6 +432,10 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     if (Status.equals("200")) {
 
                         otpLayout.setVisibility(View.VISIBLE);
+
+//                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+
 
                     } else {
                         AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", message,

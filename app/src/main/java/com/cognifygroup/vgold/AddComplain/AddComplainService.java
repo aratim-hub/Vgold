@@ -22,4 +22,10 @@ public interface AddComplainService {
     @FormUrlEncoded
     Call<AddComplainModel> AddReview(@Field("user_id") String user_id,
                                        @Field("notes") String complaint);
+
+    @POST("user_feedback.php?")
+    @FormUrlEncoded
+    Call<AddComplainModel> AddFeedback(@Field("user_id") String user_id,
+                                       @Field("description") String desc,
+                                       @Field("points") String rating);
 }

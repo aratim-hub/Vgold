@@ -72,6 +72,7 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
     // Map<String, String> params;
     String txnid;
     String amount = "";
+    String otherAmount = "";
     String productInfo = "";
     String firstName = "";
     String emailId = "";
@@ -122,6 +123,7 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
         Intent intent = getIntent();
         if (getIntent() != null && getIntent().hasExtra("AMOUNT")) {
             amount = intent.getStringExtra("AMOUNT");
+            otherAmount = intent.getStringExtra("OTHERAMOUNT");
             whichActivity = intent.getStringExtra("whichActivity");
             // Toast.makeText(PayUMoneyActivity.this,whichActivity,Toast.LENGTH_LONG).show();
             goldWeight = intent.getStringExtra("goldweight");
@@ -241,7 +243,9 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
                     } else if (whichActivity.equals("gold")) {
                         AttemptToAddGold(VGoldApp.onGetUerId(), goldWeight, "" + amount, "Payumoney", "", txnid, "");
                     } else if (whichActivity.equals("installment")) {
-                        AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + amount, "Payumoney", "", txnid, "");
+                        AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                "" + amount, "Payumoney",
+                                "", txnid, otherAmount, "");
 
                     } else {
                         AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", "Something went wrong",
@@ -440,106 +444,109 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
         addGoldServiceProvider.getAddBankDetails(user_id, gold, amount, payment_option,
                 bank_details, tr_id, cheque_no, new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    String status = ((AddGoldModel) serviceResponse).getStatus();
-                    String message = ((AddGoldModel) serviceResponse).getMessage();
+                    @Override
+                    public <T> void onSuccess(T serviceResponse) {
+                        try {
+                            String status = ((AddGoldModel) serviceResponse).getStatus();
+                            String message = ((AddGoldModel) serviceResponse).getMessage();
 
-                    if (status.equals("200")) {
+                            if (status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayUMoneyActivity.this, message);
 //                        Intent intent = new Intent(PayUMoneyActivity.this, MainActivity.class);
 //                        startActivity(intent);
 //                        finish();
-                    } else {
+                            } else {
 
-                        AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayUMoneyActivity.this, message);
 //                        Intent intent = new Intent(PayUMoneyActivity.this, MainActivity.class);
 //                        startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.hide();
-                }
-            }
 
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
+                    @Override
+                    public <T> void onFailure(T apiErrorModel, T extras) {
 
-                try {
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(PayUMoneyActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                        try {
+                            if (apiErrorModel != null) {
+                                PrintUtil.showToast(PayUMoneyActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                            } else {
+                                PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
+                });
     }
 
 
-    private void AttemptToPayInstallment(String user_id, String gbid, String amountr, String payment_option, String bank_details, String tr_id, String cheque_no) {
+    private void AttemptToPayInstallment(String user_id, String gbid, String amountr,
+                                         String payment_option, String bank_details,
+                                         String tr_id, String otherAmount, String cheque_no) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
-        payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option, bank_details, tr_id, cheque_no, new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    String status = ((PayInstallmentModel) serviceResponse).getStatus();
-                    String message = ((PayInstallmentModel) serviceResponse).getMessage();
+        payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option,
+                bank_details, tr_id, otherAmount, cheque_no, new APICallback() {
+                    @Override
+                    public <T> void onSuccess(T serviceResponse) {
+                        try {
+                            String status = ((PayInstallmentModel) serviceResponse).getStatus();
+                            String message = ((PayInstallmentModel) serviceResponse).getMessage();
 
-                    if (status.equals("200")) {
+                            if (status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(PayUMoneyActivity.this, message);
 //                        Intent intent = new Intent(PayUMoneyActivity.this, MainActivity.class);
 //                        startActivity(intent);
 //                        finish();
-                    } else {
-                        AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                            } else {
+                                AlertDialogs.alertDialogOk(PayUMoneyActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(PayUMoneyActivity.this, message);
 //                        Intent intent = new Intent(PayUMoneyActivity.this, MainActivity.class);
 //                        startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.hide();
-                }
-            }
 
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
+                    @Override
+                    public <T> void onFailure(T apiErrorModel, T extras) {
 
-                try {
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(PayUMoneyActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                        try {
+                            if (apiErrorModel != null) {
+                                PrintUtil.showToast(PayUMoneyActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                            } else {
+                                PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(PayUMoneyActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
+                });
     }
 
   /*  private void addMoneyToWalletApi(String pay_bye,String rupees,String transaction_id,String user_id) {

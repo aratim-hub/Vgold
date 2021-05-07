@@ -231,40 +231,60 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     @OnClick(R.id.btnProceedToPayment1)
     public void OnClickOfProceedToPayment1() {
 
-        if (!txtAmount.getText().toString().equals("") && txtAmount.getText().toString() != null) {
-            if (payment_option.equals("Cheque")) {
+        Double otherAmt = Double.valueOf(txtOtherAmount.getText().toString());
+        Double minAmt = Double.valueOf(txtAmount.getText().toString());
 
-                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, edtBankDetail.getText().toString(), "", edtChequeNo.getText().toString());
+        if(otherAmt > minAmt){
+            if (!txtAmount.getText().toString().equals("") && txtAmount.getText().toString() != null) {
+                if (payment_option.equals("Cheque")) {
+
+                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                            "" + txtAmount.getText().toString(), payment_option,
+                            edtBankDetail.getText().toString(), "", txtOtherAmount.getText().toString(),
+                            edtChequeNo.getText().toString());
 
 
-            } else if (payment_option.equals("RTGS")) {
+                } else if (payment_option.equals("RTGS")) {
 
-                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "");
+                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                            "" + txtAmount.getText().toString(), payment_option,
+                            edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(),
+                            txtOtherAmount.getText().toString(),"");
 
-            } else if (payment_option.equals("Wallet")) {
+                } else if (payment_option.equals("Wallet")) {
 
-                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", "", "");
+                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                            "" + txtAmount.getText().toString(), payment_option,
+                            "", "", txtOtherAmount.getText().toString(),"");
 
-            } else if (payment_option.equals("UPI Payment")) {
-                integrateGpay(bookingId, txtAmount.getText().toString());
+                } else if (payment_option.equals("UPI Payment")) {
+                    integrateGpay(bookingId, txtAmount.getText().toString());
 
-            } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
-                startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
-                        .putExtra("AMOUNT", "" + txtAmount.getText().toString())
-                        .putExtra("bookingId", bookingId));
+                } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
+                    startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
+                            .putExtra("AMOUNT", "" + txtAmount.getText().toString())
+                            .putExtra("OTHERAMOUNT", "" + txtOtherAmount.getText().toString())
+                            .putExtra("bookingId", bookingId));
 
-            } else {
+                } else {
 
-                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please select payment option",
-                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                    AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please select payment option",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                mAlert.onShowToastNotification(PayInstallmentActivity.this, "Please select payment option");
 
-            }
-        } else {
-            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
-                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
+            } else {
+                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
+                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //            mAlert.onShowToastNotification(PayInstallmentActivity.this, "Please enter vaild Amount");
+            }
+        }else{
+            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Other amount should be greater than minimum amount",
+                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
         }
+
+
+
 
 
     }
@@ -388,7 +408,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 //                Toast.makeText(PayInstallmentActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
 //                Log.e("UPI", "payment successfull: "+approvalRefNo);
 
-                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId, "" + txtAmount.getText().toString(), payment_option, "", approvalRefNo, "");
+                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                        "" + txtAmount.getText().toString(), payment_option,
+                        "", approvalRefNo, txtOtherAmount.getText().toString(),"");
 
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(PayInstallmentActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
@@ -537,10 +559,12 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     }
 
-
-    private void AttemptToPayInstallment(String user_id, String gbid, String amountr, String payment_option, String bank_details, String tr_id, String cheque_no) {
+    private void AttemptToPayInstallment(String user_id, String gbid, String amountr,
+                                         String payment_option, String bank_details,
+                                         String tr_id, String otherAmount, String cheque_no) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
-        payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option, bank_details, tr_id, cheque_no, new APICallback() {
+        payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option,
+                bank_details, tr_id, otherAmount,cheque_no, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {

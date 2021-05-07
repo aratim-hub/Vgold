@@ -115,8 +115,23 @@ public class BaseActivity extends AppCompatActivity {
 		VegetableApplication.onSetRandomCartSessionValue(cartSession);
 	}*/
 
+
+    public static boolean isOkToSave(String data) {
+        if (data != null && !data.equals("") && !data.equalsIgnoreCase("Not Specified") && !data.equalsIgnoreCase("null")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static String getDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HHmmss");
+        Date date = new Date();
+        return formatter.format(date);
+    }
+
+    public static String getDateTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         Date date = new Date();
         return formatter.format(date);
     }

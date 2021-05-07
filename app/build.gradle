@@ -6,8 +6,8 @@ android {
         applicationId "com.cognifygroup.vgold"
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 11
-        versionName "1.1.0"
+        versionCode 12
+        versionName "1.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -88,6 +88,12 @@ dependencies {
 
 
     implementation "com.google.android.gms:play-services-wallet:18.0.0"
+
+    // SMS Retrival API
+    implementation 'com.google.android.gms:play-services-base:17.1.0'
+    implementation 'com.google.android.gms:play-services-identity:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth-api-phone:17.1.0'
 
 }
 

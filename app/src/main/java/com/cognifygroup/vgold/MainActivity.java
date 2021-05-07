@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AlertDialogOkListener alertDialogOkListener = this;
 
     GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
-    LoginStatusServiceProvider  loginStatusServiceProvider;
+    LoginStatusServiceProvider loginStatusServiceProvider;
     AddGoldServiceProvider addGoldServiceProvider;
     private int pressBack = 0;
 
@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
-
 
 
     private void init() {
@@ -274,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     if (status.equals("200")) {
 
-                        if(!data){
+                        if (!data) {
                             AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message + ",  Please relogin to app",
                                     getResources().getString(R.string.btn_ok), 11, false, alertDialogOkListener);
                         }
@@ -812,6 +811,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, ComplainActivity.class));
         } else if (id == R.id.nav_review) {
             startActivity(new Intent(this, ReviewActivity.class));
+        } else if (id == R.id.nav_feedback) {
+            startActivity(new Intent(this, FeedbackActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -821,7 +822,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onDialogOk(int resultCode) {
-        if (resultCode==11){
+        if (resultCode == 11) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();

@@ -2,6 +2,7 @@ package com.cognifygroup.vgold;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -14,9 +15,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.cognifygroup.vgold.utils.AlertDialogs;
+import com.cognifygroup.vgold.utils.AskPermissions;
 
 public class SplashActivity extends AppCompatActivity {
 
+
+    private AskPermissions askPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,18 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        notificationPayload();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            askPermissions = new AskPermissions(SplashActivity.this);
+            if (askPermissions.checkAndRequestPermissions()) {
+                notificationPayload();
+            }
+        } else {
+            notificationPayload();
+        }
+
+
+
 
        /* ImageView click =findViewById(R.id.click);
 
@@ -42,7 +57,6 @@ public class SplashActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             String payload = String.valueOf(getIntent().getExtras().get("payload"));
-//            Log.d("payload", payload);
 
             if (payload != null && !TextUtils.isEmpty(payload) && !payload.equalsIgnoreCase("null")) {
                 try {
@@ -107,4 +121,11 @@ public class SplashActivity extends AppCompatActivity {
 //            }
 //        }, 2000);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        askPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 }

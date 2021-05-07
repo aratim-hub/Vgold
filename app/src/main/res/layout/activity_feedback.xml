@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cognifygroup.vgold.ComplainActivity">
+
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:rating="1"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/edt_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorblack"
+        android:layout_marginLeft="@dimen/height_15"
+        android:layout_marginRight="@dimen/height_15"
+        android:layout_below="@+id/ratingBar"
+        android:hint="Comment"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:lines="3"
+        android:layout_marginTop="@dimen/height_15"/>
+
+
+    <Button
+        android:id="@+id/btnSubmitFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginRight="@dimen/height_15"
+        android:layout_marginLeft="@dimen/height_15"
+        android:layout_marginTop="@dimen/height_15"
+        android:textColor="@color/colorwhite"
+        android:layout_below="@+id/edt_comment"
+        android:background="@drawable/border_for_button"/>
+
+</RelativeLayout>
