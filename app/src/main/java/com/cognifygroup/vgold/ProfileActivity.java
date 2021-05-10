@@ -1,7 +1,9 @@
 package com.cognifygroup.vgold;
 
 import android.content.Intent;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -64,25 +66,26 @@ public class ProfileActivity extends AppCompatActivity implements AlertDialogOkL
         }
         return super.onOptionsItemSelected(item);
     }
-    public void init(){
+
+    public void init() {
 
         progressDialog = new TransparentProgressDialog(ProfileActivity.this);
         progressDialog.setCancelable(false);
         setFinishOnTouchOutside(false);
 
-        txtName.setText(VGoldApp.onGetFirst()+" "+VGoldApp.onGetLast());
+        txtName.setText(VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast());
         txtCRN.setText(VGoldApp.onGetUerId());
-        String pan=VGoldApp.onGetPanNo();
-        if (pan.equals("") || pan.equals(null)){
-            pan="0000000000";
+        String pan = VGoldApp.onGetPanNo();
+        if (pan.equals("") || pan.equals(null)) {
+            pan = "0000000000";
         }
-        String screte_pan=pan.substring(pan.length()-4,pan.length());
+        String screte_pan = pan.substring(pan.length() - 4, pan.length());
 
-        txtPanNumber.setText("XXXXXX"+screte_pan);
+        txtPanNumber.setText("XXXXXX" + screte_pan);
         txtMail.setText(VGoldApp.onGetEmail());
         txtPhone.setText(VGoldApp.onGetNo());
-        txtAddress.setText(VGoldApp.onGetAddress()+", " + VGoldApp.onGetCity()
-        + ", " + VGoldApp.onGetState());
+        txtAddress.setText(VGoldApp.onGetAddress() + ", " + VGoldApp.onGetCity()
+                + ", " + VGoldApp.onGetState());
 
         Picasso.with(this)
                 .load(VGoldApp.onGetQrCode())
@@ -162,14 +165,15 @@ public class ProfileActivity extends AppCompatActivity implements AlertDialogOkL
     }
 
     @OnClick(R.id.btnUpdateProfile)
-    public void onClickOfBtnUpdateProfile(){
+    public void onClickOfBtnUpdateProfile() {
 
-        startActivity(new Intent(ProfileActivity.this,UpdateProfileActivity.class));
+        startActivity(new Intent(ProfileActivity.this, UpdateProfileActivity.class));
     }
+
     @Override
     public void onDialogOk(int resultCode) {
 
-        switch (resultCode){
+        switch (resultCode) {
             case 11:
                 Intent LogIntent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(LogIntent);

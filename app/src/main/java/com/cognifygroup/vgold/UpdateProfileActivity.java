@@ -262,8 +262,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         } else {
             AttemptToUpdateUser(VGoldApp.onGetUerId(), email, mobile_no, first_name, city, state);
         }
-
-
     }
 
 
