@@ -96,22 +96,37 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                     progressDialog.hide();
                     tv_msg.setVisibility(View.GONE);
                     String message = intent.getStringExtra("message");
-                    if(message!=null && !TextUtils.isEmpty(message)){
-                       String trimMsg =  message.trim();
+                    String regex = "^\\s+";
+                    if (message != null && !TextUtils.isEmpty(message)) {
+//                       String trimMsg =  message.trim();
+//                        String trimMsg = " " + message;
 
-                        String[] arr = trimMsg.split("");
-                        String c1 = arr[0];
-                        String c2 = arr[1];
-                        String c3 = arr[2];
-                        String c4 = arr[3];
+                        String trimmedString = message.replaceAll(regex, "");
+
+                        String[] arr = trimmedString.split("");
+
+                        String c1, c2, c3, c4;
+                        if (arr[0].equalsIgnoreCase(" ") || arr[0].equalsIgnoreCase("")) {
+                            c1 = arr[1];
+                            c2 = arr[2];
+                            c3 = arr[3];
+                            c4 = arr[4];
+                        } else {
+                            c1 = arr[0];
+                            c2 = arr[1];
+                            c3 = arr[2];
+                            c4 = arr[3];
+                        }
+//                        String c1 = arr[0];
+//                        String c2 = arr[1];
+//                        String c3 = arr[2];
+//                        String c4 = arr[3];
                         et_otp_var1.setText(c1);
                         et_otp_var2.setText(c2);
                         et_otp_var3.setText(c3);
                         et_otp_var4.setText(c4);
                         concatOTP();
                     }
-
-
                 }
             }
         };

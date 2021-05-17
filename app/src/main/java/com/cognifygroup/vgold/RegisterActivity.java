@@ -209,9 +209,9 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             edtno.setError("Enter 10 digit contact number");
         } /*else if (edtPass.length() == 0) {
             edtPass.setError("Enter confirm password");
-        }*/ else if (edtPancard.length() == 0) {
+        } else if (edtPancard.length() == 0) {
             edtPancard.setError("Enter vaild Pancard Number");
-        } /*else if (ImageAadharFont.length() == 0) {
+        } else if (ImageAadharFont.length() == 0) {
             Toast.makeText(this, "Please add aadhar front pic", Toast.LENGTH_SHORT).show();
         } else if (ImageAadharBack.length() == 0) {
             Toast.makeText(this, "Please add aadhar back pic", Toast.LENGTH_SHORT).show();
