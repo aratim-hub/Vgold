@@ -130,6 +130,7 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:maxLines="1"
+                android:visibility="gone"
                 android:singleLine="true"
                 android:textCursorDrawable="@color/colorPrimary" />
 
@@ -148,6 +149,7 @@
                 android:inputType="number"
                 android:maxLength="1"
                 android:maxLines="1"
+                android:visibility="gone"
                 android:singleLine="true"
                 android:textCursorDrawable="@color/colorblack" />
         </LinearLayout>
@@ -161,7 +163,7 @@
             android:layout_marginRight="30dp"
             android:background="@drawable/border_for_button"
             android:gravity="center"
-            android:text="LOGIN"
+            android:text="VERIFY"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/colorwhite" />
 
@@ -184,6 +186,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

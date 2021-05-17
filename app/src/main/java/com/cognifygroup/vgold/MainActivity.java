@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
 import com.cognifygroup.vgold.Adapter.VendorOfferAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
@@ -233,23 +234,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (!VGoldApp.onGetUserImg().equals("")) {
 
-            Picasso.with(this)
+
+
+            Glide.with(this).load(VGoldApp.onGetUserImg())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(imgClient);
+
+            /*Picasso.with(this)
                     .load(VGoldApp.onGetUserImg())
                     //.placeholder(R.drawable.images)
                     .resize(400, 400)
                     .into(imgClient, new Callback() {
                         @Override
                         public void onSuccess() {
-                        /*if (holder.progressbar_category !=null){
+                        *//*if (holder.progressbar_category !=null){
                             holder.progressbar_category.setVisibility(View.GONE);
-                        }*/
+                        }*//*
                         }
 
                         @Override
                         public void onError() {
 
                         }
-                    });
+                    });*/
 
         }
 

@@ -31,6 +31,12 @@ public class GoldBookingModel {
     @Expose
     @SerializedName("Booking_charges")
     private String BookingCharge;
+    @Expose
+    @SerializedName("Initial_Booking_charges")
+    private String Initial_Booking_charges;
+    @Expose
+    @SerializedName("Booking_charges_discount")
+    private String Booking_charges_discount;
 
     public String getBooking_value() {
         return Booking_value;
@@ -86,5 +92,21 @@ public class GoldBookingModel {
 
     public void setBookingCharge(String bookingCharge) {
         BookingCharge = bookingCharge;
+    }
+
+    public String getInitial_Booking_charges() {
+        return Initial_Booking_charges;
+    }
+
+    public void setInitial_Booking_charges(String initial_Booking_charges) {
+        Initial_Booking_charges = initial_Booking_charges;
+    }
+
+    public String getBooking_charges_discount() {
+        return Booking_charges_discount;
+    }
+
+    public void setBooking_charges_discount(String booking_charges_discount) {
+        Booking_charges_discount = booking_charges_discount;
     }
 }

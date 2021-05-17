@@ -254,6 +254,8 @@ public class GoldBookingActivity extends AppCompatActivity implements AlertDialo
                     String down_payment = ((GoldBookingModel) serviceResponse).getDown_payment();
                     String gold_rate = ((GoldBookingModel) serviceResponse).getGold_rate();
                     String booking_charge = ((GoldBookingModel) serviceResponse).getBookingCharge();
+                    String initialBookingCharge = ((GoldBookingModel) serviceResponse).getInitial_Booking_charges();
+                    String bookingChargeDisc = ((GoldBookingModel) serviceResponse).getBooking_charges_discount();
 
                     if (status.equals("200")) {
 
@@ -267,11 +269,13 @@ public class GoldBookingActivity extends AppCompatActivity implements AlertDialo
                         intent.putExtra("quantity", quantity);
                         intent.putExtra("tennure", tennure);
                         intent.putExtra("pc", pc);
+                        intent.putExtra("initBookingCharge", initialBookingCharge);
+                        intent.putExtra("disc", bookingChargeDisc);
 
                         startActivity(intent);
                     } else {
                         AlertDialogs.alertDialogOk(GoldBookingActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(GoldBookingActivity.this, message);
 //                        Intent intent = new Intent(GoldBookingActivity.this, BookingDetailActivity.class);

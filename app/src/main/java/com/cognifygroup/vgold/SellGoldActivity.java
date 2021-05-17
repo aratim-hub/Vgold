@@ -251,8 +251,14 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
                 try {
                     if (Status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(SellGoldActivity.this, "Alert", "Otp sent to your register mobile no and mail",
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(SellGoldActivity.this, "Alert", "Otp sent to your register mobile no and mail",
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+
+                        startActivity(new Intent(SellGoldActivity.this, OtpVarificationActivity.class)
+                                .putExtra("moveFrom", "SellGold")
+                                .putExtra("Weight", goldWeight)
+                                .putExtra("AMOUNT", amt));
+
 
                         /*startActivity(new Intent(PayActivity.this, Otp1Activity.class)
                                 .putExtra("OTP", otp)
@@ -449,11 +455,16 @@ public class SellGoldActivity extends AppCompatActivity implements AlertDialogOk
     public void onDialogOk(int resultCode) {
         switch (resultCode) {
             case 1:
-                startActivity(new Intent(SellGoldActivity.this, Otp1Activity.class)
+                /*startActivity(new Intent(SellGoldActivity.this, Otp1Activity.class)
                         .putExtra("moveFrom", "SellGold")
                         .putExtra("Weight", goldWeight)
-                        .putExtra("AMOUNT", amt)
-                );
+                        .putExtra("AMOUNT", amt));*/
+
+
+                startActivity(new Intent(SellGoldActivity.this, OtpVarificationActivity.class)
+                        .putExtra("moveFrom", "SellGold")
+                        .putExtra("Weight", goldWeight)
+                        .putExtra("AMOUNT", amt));
                 break;
 
             case 11:

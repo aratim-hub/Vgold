@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 
 import android.renderscript.ScriptGroup;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -70,6 +72,8 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -267,19 +271,6 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
 
     }
 
-    @Override
-    public void onDialogOk(int resultCode) {
-        switch (resultCode) {
-            case 1:
-                Intent i = new Intent(LoginActivity.this, OtpVarificationActivity.class);
-                i.putExtra("mobNo",mEmail);
-                i.putExtra("token",token);
-                startActivity(i);
-                break;
-        }
-
-    }
-
 
     public class VersionChecker extends AsyncTask<String, String, String> {
 
@@ -431,11 +422,17 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                     ArrayList<LoginModel.Data> loginModelArrayList = ((LoginModel) serviceResponse).getData();
                     if (Status.equals("200")) {
 
-                        otpLayout.setVisibility(View.VISIBLE);
+//                        otpLayout.setVisibility(View.VISIBLE);
 
 //                        AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", message,
 //                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
+
+                        Intent i = new Intent(LoginActivity.this, OtpVarificationActivity.class);
+                        i.putExtra("mobNo", mEmail);
+                        i.putExtra("token", token);
+                        i.putExtra("moveFrom", "login");
+                        startActivity(i);
 
                     } else {
                         AlertDialogs.alertDialogOk(LoginActivity.this, "Alert", message,
@@ -606,6 +603,20 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                 }
             }
         });
+    }
+
+    @Override
+    public void onDialogOk(int resultCode) {
+        switch (resultCode) {
+            case 1:
+                Intent i = new Intent(LoginActivity.this, OtpVarificationActivity.class);
+                i.putExtra("mobNo", mEmail);
+                i.putExtra("token", token);
+                i.putExtra("moveFrom", "login");
+                startActivity(i);
+                break;
+        }
+
     }
 
 }

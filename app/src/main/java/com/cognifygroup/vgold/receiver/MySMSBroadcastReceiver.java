@@ -12,13 +12,7 @@ import com.google.android.gms.auth.api.phone.SmsRetriever;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Status;
 
-
-/**
- * Created by my-pc on 20/5/19.
- */
-
 public class MySMSBroadcastReceiver extends BroadcastReceiver {
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -55,8 +49,6 @@ public class MySMSBroadcastReceiver extends BroadcastReceiver {
             }
         }
     }
-
-
 }
 
 

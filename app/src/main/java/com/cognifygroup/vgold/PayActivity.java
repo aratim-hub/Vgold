@@ -496,8 +496,28 @@ public class PayActivity extends AppCompatActivity implements AlertDialogOkListe
                 try {
                     if (Status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(PayActivity.this, "Alert", "Otp sent to your register mobile no and mail",
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+
+                        walletbalence = Double.parseDouble(balance);
+//                 GoldW = goldWeight;
+
+                        startActivity(new Intent(PayActivity.this, OtpVarificationActivity.class)
+                                .putExtra("OTP", otp)
+                                .putExtra("AMOUNT", "" + result)
+                                .putExtra("Weight", goldWeight)
+                                .putExtra("NO", txtMobile.getText().toString())
+                                .putExtra("moveFrom", "payActivity")
+                        );
+
+                       /* startActivity(new Intent(PayActivity.this, Otp1Activity.class)
+                                .putExtra("OTP", otp)
+                                .putExtra("AMOUNT", "" + result)
+                                .putExtra("Weight", goldWeight)
+                                .putExtra("NO", txtMobile.getText().toString())
+                                .putExtra("moveFrom", "payActivity")
+                        );*/
+
+//                        AlertDialogs.alertDialogOk(PayActivity.this, "Alert", "Otp sent to your register mobile no and mail",
+//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 
                         /*startActivity(new Intent(PayActivity.this, Otp1Activity.class)
                                 .putExtra("OTP", otp)

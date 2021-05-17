@@ -42,7 +42,7 @@ public class Otp1Activity extends AppCompatActivity implements AlertDialogOkList
     String otp = "", amount = "", no = "", weight = "", moveFrom = "";
 
     private TransferGoldFinalServiceProvider transferGoldFinalServiceProvider;
-    SellGoldServiceProvider sellGoldServiceProvider;
+    private SellGoldServiceProvider sellGoldServiceProvider;
     private AlertDialogs mAlert;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
@@ -102,23 +103,32 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         edtCity.setText(VGoldApp.onGetCity());
         edtState.setText(VGoldApp.onGetState());
 
+
+        Log.d("TAG", VGoldApp.onGetUserImg());
+
         if (VGoldApp.onGetUserImg() != null && !TextUtils.isEmpty(VGoldApp.onGetUserImg()) && !VGoldApp.onGetUserImg().equalsIgnoreCase("null")) {
-            Picasso.with(UpdateProfileActivity.this)
+
+            Glide.with(this).load(VGoldApp.onGetUserImg())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(userImg);
+
+            /*Picasso.with(UpdateProfileActivity.this)
                     .load(VGoldApp.onGetUserImg())
                     .fit()
                     .into(userImg, new Callback() {
                         @Override
                         public void onSuccess() {
-                        /*if (progressbar_category !=null){
+                        *//*if (progressbar_category !=null){
                             progressbar_category.setVisibility(View.GONE);
-                        }*/
+                        }*//*
                         }
 
                         @Override
                         public void onError() {
-
+                            Log.d("TAG", "Error while setting");
                         }
-                    });
+                    });*/
         }
 
         loginStatusServiceProvider = new LoginStatusServiceProvider(this);
@@ -331,7 +341,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                                 VGoldApp.onGetLast(), VGoldApp.onGetEmail(),
                                 VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
                                 VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(),
-                                VGoldApp.onGetCity(),VGoldApp.onGetState(),
+                                VGoldApp.onGetCity(), VGoldApp.onGetState(),
                                 url);
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
@@ -377,7 +387,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
                         VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
                         VGoldApp.onGetPanNo(),
-                        first_name , city , state,
+                        first_name, city, state,
                         VGoldApp.onGetUserImg());
                 break;
 

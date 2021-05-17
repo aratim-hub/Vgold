@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.MainActivity;
 import com.cognifygroup.vgold.OfferLetterActivity;
 import com.cognifygroup.vgold.R;
@@ -91,6 +93,12 @@ public class VendorOfferAdapter extends RecyclerView.Adapter<VendorOfferAdapter.
         BaseUrl = IMAGE_URL + mCategoryArray.get(position).getLogo_path();
 
         if (BaseUrl != null && !TextUtils.isEmpty(BaseUrl)) {
+
+           /* Glide.with(mContext).load(BaseUrl)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(holder.imv_category);*/
+
             Picasso.with(mContext).load(BaseUrl)
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.mipmap.ic_launcher)

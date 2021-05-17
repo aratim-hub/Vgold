@@ -62,7 +62,7 @@ public class SuccessActivity extends AppCompatActivity implements AlertDialogOkL
         setFinishOnTouchOutside(false);
 
         loginStatusServiceProvider = new LoginStatusServiceProvider(this);
-        checkLoginSession();
+//        checkLoginSession();
     }
 
     private void checkLoginSession() {
@@ -76,7 +76,6 @@ public class SuccessActivity extends AppCompatActivity implements AlertDialogOkL
                     Boolean data = ((LoginSessionModel) serviceResponse).getData();
 
                     Log.i("TAG", "onSuccess: " + status);
-                    Log.i("TAG", "onSuccess: " + message);
 
                     if (status.equals("200")) {
 

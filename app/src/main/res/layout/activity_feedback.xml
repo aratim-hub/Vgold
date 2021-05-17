@@ -26,9 +26,12 @@
         android:layout_marginRight="@dimen/height_15"
         android:layout_below="@+id/ratingBar"
         android:hint="Comment"
-        android:inputType="textMultiLine"
+        android:gravity="left"
         android:imeOptions="actionNext"
-        android:lines="3"
+        android:background="@drawable/rounded_search"
+        android:padding="8dp"
+        android:inputType="textMultiLine"
+        android:lines="4"
         android:layout_marginTop="@dimen/height_15"/>
 
 

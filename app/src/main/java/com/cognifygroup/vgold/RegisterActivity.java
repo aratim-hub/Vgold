@@ -211,15 +211,15 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             edtPass.setError("Enter confirm password");
         }*/ else if (edtPancard.length() == 0) {
             edtPancard.setError("Enter vaild Pancard Number");
-        } else if (ImageAadharFont.length() == 0) {
+        } /*else if (ImageAadharFont.length() == 0) {
             Toast.makeText(this, "Please add aadhar front pic", Toast.LENGTH_SHORT).show();
         } else if (ImageAadharBack.length() == 0) {
             Toast.makeText(this, "Please add aadhar back pic", Toast.LENGTH_SHORT).show();
         } else if (ImagePanCard.length() == 0) {
             Toast.makeText(this, "Please add pan card pic", Toast.LENGTH_SHORT).show();
         } else if (edtAadarCard.getText().toString().length() < 12) {
-            Toast.makeText(this, "Please inter valide aadhar no", Toast.LENGTH_SHORT).show();
-        } else {
+            Toast.makeText(this, "Please inter valid aadhar no", Toast.LENGTH_SHORT).show();
+        }*/ else {
 //            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
             AttemptToRegisterApi(first, last, email, no, pancard, refercode,
                     edtAadarCard.getText().toString(),

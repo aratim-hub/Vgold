@@ -10,7 +10,7 @@ import retrofit2.http.POST;
  */
 
 public interface RegService {
-    @POST("registerNew.php?")
+    @POST("register.php?")
     @FormUrlEncoded
     Call<RegModel> getReg(@Field("first") String first,
                           @Field("last") String last,

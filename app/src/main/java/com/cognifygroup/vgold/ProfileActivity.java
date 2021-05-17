@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
@@ -86,6 +87,7 @@ public class ProfileActivity extends AppCompatActivity implements AlertDialogOkL
         txtPhone.setText(VGoldApp.onGetNo());
         txtAddress.setText(VGoldApp.onGetAddress() + ", " + VGoldApp.onGetCity()
                 + ", " + VGoldApp.onGetState());
+
 
         Picasso.with(this)
                 .load(VGoldApp.onGetQrCode())

@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+<!--    <uses-permission android:name="android.permission.RECEIVE_SMS" />-->
+<!--    <uses-permission android:name="android.permission.READ_SMS" />-->
+
+
     <application
         android:name=".Application.VGoldApp"
         android:allowBackup="true"
@@ -66,7 +70,6 @@
                     android:host="vgold.page.link"
                     android:scheme="https" />
             </intent-filter>
-            />
         </activity>
         <activity
             android:name=".GoldWalletActivity"
@@ -197,7 +200,7 @@
         <activity android:name=".SuccessActivity" />
         <activity
             android:name=".ComplainActivity"
-            android:label="Complain"
+            android:label="Complaint"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ReviewActivity"
@@ -221,6 +224,7 @@
 
         <receiver
             android:name=".receiver.MySMSBroadcastReceiver"
+            android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVED" />

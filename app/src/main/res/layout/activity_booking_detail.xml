@@ -73,10 +73,51 @@
             android:textSize="@dimen/height_20"
             android:backgroundTint="@color/colorblack" />
 
+
         <TextView
+
+            android:id="@+id/initChargeLbl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Booking Charges"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtInitBookingCharge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+
+
+        <TextView
+            android:id="@+id/discLbl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Discount"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/height_10"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/txtBookingChargeDisc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_5"
+            android:layout_marginLeft="@dimen/height_10"
+            android:textSize="@dimen/height_20"
+            android:backgroundTint="@color/colorblack" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Discounted Booking Charges"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/height_10"
             android:layout_marginLeft="@dimen/height_10"

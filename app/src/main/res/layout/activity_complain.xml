@@ -9,14 +9,17 @@
     <EditText
         android:id="@+id/edt_complain"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:gravity="left"
         android:backgroundTint="@color/colorblack"
         android:layout_marginLeft="@dimen/height_15"
+        android:background="@drawable/rounded_search"
+        android:padding="8dp"
+        android:inputType="textMultiLine"
+        android:lines="4"
         android:layout_marginRight="@dimen/height_15"
-        android:hint="Enter Complain"
+        android:hint="Enter Complaint"
         android:imeOptions="actionNext"
-        android:maxLines="8"
         android:layout_marginTop="@dimen/height_15"/>
 
 

@@ -74,6 +74,15 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     @InjectView(R.id.edtTxnId)
     EditText edtTxnId;
 
+    @InjectView(R.id.txtInitBookingCharge)
+    TextView txtInitBookingCharge;
+    @InjectView(R.id.txtBookingChargeDisc)
+    TextView txtBookingChargeDisc;
+    @InjectView(R.id.initChargeLbl)
+    TextView initChargeLbl;
+    @InjectView(R.id.discLbl)
+    TextView discLbl;
+
     String payment_option;
     String monthly;
     String booking_value;
@@ -82,6 +91,8 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     String quantity;
     String tennure;
     String pc;
+    String initBookingCharge;
+    String disc;
     String booking_charge;
     final int UPI_PAYMENT = 0;
 
@@ -132,6 +143,8 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             quantity = getIntent().getStringExtra("quantity");
             tennure = getIntent().getStringExtra("tennure");
             pc = getIntent().getStringExtra("pc");
+            initBookingCharge = getIntent().getStringExtra("initBookingCharge");
+            disc = getIntent().getStringExtra("disc");
 
 
             txtMonthly.setText(monthly);
@@ -139,6 +152,22 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             txtDownPayment.setText(down_payment);
             txtBookingCharge.setText(booking_charge);
             txtGoldRate.setText(gold_rate);
+
+            if (disc.equalsIgnoreCase("0")) {
+                txtBookingChargeDisc.setVisibility(View.GONE);
+                txtInitBookingCharge.setVisibility(View.GONE);
+                initChargeLbl.setVisibility(View.GONE);
+                discLbl.setVisibility(View.GONE);
+
+            } else {
+                txtBookingChargeDisc.setVisibility(View.VISIBLE);
+                txtInitBookingCharge.setVisibility(View.VISIBLE);
+                initChargeLbl.setVisibility(View.VISIBLE);
+                discLbl.setVisibility(View.VISIBLE);
+
+                txtBookingChargeDisc.setText(disc);
+                txtInitBookingCharge.setText(initBookingCharge);
+            }
 
 
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -242,18 +271,28 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
 
         if (payment_option.equals("Cheque")) {
 
-            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtBankDetail.getText().toString(), "", edtChequeNo.getText().toString());
+            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                    monthly, gold_rate, quantity, tennure, pc, payment_option,
+                    edtBankDetail.getText().toString(), "",
+                    edtChequeNo.getText().toString(), initBookingCharge, disc, booking_charge
+            );
         } else if (payment_option.equals("Online")) {
 
-            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "");
+            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                    monthly, gold_rate, quantity, tennure, pc, payment_option,
+                    edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), ""
+                    , initBookingCharge, disc, booking_charge);
 
         } else if (payment_option.equals("Wallet")) {
 
-            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "");
+            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                    monthly, gold_rate, quantity, tennure, pc, payment_option,
+                    edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "",
+                    initBookingCharge, disc, booking_charge);
 
         } else if (payment_option.equals("UPI Payment")) {
             integrateGpay(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()),
-                    gold_rate,quantity);
+                    gold_rate, quantity);
         }
 
     }
@@ -377,7 +416,10 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
 //                Toast.makeText(BookingDetailActivity.this, "Transaction successful.", Toast.LENGTH_SHORT).show();
 //                Log.e("UPI", "payment successfull: "+approvalRefNo);
 
-                AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly, gold_rate, quantity, tennure, pc, payment_option, edtRtgsBankDetail.getText().toString(), approvalRefNo, "");
+                AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly,
+                        gold_rate, quantity, tennure, pc, payment_option,
+                        edtRtgsBankDetail.getText().toString(), approvalRefNo, "",
+                        initBookingCharge, disc, booking_charge);
 
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(BookingDetailActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
@@ -406,53 +448,60 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     }
 
 
-    private void AttemptToGoldBookingRequest(String user_id, String booking_value, String down_payment, String monthly, String rate, String gold_weight, String tennure, String pc, String payment_option, String bank_details, String tr_id, String cheque_no) {
+    private void AttemptToGoldBookingRequest(String user_id, String booking_value,
+                                             String down_payment, String monthly, String rate,
+                                             String gold_weight, String tennure, String pc,
+                                             String payment_option, String bank_details,
+                                             String tr_id, String cheque_no, String initBookingCharge,
+                                             String disc, String booking_charge) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
-        goldBookingRequestServiceProvider.getGoldBookingRequest(user_id, booking_value, down_payment, monthly, rate, gold_weight, tennure, pc, payment_option, bank_details, tr_id, cheque_no, new APICallback() {
-            @Override
-            public <T> void onSuccess(T serviceResponse) {
-                try {
-                    String status = ((GoldBookingRequestModel) serviceResponse).getStatus();
-                    String message = ((GoldBookingRequestModel) serviceResponse).getMessage();
+        goldBookingRequestServiceProvider.getGoldBookingRequest(user_id,
+                booking_value, down_payment, monthly, rate, gold_weight, tennure, pc,
+                payment_option, bank_details, tr_id, cheque_no,initBookingCharge, disc,booking_charge,new APICallback() {
+                    @Override
+                    public <T> void onSuccess(T serviceResponse) {
+                        try {
+                            String status = ((GoldBookingRequestModel) serviceResponse).getStatus();
+                            String message = ((GoldBookingRequestModel) serviceResponse).getMessage();
 
-                    if (status.equals("200")) {
+                            if (status.equals("200")) {
 
-                        //   mAlert.onShowToastNotification(BookingDetailActivity.this, message);
-                        Intent intent = new Intent(BookingDetailActivity.this, SuccessActivity.class);
-                        intent.putExtra("message", message);
-                        startActivity(intent);
-                    } else {
+                                //   mAlert.onShowToastNotification(BookingDetailActivity.this, message);
+                                Intent intent = new Intent(BookingDetailActivity.this, SuccessActivity.class);
+                                intent.putExtra("message", message);
+                                startActivity(intent);
+                            } else {
 
-                        AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", message,
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(BookingDetailActivity.this, message);
 //                        Intent intent = new Intent(BookingDetailActivity.this, MainActivity.class);
 //                        startActivity(intent);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    progressDialog.hide();
-                }
-            }
 
-            @Override
-            public <T> void onFailure(T apiErrorModel, T extras) {
+                    @Override
+                    public <T> void onFailure(T apiErrorModel, T extras) {
 
-                try {
-                    if (apiErrorModel != null) {
-                        PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                    } else {
-                        PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                        try {
+                            if (apiErrorModel != null) {
+                                PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                            } else {
+                                PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                        } finally {
+                            progressDialog.hide();
+                        }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
-                } finally {
-                    progressDialog.hide();
-                }
-            }
-        });
+                });
     }
 
     @Override

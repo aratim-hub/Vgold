@@ -330,8 +330,8 @@ public class PayActivityForMoney extends AppCompatActivity implements AlertDialo
                 try {
                     if (Status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(PayActivityForMoney.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(PayActivityForMoney.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(PayActivityForMoney.this, message);
                        // btnPay.setVisibility(View.VISIBLE);
 
