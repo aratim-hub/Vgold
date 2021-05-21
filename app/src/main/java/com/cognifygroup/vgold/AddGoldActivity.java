@@ -317,19 +317,19 @@ public class AddGoldActivity extends AppCompatActivity implements AlertDialogOkL
 
         String transNo = VGoldApp.onGetUerId() + "-" + BaseActivity.getDate();
 
+
         Uri uri =
                 new Uri.Builder()
                         .scheme("upi")
                         .authority("pay")
-//                        .appendQueryParameter("pa", "9881136531@okbizaxis")
-                        .appendQueryParameter("pa", "vgold@hdfcbank")
+                        .appendQueryParameter("pa", "9881136531@okbizaxis")
                         .appendQueryParameter("pn", "VGold Pvt. Ltd.")
-                        .appendQueryParameter("mc", "101222")
+                        .appendQueryParameter("mc", "")
                         .appendQueryParameter("tr", transNo)
                         .appendQueryParameter("tn", "GP_ " + weight + "_" + todayGoldRateWithGst + " " + name + "(" + VGoldApp.onGetUerId() + ")")
                         .appendQueryParameter("am", String.valueOf(amount))
                         .appendQueryParameter("cu", "INR")
-                        .appendQueryParameter("url", "your-transaction-url")
+//                        .appendQueryParameter("url", "your-transaction-url")
                         .build();
 
 

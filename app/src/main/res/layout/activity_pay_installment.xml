@@ -31,6 +31,34 @@
         </Spinner>
 
 
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioMinAmt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Minimum Amount"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <RadioButton
+                android:id="@+id/radioOtherAmt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:checked="false"
+                android:text="Other Amount"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </RadioGroup>
+
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,6 +66,7 @@
             android:textStyle="bold"
             android:layout_marginTop="@dimen/height_10"
             android:layout_marginLeft="@dimen/height_10"
+            android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
@@ -47,6 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/height_10"
             android:textStyle="bold"
+            android:visibility="gone"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
             android:layout_marginLeft="@dimen/height_10"
             android:backgroundTint="@color/colorblack"
             android:hint=""/>
@@ -58,6 +90,7 @@
             android:textStyle="bold"
             android:layout_marginTop="@dimen/height_10"
             android:layout_marginLeft="@dimen/height_10"
+            android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <EditText
@@ -68,6 +101,7 @@
             android:layout_marginTop="@dimen/height_10"
             android:textStyle="bold"
             android:inputType="number"
+            android:visibility="gone"
             android:layout_marginLeft="@dimen/height_10"
             android:backgroundTint="@color/colorblack"
             android:hint=""/>

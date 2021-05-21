@@ -14,7 +14,8 @@ public interface LoginService {
 
     @POST("login.php?")
     @FormUrlEncoded
-    Call<LoginModel> getLogin(@Field("email") String contact_no);
+    Call<LoginModel> getLogin(@Field("email") String contact_no,
+                              @Field("otp_app_token") String otp_app_token);
 
     @POST("login.php?")
     @FormUrlEncoded

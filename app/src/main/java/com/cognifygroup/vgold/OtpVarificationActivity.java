@@ -83,10 +83,6 @@ public class OtpVarificationActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_otp_varification);
 
 
-        AppSignatureHashHelper appSignatureHashHelper = new AppSignatureHashHelper(this);
-
-        Log.i("TAG", "HashKey: " + appSignatureHashHelper.getAppSignatures().get(0));
-
         initAllViews();
 
         receiver = new BroadcastReceiver() {
@@ -394,7 +390,12 @@ public class OtpVarificationActivity extends AppCompatActivity implements
             case R.id.tv_resend_otp:
 
                 if (moveFrom.equalsIgnoreCase("login")) {
-                    loginApi();
+
+                    AppSignatureHashHelper appSignatureHashHelper = new AppSignatureHashHelper(this);
+
+//                    Log.i("TAG", "HashKey: " + appSignatureHashHelper.getAppSignatures().get(0));
+
+                    loginApi(appSignatureHashHelper.getAppSignatures().get(0));
                 }
                 break;
         }
@@ -651,10 +652,10 @@ public class OtpVarificationActivity extends AppCompatActivity implements
         });
     }
 
-    private void loginApi() {
+    private void loginApi(String appSignature) {
 
         progressDialog.show();
-        mLoginServiceProvider.callUserLogin(mobNo, new APICallback() {
+        mLoginServiceProvider.callUserLogin(mobNo, appSignature, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 String Status = ((LoginModel) serviceResponse).getStatus();
@@ -663,7 +664,7 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                     ArrayList<LoginModel.Data> loginModelArrayList = ((LoginModel) serviceResponse).getData();
                     if (Status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(OtpVarificationActivity.this, "Alert", "message",
+                        AlertDialogs.alertDialogOk(OtpVarificationActivity.this, "Alert", message,
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
                     } else {

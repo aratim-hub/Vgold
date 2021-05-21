@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.renderscript.ScriptGroup;
@@ -39,6 +40,8 @@ import com.cognifygroup.vgold.loginImage.LoginImageServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
+import com.cognifygroup.vgold.utils.AppSignatureHashHelper;
+import com.cognifygroup.vgold.utils.AskPermissions;
 import com.cognifygroup.vgold.utils.BaseActivity;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.Constant;
@@ -377,7 +380,14 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
             } /*else if (mPassword.length() == 0) {
             edtLoginPassword.setError("Enter Valid password");
         }*/ else {
-                loginApi(mEmail, mPassword);
+
+                AppSignatureHashHelper appSignatureHashHelper = new AppSignatureHashHelper(this);
+
+                Log.i("TAG", "HashKey: " + appSignatureHashHelper.getAppSignatures().get(0));
+
+//                Toast.makeText(getApplicationContext(), appSignatureHashHelper.getAppSignatures().get(0), Toast.LENGTH_SHORT).show();
+
+                loginApi(mEmail, mPassword, appSignatureHashHelper.getAppSignatures().get(0));
             }
         } else {
             String mOtp = edtLoginOTP.getText().toString();
@@ -410,10 +420,10 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
         return super.onOptionsItemSelected(item);
     }*/
 
-    private void loginApi(String mEmail, String mPassword) {
+    private void loginApi(String mEmail, String mPassword, String appSignature) {
 
         progressDialog.show();
-        mLoginServiceProvider.callUserLogin(mEmail, new APICallback() {
+        mLoginServiceProvider.callUserLogin(mEmail, appSignature, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 String Status = ((LoginModel) serviceResponse).getStatus();

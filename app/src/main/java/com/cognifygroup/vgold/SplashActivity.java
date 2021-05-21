@@ -30,7 +30,6 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             askPermissions = new AskPermissions(SplashActivity.this);
             if (askPermissions.checkAndRequestPermissions()) {

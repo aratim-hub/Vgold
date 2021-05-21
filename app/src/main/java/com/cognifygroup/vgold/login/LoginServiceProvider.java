@@ -21,9 +21,9 @@ public class LoginServiceProvider {
         mLoginService = APIServiceFactory.createService(LoginService.class, context);
     }
 
-    public void callUserLogin(String email, final APICallback apiCallback) {
+    public void callUserLogin(String email,String appSignature, final APICallback apiCallback) {
         Call<LoginModel> call = null;
-        call = mLoginService.getLogin(email);
+        call = mLoginService.getLogin(email,appSignature);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<LoginModel>() {

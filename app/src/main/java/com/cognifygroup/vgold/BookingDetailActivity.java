@@ -320,15 +320,14 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                 new Uri.Builder()
                         .scheme("upi")
                         .authority("pay")
-//                        .appendQueryParameter("pa", "9881136531@okbizaxis")
-                        .appendQueryParameter("pa", "vgold@hdfcbank")
+                        .appendQueryParameter("pa", "9881136531@okbizaxis")
                         .appendQueryParameter("pn", "VGold Pvt. Ltd.")
-                        .appendQueryParameter("mc", "101222")
+                        .appendQueryParameter("mc", "")
                         .appendQueryParameter("tr", transNo)
                         .appendQueryParameter("tn", "GB_" + weight + "_" + goldRate + " " + name + "(" + VGoldApp.onGetUerId() + ")")
                         .appendQueryParameter("am", String.valueOf(amt))
                         .appendQueryParameter("cu", "INR")
-                        .appendQueryParameter("url", "your-transaction-url")
+//                        .appendQueryParameter("url", "your-transaction-url")
                         .build();
 
         /*Uri uri = Uri.parse("upi://pay").buildUpon()
@@ -343,7 +342,6 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                 .appendQueryParameter("cu", "INR")
                 //.appendQueryParameter("refUrl", "blueapp")
                 .build();*/
-
         Intent upiPayIntent = new Intent(Intent.ACTION_VIEW);
         upiPayIntent.setData(uri);
         Intent chooser = Intent.createChooser(upiPayIntent, "Pay with");

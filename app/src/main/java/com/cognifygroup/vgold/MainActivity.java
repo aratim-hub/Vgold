@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
@@ -119,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @InjectView(R.id.rate_scroll_title)
     TextView rate_scroll_title;
+
+    @InjectView(R.id.btnBookGold)
+    Button btnBookGold;
 
     @InjectView(R.id.imgPlan)
     ImageView imgPlan;
@@ -511,6 +515,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @OnClick(R.id.imgReferEarn)
     public void onClickReferandEarn() {
         Intent intent = new Intent(MainActivity.this, ReferActivity.class);
+        startActivity(intent);
+
+    }
+    @OnClick(R.id.btnBookGold)
+    public void onClickBookGold() {
+        Intent intent = new Intent(MainActivity.this, GoldBookingActivity.class);
         startActivity(intent);
 
     }

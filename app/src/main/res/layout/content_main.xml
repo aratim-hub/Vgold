@@ -599,7 +599,21 @@
 
                 </RelativeLayout>
 
+
             </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnBookGold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Book Gold"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginRight="@dimen/height_10"
+                android:layout_marginBottom="@dimen/height_5"
+                android:background="@drawable/border_for_button"
+                android:textColor="@color/colorwhite"
+                android:layout_alignParentBottom="true"/>
+
 
         </LinearLayout>
 
