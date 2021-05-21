@@ -1,6 +1,7 @@
 package com.cognifygroup.vgold.plan;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import butterknife.ButterKnife;
@@ -8,14 +9,20 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -41,9 +48,12 @@ import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -111,6 +121,8 @@ public class PlanActivity extends AppCompatActivity implements AlertDialogOkList
     @InjectView(R.id.shareFab)
     FloatingActionButton shareFab;
 
+    Bitmap bitmap;
+    Bitmap screenshot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +165,8 @@ public class PlanActivity extends AppCompatActivity implements AlertDialogOkList
             @Override
             public void onClick(View v) {
 
-                String weight = edtgoldWeight.getText().toString();
+                palnLayout.setVisibility(View.VISIBLE);
+               /* String weight = edtgoldWeight.getText().toString();
                 File filePath = new File(Environment.getExternalStorageDirectory()
                         .getPath() + "/" + "VGOLD" + "/plans_" + weight + ".pdf");
 //                        .getPath() + "/" + "VGOLD" + "/plans.pdf");
@@ -170,9 +183,96 @@ public class PlanActivity extends AppCompatActivity implements AlertDialogOkList
                     share.setPackage("com.whatsapp");
 
                     startActivity(share);
+                }*/
+
+
+                getScreenShotFromView(palnLayout);
+
+                if (screenshot != null) {
+                    saveMediaToStorage(screenshot);
                 }
             }
         });
+
+
+    }
+
+
+    public void getScreenShotFromView(LinearLayout v) {
+        // create a bitmap object
+        //  var screenshot: Bitmap? = null
+
+
+        try {
+            // inflate screenshot object
+            // with Bitmap.createBitmap it
+            // requires three parameters
+            // width and height of the view and
+            // the background color
+            screenshot = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+            // Now draw this bitmap on a canvas
+            Canvas canvas = new Canvas(screenshot);
+            v.draw(canvas);
+        } catch (Exception e) {
+            Log.e("GFG", "Failed to capture screenshot because:" + e.getMessage());
+        }
+        // return the bitmap
+        //    return screenshot;
+    }
+
+    public void saveMediaToStorage(Bitmap bitmap) {
+        Uri imageUri = null;
+        OutputStream outputStream = null;
+        String filename = System.currentTimeMillis() + ".jpg";
+        OutputStream fos = null;
+        if (Build.VERSION.SDK_INT >= 29) {
+            ContentResolver contentResolver = this.getContentResolver();
+            if (contentResolver != null) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+                imageUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                if (imageUri != null) {
+                    try {
+                        outputStream = contentResolver.openOutputStream(imageUri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    outputStream = null;
+                }
+
+                fos = outputStream;
+            }
+        } else {
+            File imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File image = new File(imagesDir, filename);
+            try {
+                fos = (OutputStream) (new FileOutputStream(image));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (fos != null) {
+            Closeable var22 = (Closeable) fos;
+            OutputStream it = (OutputStream) var22;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            Toast.makeText((Context) this, (CharSequence) "Captured View and saved to Gallery", 0).show();
+
+            Intent whatsappIntent = new Intent(Intent.ACTION_SEND);
+            whatsappIntent.setPackage("com.whatsapp");
+            whatsappIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            whatsappIntent.setType("image/jpeg");
+            whatsappIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            try {
+                this.startActivity(whatsappIntent);
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "Whatsapp have not been installed.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @OnClick(R.id.btnViewPlan)
