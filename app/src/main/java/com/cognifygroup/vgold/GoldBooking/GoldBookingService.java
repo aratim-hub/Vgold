@@ -17,5 +17,6 @@ public interface GoldBookingService {
     @FormUrlEncoded
     Call<GoldBookingModel> getGoldBooking(@Field("quantity") String quantity,
                                          @Field("tennure") String tennure,
-                                         @Field("pc") String pc);
+                                         @Field("pc") String pc,
+                                         @Field("user_id") String userId);
 }

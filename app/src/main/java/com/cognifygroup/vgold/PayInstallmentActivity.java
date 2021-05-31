@@ -58,6 +58,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     @InjectView(R.id.txtAmount)
     TextView txtAmount;
 
+    @InjectView(R.id.txtRupee)
+    TextView txtRupee;
+
     @InjectView(R.id.spinner_payment_option)
     Spinner spinner_payment_option;
     @InjectView(R.id.llCheque)
@@ -174,10 +177,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
 
                 if (radioMinAmt.isChecked()) {
-                    txtAmount.setVisibility(View.VISIBLE);
+//                    txtAmount.setVisibility(View.VISIBLE);
                     txtOtherAmount.setVisibility(View.GONE);
                 } else {
-                    txtAmount.setVisibility(View.GONE);
+//                    txtAmount.setVisibility(View.GONE);
                     txtOtherAmount.setVisibility(View.VISIBLE);
                 }
             }
@@ -257,10 +260,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
 
         if (radioMinAmt.isChecked()) {
-            txtAmount.setVisibility(View.VISIBLE);
+//            txtAmount.setVisibility(View.VISIBLE);
             txtOtherAmount.setVisibility(View.GONE);
         } else {
-            txtAmount.setVisibility(View.GONE);
+//            txtAmount.setVisibility(View.GONE);
             txtOtherAmount.setVisibility(View.VISIBLE);
         }
 
@@ -561,6 +564,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     if (status.equals("200")) {
 
                         txtAmount.setText(amount);
+                        txtRupee.setText(getResources().getString(R.string.rs));
 
                         if (radioMinAmt.isChecked()) {
                             txtAmount.setVisibility(View.VISIBLE);

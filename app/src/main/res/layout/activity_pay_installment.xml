@@ -30,19 +30,37 @@
             android:entries="@array/GoldWeight_array">
         </Spinner>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:text="How much do you want to pay?"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack"/>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
 
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="6dp"
             android:layout_marginRight="10dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <RadioButton
                 android:id="@+id/radioMinAmt"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Minimum Amount"
@@ -52,11 +70,71 @@
                 android:id="@+id/radioOtherAmt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
                 android:checked="false"
                 android:text="Other Amount"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
         </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtRupee"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical"
+                    android:visibility="visible"
+                    android:inputType="numberDecimal"
+                    android:digits="0123456789"
+                    android:layout_marginLeft="@dimen/height_10"
+                    android:backgroundTint="@color/colorblack"
+                    android:hint=""/>
+
+        <TextView
+            android:id="@+id/txtAmount"
+            android:layout_width="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack"
+            android:hint=""/>
+
+            </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:text=""
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:layout_marginLeft="@dimen/height_10"
+            android:backgroundTint="@color/colorblack"
+            android:hint=""/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
         <TextView
@@ -69,7 +147,7 @@
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/txtAmount"
             android:layout_width="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -81,7 +159,7 @@
             android:digits="0123456789"
             android:layout_marginLeft="@dimen/height_10"
             android:backgroundTint="@color/colorblack"
-            android:hint=""/>
+            android:hint=""/>-->
 
         <TextView
             android:layout_width="match_parent"

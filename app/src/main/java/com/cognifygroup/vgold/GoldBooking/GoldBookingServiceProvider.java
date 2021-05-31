@@ -25,9 +25,9 @@ public class GoldBookingServiceProvider {
         goldBookingService = APIServiceFactory.createService(GoldBookingService.class, context);
     }
 
-    public void getAddBankDetails(String quantity, String tennure, String pc, final APICallback apiCallback) {
+    public void getAddBankDetails(String quantity, String tennure, String pc,String userId, final APICallback apiCallback) {
         Call<GoldBookingModel> call = null;
-        call = goldBookingService.getGoldBooking(quantity,tennure,pc);
+        call = goldBookingService.getGoldBooking(quantity,tennure,pc,userId);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<GoldBookingModel>() {
