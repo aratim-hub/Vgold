@@ -43,8 +43,8 @@
         <item>--Please select Payment Option--</item>
         <item>cheque</item>
         <item>NEFT/RTGS/Online Transfer</item>
-        <item>Gold Wallet</item>
-        <item>Money Wallet</item>
+<!--        <item>Gold Wallet</item>-->
+<!--        <item>Money Wallet</item>-->
         <item>UPI Payment</item>
         <!--        <item>Credit/Debit/Net Banking(Payment Gateway)</item>-->
     </string-array>

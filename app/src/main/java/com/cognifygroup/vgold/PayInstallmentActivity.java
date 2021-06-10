@@ -1,22 +1,36 @@
 package com.cognifygroup.vgold;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -24,6 +38,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cognifygroup.vgold.Adapter.GoldTransactionAdapter;
+import com.cognifygroup.vgold.Adapter.MoneyTransactionAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
@@ -31,10 +47,16 @@ import com.cognifygroup.vgold.Payumoney.PayUMoneyActivity;
 import com.cognifygroup.vgold.addGold.AddGoldModel;
 import com.cognifygroup.vgold.fetchDownPayment.FetchDownPaymentModel;
 import com.cognifygroup.vgold.fetchDownPayment.FetchDownPaymentServiceProvider;
+import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldModel;
+import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldServiceProvider;
+import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
+import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyServiceProvider;
 import com.cognifygroup.vgold.getBankDetails.GetBankModel;
 import com.cognifygroup.vgold.getBankDetails.GetBankServiceProvider;
 import com.cognifygroup.vgold.getBookingId.GetBookingIdModel;
 import com.cognifygroup.vgold.getBookingId.GetGoldBookingIdServiceProvider;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
 import com.cognifygroup.vgold.payInstallment.PayInstallmentModel;
 import com.cognifygroup.vgold.payInstallment.PayInstallmentServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
@@ -45,11 +67,14 @@ import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
 public class PayInstallmentActivity extends AppCompatActivity implements AlertDialogOkListener {
 
@@ -74,6 +99,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     RadioButton radioMinAmt;
     @InjectView(R.id.radioOtherAmt)
     RadioButton radioOtherAmt;
+    @InjectView(R.id.radioMoneyWallet)
+    RadioButton radioMoneyWallet;
+    @InjectView(R.id.radioGoldWallet)
+    RadioButton radioGoldWallet;
     @InjectView(R.id.radioGroup)
     RadioGroup radioGroup;
 
@@ -87,9 +116,43 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     @InjectView(R.id.edtTxnId)
     EditText edtTxnId;
 
+    @InjectView(R.id.txtPayableAmount)
+    EditText txtPayableAmount;
     @InjectView(R.id.txtOtherAmount)
     EditText txtOtherAmount;
 
+    @InjectView(R.id.txtWalletAmount)
+    TextView txtWalletAmount;
+
+    @InjectView(R.id.txtGoldAmount)
+    TextView txtGoldAmount;
+
+    @InjectView(R.id.api)
+    LinearLayout api;
+    @InjectView(R.id.txtWalletRupee)
+    TextView txtWalletRupee;
+    @InjectView(R.id.txtGoldValue)
+    TextView txtGoldValue;
+
+    @InjectView(R.id.calculationLayout)
+    LinearLayoutCompat calculationLayout;
+
+    @InjectView(R.id.txtGSTAmtId)
+    TextView txtGSTAmtId;
+    @InjectView(R.id.txtGSTPayableAmtId)
+    TextView txtGSTPayableAmtId;
+    @InjectView(R.id.txtDeductedGoldId)
+    TextView txtDeductedGoldId;
+    @InjectView(R.id.txtSaleRateId)
+    TextView txtSaleRateId;
+    @InjectView(R.id.txtPayableAmtId)
+    TextView txtPayableAmtId;
+    @InjectView(R.id.txtWalletAmtId)
+    TextView txtWalletAmtId;
+    @InjectView(R.id.txtBalanceRemainId)
+    TextView txtBalanceRemainId;
+
+    private String moneyWalletBal;
 
     final int UPI_PAYMENT = 0;
     String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
@@ -102,10 +165,16 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     String todayGoldRate = "0";
     private String msg;
 
+    double remainWalletAmt = 0.0;
+    private PayInstallmentModel.Data dataModel;
+
     AlertDialogs mAlert;
     GetGoldBookingIdServiceProvider getGoldBookingIdServiceProvider;
     FetchDownPaymentServiceProvider fetchDownPaymentServiceProvider;
     PayInstallmentServiceProvider payInstallmentServiceProvider;
+    GetAllTransactionMoneyServiceProvider getAllTransactionMoneyServiceProvider;
+    GetAllTransactionGoldServiceProvider getAllTransactionGoldServiceProvider;
+    GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
 
     String bookingId;
     private TransparentProgressDialog progressDialog;
@@ -129,15 +198,16 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         getGoldBookingIdServiceProvider = new GetGoldBookingIdServiceProvider(this);
         fetchDownPaymentServiceProvider = new FetchDownPaymentServiceProvider(this);
         payInstallmentServiceProvider = new PayInstallmentServiceProvider(this);
-
-        AttemptTogetBookingId(VGoldApp.onGetUerId());
+        getAllTransactionMoneyServiceProvider = new GetAllTransactionMoneyServiceProvider(this);
+        getAllTransactionGoldServiceProvider = new GetAllTransactionGoldServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
+        getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.payment_option, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(R.layout.custom_spinner_item);
-// Apply the adapter to the spinner
         spinner_payment_option.setAdapter(adapter);
+
         spinner_payment_option.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -150,11 +220,15 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     payment_option = "RTGS";
                     llRTGS.setVisibility(View.VISIBLE);
                     llCheque.setVisibility(View.GONE);
-                } else if (paymentoption.equals("Wallet")) {
-                    payment_option = "Wallet";
+                } /*else if (paymentoption.equals("Gold Wallet")) {
+                    payment_option = "Gold Wallet";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
-                } else if (paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
+                } else if (paymentoption.equals("Money Wallet")) {
+                    payment_option = "Money Wallet";
+                    llCheque.setVisibility(View.GONE);
+                    llRTGS.setVisibility(View.GONE);
+                }*/ else if (paymentoption.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                     payment_option = "Credit/Debit/Net Banking(Payment Gateway)";
                     llCheque.setVisibility(View.GONE);
                     llRTGS.setVisibility(View.GONE);
@@ -174,22 +248,236 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-
                 if (radioMinAmt.isChecked()) {
-//                    txtAmount.setVisibility(View.VISIBLE);
+                    txtAmount.setVisibility(View.VISIBLE);
                     txtOtherAmount.setVisibility(View.GONE);
-                } else {
-//                    txtAmount.setVisibility(View.GONE);
+                    txtPayableAmount.setVisibility(View.GONE);
+                    txtGoldAmount.setVisibility(View.GONE);
+                    txtGoldValue.setVisibility(View.GONE);
+                    txtWalletAmount.setVisibility(View.GONE);
+                    txtWalletRupee.setVisibility(View.GONE);
+                    api.setVisibility(View.VISIBLE);
+
+                } else if (radioOtherAmt.isChecked()) {
+                    txtOtherAmount.setText("");
                     txtOtherAmount.setVisibility(View.VISIBLE);
+                    txtPayableAmount.setVisibility(View.GONE);
+                    api.setVisibility(View.VISIBLE);
+                    txtGoldAmount.setVisibility(View.GONE);
+                    txtGoldValue.setVisibility(View.GONE);
+                    txtWalletAmount.setVisibility(View.GONE);
+                    txtWalletRupee.setVisibility(View.GONE);
+                } else if (radioMoneyWallet.isChecked()) {
+                    AttemptToGetMoneyBalance(VGoldApp.onGetUerId());
+                    txtPayableAmount.setText("");
+                    txtOtherAmount.setVisibility(View.GONE);
+                    calculationLayout.setVisibility(View.GONE);
+                    txtPayableAmount.setVisibility(View.VISIBLE);
+                    txtGoldAmount.setVisibility(View.GONE);
+                    txtGoldValue.setVisibility(View.GONE);
+                    txtWalletAmount.setVisibility(View.VISIBLE);
+                    txtWalletRupee.setVisibility(View.VISIBLE);
+                    api.setVisibility(View.GONE);
+                } else {
+                    AttemptToGetGoldBalance(VGoldApp.onGetUerId());
+                    txtPayableAmount.setText("");
+                    calculationLayout.setVisibility(View.GONE);
+                    txtOtherAmount.setVisibility(View.GONE);
+                    txtPayableAmount.setVisibility(View.VISIBLE);
+                    txtGoldAmount.setVisibility(View.VISIBLE);
+                    txtGoldValue.setVisibility(View.VISIBLE);
+                    txtWalletAmount.setText("");
+                    txtWalletRupee.setText("");
+                    api.setVisibility(View.GONE);
                 }
             }
         });
 
 
-        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
-        checkLoginSession();
+        txtPayableAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (radioMoneyWallet.isChecked()) {
+                    if (s.length() > 0) {
+                        calculateMoneyAmount(String.valueOf(s));
+                    } else {
+                        txtWalletAmount.setText(moneyWalletBal);
+                        calculationLayout.setVisibility(View.GONE);
+                    }
+                } else if (radioGoldWallet.isChecked()) {
+
+                    if (s.length() > 0) {
+                        AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                "" + txtAmount.getText().toString(),
+                                "Gold Wallet",
+                                "", "",
+                                txtPayableAmount.getText().toString(),
+                                "", "0");
+                    }else {
+                        txtWalletAmount.setText(moneyWalletBal);
+                        calculationLayout.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        checkLoginSession();
+        AttemptTogetBookingId(VGoldApp.onGetUerId());
+    }
+
+    private void calculateMoneyAmount(String payableAmt) {
+        if (moneyWalletBal != null && !TextUtils.isEmpty(moneyWalletBal) && !moneyWalletBal.equalsIgnoreCase("null")) {
+            remainWalletAmt = Double.parseDouble(moneyWalletBal) - Double.parseDouble(payableAmt);
+            if (remainWalletAmt > 0) {
+                txtWalletAmount.setText(String.format("%.2f", remainWalletAmt));
+            } else {
+                txtPayableAmount.setError("Amount Exceed");
+            }
+        }
+        calculationLayout.setVisibility(View.VISIBLE);
+        txtGSTAmtId.setVisibility(View.GONE);
+        txtGSTPayableAmtId.setVisibility(View.GONE);
+        txtDeductedGoldId.setVisibility(View.GONE);
+        txtSaleRateId.setVisibility(View.GONE);
+        txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                + txtPayableAmount.getText().toString());
+        txtWalletAmtId.setText("Money in Wallet : " + getResources().getString(R.string.rs)
+                + moneyWalletBal);
+        txtBalanceRemainId.setText("Remaining Money in Wallet : "
+                + getResources().getString(R.string.rs) + remainWalletAmt);
+    }
+
+    private void AttemptToGetMoneyBalance(String user_id) {
+        progressDialog.show();
+        getAllTransactionMoneyServiceProvider.getAllTransactionMoneyHistory(user_id, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetAllTransactionMoneyModel) serviceResponse).getStatus();
+                    String message = ((GetAllTransactionMoneyModel) serviceResponse).getMessage();
+                    moneyWalletBal = ((GetAllTransactionMoneyModel) serviceResponse).getWallet_Balance();
+
+//                    walletAmtId.setText("Money Wallet Balance " + getResources().getString(R.string.rs) + "" + moneyWalletBal);
+                    txtWalletRupee.setText(getResources().getString(R.string.rs));
+                    txtWalletAmount.setText(moneyWalletBal);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(PayInstallmentActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void AttemptToGetGoldBalance(String user_id) {
+        progressDialog.show();
+        getAllTransactionGoldServiceProvider.getAllTransactionGoldHistory(user_id, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetAllTransactionGoldModel) serviceResponse).getStatus();
+                    String message = ((GetAllTransactionGoldModel) serviceResponse).getMessage();
+                    String balance = ((GetAllTransactionGoldModel) serviceResponse).getGold_Balance();
+                    double gold = Double.parseDouble(balance);
+                    DecimalFormat numberFormat = new DecimalFormat("#.000");
+                    gold = Double.parseDouble(numberFormat.format(gold));
+//                    walletAmtId.setText("Gold Wallet Balance " + gold + " GM");
+                    txtGoldAmount.setText(gold + " GM");
+
+                    AttemptToGetTodayGoldRate(gold);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(PayInstallmentActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void AttemptToGetTodayGoldRate(double gold) {
+        getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetTodayGoldRateModel) serviceResponse).getStatus();
+                    String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
+                    String todayGoldPurchaseRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
+
+                    double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
+
+                    String amt = new DecimalFormat("##.##").format(sellingRate);
+                    txtGoldValue.setText("(Worth ₹ " + amt + ")");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(PayInstallmentActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(PayInstallmentActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
     }
 
     private void checkLoginSession() {
@@ -257,34 +545,88 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     @OnClick(R.id.btnProceedToPayment1)
     public void OnClickOfProceedToPayment1() {
-
-
-        if (radioMinAmt.isChecked()) {
-//            txtAmount.setVisibility(View.VISIBLE);
-            txtOtherAmount.setVisibility(View.GONE);
-        } else {
-//            txtAmount.setVisibility(View.GONE);
-            txtOtherAmount.setVisibility(View.VISIBLE);
-        }
-
         if (spinner_goldBookingId.getSelectedItemPosition() != 0) {
-            if (spinner_payment_option.getSelectedItemPosition() != 0) {
 
-                if (txtOtherAmount.getVisibility() == View.VISIBLE) {
+            if (radioMinAmt.isChecked()) {
+                txtOtherAmount.setVisibility(View.GONE);
+            } else {
+                txtOtherAmount.setVisibility(View.VISIBLE);
+            }
 
-                    if (txtOtherAmount.getText().toString() != null && !TextUtils.isEmpty(txtOtherAmount.getText().toString())) {
-                        Double otherAmt = Double.valueOf(txtOtherAmount.getText().toString());
+            if (api.getVisibility() == View.VISIBLE) {
+                if (spinner_payment_option.getSelectedItemPosition() != 0) {
+
+                    if (txtOtherAmount.getVisibility() == View.VISIBLE) {
+
+                        if (txtOtherAmount.getText().toString() != null && !TextUtils.isEmpty(txtOtherAmount.getText().toString())) {
+                            Double otherAmt = Double.valueOf(txtOtherAmount.getText().toString());
 
 //                    if (!txtAmount.getText().toString().equals("") && txtAmount.getText().toString() != null) {
 //                        Double minAmt = Double.valueOf(txtAmount.getText().toString());
 
-                        if (otherAmt > 0) {
+                            if (otherAmt > 0) {
+                                if (payment_option.equals("Cheque")) {
+
+                                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                            "" + txtAmount.getText().toString(), payment_option,
+                                            edtBankDetail.getText().toString(), "", txtOtherAmount.getText().toString(),
+                                            edtChequeNo.getText().toString(), "0");
+
+
+                                } else if (payment_option.equals("RTGS")) {
+
+                                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                            "" + txtAmount.getText().toString(), payment_option,
+                                            edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(),
+                                            txtOtherAmount.getText().toString(), "", "0");
+
+                                } /*else if (payment_option.equals("Money Wallet")) {
+
+                                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                        "" + txtAmount.getText().toString(), payment_option,
+                                        "", "", txtOtherAmount.getText().toString(),
+                                        "", "0");
+
+                            } else if (payment_option.equals("Gold Wallet")) {
+
+                                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                        "" + txtAmount.getText().toString(), payment_option,
+                                        "", "", txtOtherAmount.getText().toString(),
+                                        "", "0");
+
+                            }*/ else if (payment_option.equals("UPI Payment")) {
+                                    integrateGpay(bookingId, txtOtherAmount.getText().toString());
+
+                                } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
+                                    startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
+                                            .putExtra("AMOUNT", "" + txtAmount.getText().toString())
+                                            .putExtra("OTHERAMOUNT", "" + txtOtherAmount.getText().toString())
+                                            .putExtra("bookingId", bookingId));
+
+                                } else {
+
+                                    AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please select payment option",
+                                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+
+                                }
+                            } else {
+                                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Other amount should be greater than 0",
+                                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                            }
+                        } else {
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
+                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        }
+
+                    } else {
+                        if (!txtAmount.getText().toString().equals("") && txtAmount.getText().toString() != null) {
+
                             if (payment_option.equals("Cheque")) {
 
                                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
                                         "" + txtAmount.getText().toString(), payment_option,
                                         edtBankDetail.getText().toString(), "", txtOtherAmount.getText().toString(),
-                                        edtChequeNo.getText().toString());
+                                        edtChequeNo.getText().toString(), "0");
 
 
                             } else if (payment_option.equals("RTGS")) {
@@ -292,16 +634,24 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
                                         "" + txtAmount.getText().toString(), payment_option,
                                         edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(),
-                                        txtOtherAmount.getText().toString(), "");
+                                        txtOtherAmount.getText().toString(), "", "0");
 
-                            } else if (payment_option.equals("Wallet")) {
+                            } /*else if (payment_option.equals("Money Wallet")) {
 
                                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
                                         "" + txtAmount.getText().toString(), payment_option,
-                                        "", "", txtOtherAmount.getText().toString(), "");
+                                        "", "",
+                                        txtOtherAmount.getText().toString(), "", "0");
 
-                            } else if (payment_option.equals("UPI Payment")) {
-                                integrateGpay(bookingId, txtOtherAmount.getText().toString());
+                            } else if (payment_option.equals("Gold Wallet")) {
+
+                                AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                                        "" + txtAmount.getText().toString(), payment_option,
+                                        "", "",
+                                        txtOtherAmount.getText().toString(), "", "0");
+
+                            }*/ else if (payment_option.equals("UPI Payment")) {
+                                integrateGpay(bookingId, txtAmount.getText().toString());
 
                             } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
                                 startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
@@ -310,66 +660,48 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                                         .putExtra("bookingId", bookingId));
 
                             } else {
-
                                 AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please select payment option",
                                         getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
                             }
                         } else {
-                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Other amount should be greater than 0",
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
                                     getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
                         }
-                    } else {
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-                    }
 
+                    }
                 } else {
-                    if (!txtAmount.getText().toString().equals("") && txtAmount.getText().toString() != null) {
-
-                        if (payment_option.equals("Cheque")) {
-
-                            AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
-                                    "" + txtAmount.getText().toString(), payment_option,
-                                    edtBankDetail.getText().toString(), "", txtOtherAmount.getText().toString(),
-                                    edtChequeNo.getText().toString());
-
-
-                        } else if (payment_option.equals("RTGS")) {
-
-                            AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
-                                    "" + txtAmount.getText().toString(), payment_option,
-                                    edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(),
-                                    txtOtherAmount.getText().toString(), "");
-
-                        } else if (payment_option.equals("Wallet")) {
-
-                            AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
-                                    "" + txtAmount.getText().toString(), payment_option,
-                                    "", "", txtOtherAmount.getText().toString(), "");
-
-                        } else if (payment_option.equals("UPI Payment")) {
-                            integrateGpay(bookingId, txtAmount.getText().toString());
-
-                        } else if (payment_option.equals("Credit/Debit/Net Banking(Payment Gateway)")) {
-                            startActivity(new Intent(PayInstallmentActivity.this, PayUMoneyActivity.class)
-                                    .putExtra("AMOUNT", "" + txtAmount.getText().toString())
-                                    .putExtra("OTHERAMOUNT", "" + txtOtherAmount.getText().toString())
-                                    .putExtra("bookingId", bookingId));
-
-                        } else {
-                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please select payment option",
-                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-
-                        }
+                    AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please Select Payment Option",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
+            } else if (radioMoneyWallet.isChecked()) {
+                if (txtPayableAmount.getText().toString() != null && !TextUtils.isEmpty(txtPayableAmount.getText().toString())) {
+                    double otherAmt = Double.valueOf(txtPayableAmount.getText().toString());
+                    if (otherAmt > 0) {
+                        ShowPopupDialog(null, "moneyWallet");
                     } else {
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter vaild Amount",
+                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
                     }
-
-                }
+                } else {
+                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
+                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+            }
+            } else if (radioGoldWallet.isChecked()) {
+                if (txtPayableAmount.getText().toString() != null && !TextUtils.isEmpty(txtPayableAmount.getText().toString())) {
+                    double otherAmt = Double.valueOf(txtPayableAmount.getText().toString());
+                    if (otherAmt > 0) {
+                        ShowPopupDialog(dataModel, "goldWallet");
+                    } else {
+                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                    }
+                } else {
+                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
+                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+            }
             } else {
-                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please Select Payment Option",
+                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please Select Payment Mode",
                         getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
             }
 
@@ -377,9 +709,89 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
             AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please Select Booking Id",
                     getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
         }
-
-
     }
+
+    private void ShowPopupDialog(PayInstallmentModel.Data dataModel, String key) {
+        final Dialog dialog = new Dialog(PayInstallmentActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.wallet_payment_dialog);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        AppCompatButton btnYes = dialog.findViewById(R.id.btnYes);
+        AppCompatButton btnNo = dialog.findViewById(R.id.btnNo);
+        TextView txtBalanceRemainId = dialog.findViewById(R.id.txtBalanceRemainId);
+        TextView txtPayableAmtId = dialog.findViewById(R.id.txtPayableAmtId);
+        TextView txtSaleRateId = dialog.findViewById(R.id.txtSaleRateId);
+        TextView txtGSTAmtId = dialog.findViewById(R.id.txtGSTAmtId);
+        TextView txtWalletAmtId = dialog.findViewById(R.id.txtWalletAmtId);
+        TextView txtGSTPayableAmtId = dialog.findViewById(R.id.txtGSTPayableAmtId);
+        TextView txtDeductedGoldId = dialog.findViewById(R.id.txtDeductedGoldId);
+
+        if (key.equalsIgnoreCase("moneyWallet")) {
+            txtGSTAmtId.setVisibility(View.GONE);
+            txtGSTPayableAmtId.setVisibility(View.GONE);
+            txtDeductedGoldId.setVisibility(View.GONE);
+            txtSaleRateId.setVisibility(View.GONE);
+            txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                    + txtPayableAmount.getText().toString());
+            txtWalletAmtId.setText("Money in Wallet : " + getResources().getString(R.string.rs)
+                    + moneyWalletBal);
+            txtBalanceRemainId.setText("Remaining Money in Wallet : "
+                    + getResources().getString(R.string.rs) + remainWalletAmt);
+        } else {
+            if (dataModel != null) {
+                txtGSTAmtId.setVisibility(View.VISIBLE);
+                txtGSTPayableAmtId.setVisibility(View.VISIBLE);
+                txtDeductedGoldId.setVisibility(View.VISIBLE);
+                txtSaleRateId.setVisibility(View.VISIBLE);
+
+                txtPayableAmtId.setText("Payable Amount : " +getResources().getString(R.string.rs)
+                        + dataModel.getAmount_to_pay());
+                txtWalletAmtId.setText("Gold in Wallet : " + dataModel.getGold_in_wallet() + " gm");
+                txtSaleRateId.setText("Today's Gold Sale Rate : " + getResources().getString(R.string.rs)
+                        + dataModel.getToday_sale_rate());
+                txtGSTAmtId.setText("GST for Today's Gold Sale Rate : " + dataModel.getGst_per() + "%");
+                txtGSTPayableAmtId.setText("GST on Payable Amount : " + getResources().getString(R.string.rs)
+                        + dataModel.getAmount_to_pay_gst());
+                txtDeductedGoldId.setText("Deducted Gold from Wallet : " + dataModel.getGold_reduce() + " gm");
+                txtBalanceRemainId.setText("Remaining Gold in Wallet : "
+                        + dataModel.getReduced_gold_in_wallet() + " gm");
+            }
+        }
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (key.equalsIgnoreCase("moneyWallet")) {
+                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                            "" + txtAmount.getText().toString(), "Money Wallet",
+                            "", "", txtPayableAmount.getText().toString(),
+                            "", "0");
+                } else {
+                    AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
+                            "" + txtAmount.getText().toString(), "Gold Wallet",
+                            "", "",
+                            txtPayableAmount.getText().toString(), "", "1");
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
 
     private void integrateGpay(String bookingId, String amount) {
         String no = "00000";
@@ -521,7 +933,8 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
                 AttemptToPayInstallment(VGoldApp.onGetUerId(), bookingId,
                         "" + txtAmount.getText().toString(), payment_option,
-                        "", approvalRefNo, txtOtherAmount.getText().toString(), "");
+                        "", approvalRefNo, txtOtherAmount.getText().toString(),
+                        "", "0");
 
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(PayInstallmentActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
@@ -682,26 +1095,50 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     private void AttemptToPayInstallment(String user_id, String gbid, String amountr,
                                          String payment_option, String bank_details,
-                                         String tr_id, String otherAmount, String cheque_no) {
+                                         String tr_id, String otherAmount, String cheque_no,
+                                         String confirmVal) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
         payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option,
-                bank_details, tr_id, otherAmount, cheque_no, new APICallback() {
+                bank_details, tr_id, otherAmount, cheque_no, confirmVal, new APICallback() {
                     @Override
                     public <T> void onSuccess(T serviceResponse) {
                         try {
                             String status = ((PayInstallmentModel) serviceResponse).getStatus();
                             String message = ((PayInstallmentModel) serviceResponse).getMessage();
+                            dataModel = ((PayInstallmentModel) serviceResponse).getData();
 
                             if (status.equals("200")) {
                                 msg = message;
 
-//                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
-//                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                if (payment_option.equalsIgnoreCase("Gold Wallet") &&
+                                        confirmVal.equalsIgnoreCase("0")) {
 
-//                        mAlert.onShowToastNotification(PayInstallmentActivity.this, message);
-                                Intent intent = new Intent(PayInstallmentActivity.this, SuccessActivity.class);
-                                intent.putExtra("message", message);
-                                startActivity(intent);
+                                    calculationLayout.setVisibility(View.VISIBLE);
+                                    txtGSTAmtId.setVisibility(View.VISIBLE);
+                                    txtGSTPayableAmtId.setVisibility(View.VISIBLE);
+                                    txtDeductedGoldId.setVisibility(View.VISIBLE);
+                                    txtSaleRateId.setVisibility(View.VISIBLE);
+
+                                    txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                                            + dataModel.getAmount_to_pay());
+                                    txtWalletAmtId.setText("Gold in Wallet : " + dataModel.getGold_in_wallet() + " gm");
+                                    txtSaleRateId.setText("Today's Gold Sale Rate : " + getResources().getString(R.string.rs)
+                                            + dataModel.getToday_sale_rate());
+                                    txtGSTAmtId.setText("GST for Today's Gold Sale Rate : " + dataModel.getGst_per() + "%");
+                                    txtGSTPayableAmtId.setText("GST on Payable Amount : " + getResources().getString(R.string.rs)
+                                            + dataModel.getAmount_to_pay_gst());
+                                    txtDeductedGoldId.setText("Deducted Gold from Wallet : " + dataModel.getGold_reduce() + " gm");
+                                    txtBalanceRemainId.setText("Remaining Gold in Wallet : "
+                                            + dataModel.getReduced_gold_in_wallet() + " gm");
+
+//                                    ShowPopupDialog(dataModel, "goldWallet");
+
+                                } else {
+                                    Intent intent = new Intent(PayInstallmentActivity.this, SuccessActivity.class);
+                                    intent.putExtra("message", message);
+                                    startActivity(intent);
+                                }
+
                             } else {
 
                                 AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", message,
@@ -736,6 +1173,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     }
                 });
     }
+
 
     @Override
     public void onDialogOk(int resultCode) {

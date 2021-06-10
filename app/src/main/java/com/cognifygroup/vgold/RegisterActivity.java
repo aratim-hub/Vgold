@@ -267,7 +267,12 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                         try {
                             if (apiErrorModel != null) {
                                 Log.i("TAGTAG", "onFailure: " + ((BaseServiceResponseModel) apiErrorModel).getMessage());
-                                PrintUtil.showToast(RegisterActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                                if (((BaseServiceResponseModel) apiErrorModel).getMessage() == null || TextUtils.isEmpty(((BaseServiceResponseModel) apiErrorModel).getMessage()) ||
+                                        ((BaseServiceResponseModel) apiErrorModel).getMessage().equalsIgnoreCase("null")) {
+
+                                    AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Uploaded images are too large",
+                                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                                }
                             } else {
                                 PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
                             }
@@ -332,7 +337,7 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
 
     private String imagetostring(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
         byte[] imgbyte = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
     }

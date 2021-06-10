@@ -502,7 +502,8 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
                                 loginModelArrayList.get(0).getAddress(),
                                 loginModelArrayList.get(0).getCity(),
                                 loginModelArrayList.get(0).getState(),
-                                loginModelArrayList.get(0).getProfile_photo());
+                                loginModelArrayList.get(0).getProfile_photo(),
+                                loginModelArrayList.get(0).getIs_cp());
 
                         VGoldApp.onSetUserRole(loginModelArrayList.get(0).getUser_role(), loginModelArrayList.get(0).getValidity_date());
 

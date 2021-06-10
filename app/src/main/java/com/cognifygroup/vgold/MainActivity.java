@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -162,10 +163,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Menu nav_Menu = navigationView.getMenu();
+        if (VGoldApp.onGetIsCP().equals(1)) {
+            nav_Menu.findItem(R.id.nav_channel_partner).setVisible(true);
+        }else{
+            nav_Menu.findItem(R.id.nav_channel_partner).setVisible(false);
+        }
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
         init();
-
-
     }
 
 
@@ -190,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         txtCrnNo.setText("CRN - " + VGoldApp.onGetUerId());
         txtClientName.setText("" + VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast());
+
 
 
         /*try {
@@ -237,7 +244,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
 
         if (!VGoldApp.onGetUserImg().equals("")) {
-
 
 
             Glide.with(this).load(VGoldApp.onGetUserImg())
@@ -479,7 +485,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
-
     @OnClick(R.id.rleTransferGold)
     public void
     onClickImgTransferGold() {
@@ -518,6 +523,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
 
     }
+
     @OnClick(R.id.btnBookGold)
     public void onClickBookGold() {
         Intent intent = new Intent(MainActivity.this, GoldBookingActivity.class);
@@ -831,6 +837,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(new Intent(this, ReviewActivity.class));
         } else if (id == R.id.nav_feedback) {
             startActivity(new Intent(this, FeedbackActivity.class));
+        } else if (id == R.id.nav_channel_partner) {
+            startActivity(new Intent(this, ChannelPartnerActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

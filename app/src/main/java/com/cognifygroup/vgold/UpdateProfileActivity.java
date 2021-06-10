@@ -342,7 +342,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                                 VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
                                 VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(),
                                 VGoldApp.onGetCity(), VGoldApp.onGetState(),
-                                url);
+                                url,
+                                VGoldApp.onGetIsCP());
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
@@ -388,7 +389,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                         VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
                         VGoldApp.onGetPanNo(),
                         first_name, city, state,
-                        VGoldApp.onGetUserImg());
+                        VGoldApp.onGetUserImg(),VGoldApp.onGetIsCP()
+                        );
                 break;
 
             case 11:

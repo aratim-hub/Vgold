@@ -500,7 +500,7 @@ public class PayUMoneyActivity extends AppCompatActivity implements AlertDialogO
                                          String tr_id, String otherAmount, String cheque_no) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
         payInstallmentServiceProvider.payInstallment(user_id, gbid, amountr, payment_option,
-                bank_details, tr_id, otherAmount, cheque_no, new APICallback() {
+                bank_details, tr_id, otherAmount, cheque_no, "0",new APICallback() {
                     @Override
                     public <T> void onSuccess(T serviceResponse) {
                         try {

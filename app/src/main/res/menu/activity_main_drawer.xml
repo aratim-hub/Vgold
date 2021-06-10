@@ -38,6 +38,11 @@
             android:title="AddBank" />
 
         <item
+            android:id="@+id/nav_channel_partner"
+            android:icon="@drawable/ic_baseline_groups_24"
+            android:title="Channel Partner" />
+
+        <item
             android:id="@+id/nav_review"
             android:icon="@drawable/ic_baseline_comment_24"
             android:title="Review" />

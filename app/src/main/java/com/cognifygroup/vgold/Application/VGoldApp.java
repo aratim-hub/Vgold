@@ -3,7 +3,7 @@ package com.cognifygroup.vgold.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.cognifygroup.vgold.R;
+import com.cognifygroup.vgold.CPModule.CustomViewPager;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -24,6 +24,7 @@ public class VGoldApp extends MultiDexApplication {
     private static ImageLoader mImageLoader;
     private static Context mContext;
     private static SharedPreferences mSharedPreferences;
+    public static CustomViewPager viewPagerr;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -72,7 +73,7 @@ public class VGoldApp extends MultiDexApplication {
                                         String email, String no,
                                         String qr,String pan_no,
                                         String address,String city,
-                                        String state,String userimg) {
+                                        String state,String userimg, Integer isCP) {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
@@ -87,6 +88,7 @@ public class VGoldApp extends MultiDexApplication {
         editor.putString("CITY", city);
         editor.putString("STATE", state);
         editor.putString("USERIMG", userimg);
+        editor.putInt("ISCP", isCP);
 
         editor.commit();
     }
@@ -100,6 +102,30 @@ public class VGoldApp extends MultiDexApplication {
 
         editor1.commit();
 
+    }
+
+
+    public static void onSetChannelPartner(String totUser, String totGold, String totCommission){
+
+        SharedPreferences.Editor editor1 = mSharedPreferences.edit();
+
+        editor1.putString("USERS_TOT", totUser);
+        editor1.putString("GOLD_TOT", totGold);
+        editor1.putString("COMMISSION_TOT", totCommission);
+
+        editor1.commit();
+
+    }
+
+    public static String onGetUserTot() {
+        return mSharedPreferences.getString("USERS_TOT", "");
+    }
+
+    public static String onGetGoldTot() {
+        return mSharedPreferences.getString("GOLD_TOT", "");
+    }
+    public static String onGetCommissionTot() {
+        return mSharedPreferences.getString("COMMISSION_TOT", "");
     }
 
     public static void onSetVersionCode(String version_code){
@@ -168,6 +194,10 @@ public class VGoldApp extends MultiDexApplication {
 
     public static String onGetUserImg() {
         return mSharedPreferences.getString("USERIMG", "");
+    }
+
+    public static Integer onGetIsCP() {
+        return mSharedPreferences.getInt("ISCP", 0);
     }
 
 }

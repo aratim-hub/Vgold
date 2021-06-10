@@ -60,8 +60,8 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
     TextView txSaleAmt;
     @InjectView(R.id.btnAddGoldToWallet)
     Button btnAddGoldToWallet;
-  /*  @InjectView(R.id.btnSell)
-    Button btnSell;*/
+    /*  @InjectView(R.id.btnSell)
+      Button btnSell;*/
     @InjectView(R.id.recyclerViewGoldWallet)
     RecyclerView recyclerViewGoldWallet;
     Dialog dialog;
@@ -202,7 +202,6 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
                     txtWalletGoldWeight.setText(gold + " GM");
 
 
-
                     ArrayList<GetAllTransactionGoldModel.Data> mArrGoldTransactonHistory = ((GetAllTransactionGoldModel) serviceResponse).getData();
 
                     if (status.equals("200")) {
@@ -250,8 +249,7 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
     }
 
 
-    private void
-    AttemptToGetTodayGoldRate(double gold) {
+    private void AttemptToGetTodayGoldRate(double gold) {
         // mAlert.onShowProgressDialog(SellGoldActivity.this, true);
         getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
             @Override
@@ -263,7 +261,7 @@ public class GoldWalletActivity extends AppCompatActivity implements AlertDialog
 
                     double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
 
-                    String amt =  new DecimalFormat("##.##").format(sellingRate);
+                    String amt = new DecimalFormat("##.##").format(sellingRate);
                     txSaleAmt.setText("₹ " + amt);
 
                     if (status.equals("200")) {

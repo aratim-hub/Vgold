@@ -99,6 +99,12 @@ public class LoginModel {
         @Expose
         @SerializedName("Version_code")
         private String Version_code;
+        @Expose
+        @SerializedName("is_cp")
+        private Integer is_cp;
+        @Expose
+        @SerializedName("channel_partner")
+        private ChannelPartner channelPartner;
 
         public String getVersion_code() {
             return Version_code;
@@ -234,6 +240,125 @@ public class LoginModel {
 
         public void setState(String state) {
             State = state;
+        }
+
+        public Integer getIs_cp() {
+            return is_cp;
+        }
+
+        public void setIs_cp(Integer is_cp) {
+            this.is_cp = is_cp;
+        }
+
+        public ChannelPartner getChannelPartner() {
+            return channelPartner;
+        }
+
+        public void setChannelPartner(ChannelPartner channelPartner) {
+            this.channelPartner = channelPartner;
+        }
+
+        public static class ChannelPartner {
+            @Expose
+            @SerializedName("channel_partner_detail_id")
+            private String channel_partner_detail_id;
+            @Expose
+            @SerializedName("user_id")
+            private String user_id;
+            @Expose
+            @SerializedName("channel_partner_code")
+            private String channel_partner_code;
+            @Expose
+            @SerializedName("status")
+            private String status;
+            @Expose
+            @SerializedName("created_date")
+            private String created_date;
+            @Expose
+            @SerializedName("end_date")
+            private String end_date;
+            @Expose
+            @SerializedName("total_user")
+            private String total_user;
+            @Expose
+            @SerializedName("total_gold_booking")
+            private String total_gold_booking;
+            @Expose
+            @SerializedName("total_commission")
+            private String total_commission;
+
+
+            public String getChannel_partner_detail_id() {
+                return channel_partner_detail_id;
+            }
+
+            public void setChannel_partner_detail_id(String channel_partner_detail_id) {
+                this.channel_partner_detail_id = channel_partner_detail_id;
+            }
+
+            public String getUser_id() {
+                return user_id;
+            }
+
+            public void setUser_id(String user_id) {
+                this.user_id = user_id;
+            }
+
+            public String getChannel_partner_code() {
+                return channel_partner_code;
+            }
+
+            public void setChannel_partner_code(String channel_partner_code) {
+                this.channel_partner_code = channel_partner_code;
+            }
+
+            public String getStatus() {
+                return status;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
+
+            public String getCreated_date() {
+                return created_date;
+            }
+
+            public void setCreated_date(String created_date) {
+                this.created_date = created_date;
+            }
+
+            public String getEnd_date() {
+                return end_date;
+            }
+
+            public void setEnd_date(String end_date) {
+                this.end_date = end_date;
+            }
+
+            public String getTotal_user() {
+                return total_user;
+            }
+
+            public void setTotal_user(String total_user) {
+                this.total_user = total_user;
+            }
+
+            public String getTotal_gold_booking() {
+                return total_gold_booking;
+            }
+
+            public void setTotal_gold_booking(String total_gold_booking) {
+                this.total_gold_booking = total_gold_booking;
+            }
+
+            public String getTotal_commission() {
+                return total_commission;
+            }
+
+            public void setTotal_commission(String total_commission) {
+                this.total_commission = total_commission;
+            }
         }
     }
 }

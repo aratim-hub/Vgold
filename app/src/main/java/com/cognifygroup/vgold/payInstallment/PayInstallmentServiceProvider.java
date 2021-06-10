@@ -27,11 +27,11 @@ public class PayInstallmentServiceProvider {
 
     public void payInstallment(String user_id, String gbid, String amountr, String payment_option,
                                String bank_details, String tr_id, String otherAmount,
-                               String cheque_no, final APICallback apiCallback) {
+                               String cheque_no,String status, final APICallback apiCallback) {
         Call<PayInstallmentModel> call = null;
         call = payInstallmentService.addGold(user_id, gbid, amountr, payment_option, bank_details,
                 tr_id, otherAmount,
-                cheque_no);
+                cheque_no, status);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<PayInstallmentModel>() {

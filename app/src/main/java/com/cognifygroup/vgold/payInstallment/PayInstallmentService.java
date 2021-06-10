@@ -13,7 +13,8 @@ import retrofit2.http.POST;
 
 public interface PayInstallmentService {
 
-    @POST("installment.php?")
+//    @POST("installment.php?")
+    @POST("installmenttest.php?")
     @FormUrlEncoded
     Call<PayInstallmentModel> addGold(@Field("user_id") String user_id,
                                @Field("gbid") String gbid,
@@ -22,5 +23,6 @@ public interface PayInstallmentService {
                                @Field("bank_details") String bank_details,
                                @Field("tr_id") String tr_id,
                                @Field("amount_other") String amount_other,
-                               @Field("cheque_no") String cheque_no);
+                               @Field("cheque_no") String cheque_no,
+                               @Field("confirmed") String status);
 }

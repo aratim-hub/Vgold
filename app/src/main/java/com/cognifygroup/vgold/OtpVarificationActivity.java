@@ -388,13 +388,9 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                 break;
 
             case R.id.tv_resend_otp:
-
                 if (moveFrom.equalsIgnoreCase("login")) {
-
+                    setEditTextBlank();
                     AppSignatureHashHelper appSignatureHashHelper = new AppSignatureHashHelper(this);
-
-//                    Log.i("TAG", "HashKey: " + appSignatureHashHelper.getAppSignatures().get(0));
-
                     loginApi(appSignatureHashHelper.getAppSignatures().get(0));
                 }
                 break;
@@ -454,6 +450,7 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                 try {
                     String message = ((LoginModel) serviceResponse).getMessage();
                     ArrayList<LoginModel.Data> loginModelArrayList = ((LoginModel) serviceResponse).getData();
+                    LoginModel.Data.ChannelPartner channelPartnerModel = ((LoginModel) serviceResponse).getData().get(0).getChannelPartner();
                     if (Status.equals("200")) {
 
                         progressDialog.hide();
@@ -468,9 +465,16 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                                 loginModelArrayList.get(0).getAddress(),
                                 loginModelArrayList.get(0).getCity(),
                                 loginModelArrayList.get(0).getState(),
-                                loginModelArrayList.get(0).getProfile_photo());
+                                loginModelArrayList.get(0).getProfile_photo(),
+                                loginModelArrayList.get(0).getIs_cp());
 
                         VGoldApp.onSetUserRole(loginModelArrayList.get(0).getUser_role(), loginModelArrayList.get(0).getValidity_date());
+
+                        if (channelPartnerModel != null) {
+                            VGoldApp.onSetChannelPartner(channelPartnerModel.getTotal_user(),
+                                    channelPartnerModel.getTotal_gold_booking(),
+                                    channelPartnerModel.getTotal_commission());
+                        }
 
 //                        setEditTextBlank();
 
