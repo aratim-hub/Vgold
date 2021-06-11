@@ -106,6 +106,19 @@ public class LoginModel {
         @SerializedName("channel_partner")
         private ChannelPartner channelPartner;
 
+        @Expose
+        @SerializedName("identity_photo")
+        private String identity_photo;
+        @Expose
+        @SerializedName("address_photo")
+        private String address_photo;
+        @Expose
+        @SerializedName("address_photo_back")
+        private String address_photo_back;
+        @Expose
+        @SerializedName("aadhar_no")
+        private String aadhar_no;
+
         public String getVersion_code() {
             return Version_code;
         }
@@ -256,6 +269,38 @@ public class LoginModel {
 
         public void setChannelPartner(ChannelPartner channelPartner) {
             this.channelPartner = channelPartner;
+        }
+
+        public String getIdentity_photo() {
+            return identity_photo;
+        }
+
+        public void setIdentity_photo(String identity_photo) {
+            this.identity_photo = identity_photo;
+        }
+
+        public String getAddress_photo() {
+            return address_photo;
+        }
+
+        public void setAddress_photo(String address_photo) {
+            this.address_photo = address_photo;
+        }
+
+        public String getAddress_photo_back() {
+            return address_photo_back;
+        }
+
+        public void setAddress_photo_back(String address_photo_back) {
+            this.address_photo_back = address_photo_back;
+        }
+
+        public String getAadhar_no() {
+            return aadhar_no;
+        }
+
+        public void setAadhar_no(String aadhar_no) {
+            this.aadhar_no = aadhar_no;
         }
 
         public static class ChannelPartner {

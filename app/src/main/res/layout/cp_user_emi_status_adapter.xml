@@ -31,24 +31,34 @@
                 android:layout_marginTop="2dp"
                 android:weightSum="2">
 
+                <ImageView
+                    android:id="@+id/imgPaid"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@mipmap/ic_green_check"
+                    android:visibility="gone"/>
+
                 <TextView
                     android:id="@+id/txtIsPaid"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginLeft="@dimen/height_15"
+                    android:layout_marginLeft="3dp"
+                    android:gravity="center_vertical"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/colorblack"/>
 
                 <TextView
                     android:id="@+id/txtDate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="right"
+                    android:gravity="center_vertical|right"
                     android:layout_marginRight="@dimen/height_15"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/colorblack" />
 
             </LinearLayout>
 

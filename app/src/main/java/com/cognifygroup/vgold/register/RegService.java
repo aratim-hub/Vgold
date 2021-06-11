@@ -18,8 +18,5 @@ public interface RegService {
                           @Field("no") String no,
                           @Field("pancard") String pancard,
                           @Field("refer_code") String refer_code,
-                          @Field("identity_proff") String identity_proff,
-                          @Field("aadhar_front") String aadhar_front,
-                          @Field("aadhar_back") String aadhar_back,
                           @Field("aadhar_no") String aadhar_no);
 }

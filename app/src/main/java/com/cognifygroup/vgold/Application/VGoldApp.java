@@ -73,7 +73,12 @@ public class VGoldApp extends MultiDexApplication {
                                         String email, String no,
                                         String qr,String pan_no,
                                         String address,String city,
-                                        String state,String userimg, Integer isCP) {
+                                        String state,String userimg,
+                                        Integer isCP,
+                                        String identityImg,
+                                        String addressImg1,
+                                        String addressImg2,
+                                        String aadharNo) {
 
         SharedPreferences.Editor editor = mSharedPreferences.edit();
 
@@ -89,6 +94,10 @@ public class VGoldApp extends MultiDexApplication {
         editor.putString("STATE", state);
         editor.putString("USERIMG", userimg);
         editor.putInt("ISCP", isCP);
+        editor.putString("IDENTITY_IMG", identityImg);
+        editor.putString("ADDR_IMG1", addressImg1);
+        editor.putString("ADDR_IMG2", addressImg2);
+        editor.putString("ADHARNO", aadharNo);
 
         editor.commit();
     }
@@ -198,6 +207,22 @@ public class VGoldApp extends MultiDexApplication {
 
     public static Integer onGetIsCP() {
         return mSharedPreferences.getInt("ISCP", 0);
+    }
+
+    public static String onGetAadharNo() {
+        return mSharedPreferences.getString("ADHARNO", "");
+    }
+
+    public static String onGetIdentityImg() {
+        return mSharedPreferences.getString("IDENTITY_IMG", "");
+    }
+
+    public static String onGetAddressImg1() {
+        return mSharedPreferences.getString("ADDR_IMG1", "");
+    }
+
+    public static String onGetAddressImg2() {
+        return mSharedPreferences.getString("ADDR_IMG2", "");
     }
 
 }

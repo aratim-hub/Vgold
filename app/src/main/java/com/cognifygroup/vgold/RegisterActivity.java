@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatImageView;
@@ -245,30 +246,26 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         }*/ else {
 //            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
             AttemptToRegisterApi(first, last, email, no, pancard, refercode,
-                    edtAadarCard.getText().toString(),
-                    "",
-                    "",
-                    "");
+                    edtAadarCard.getText().toString());
         }
     }
 
-    private void AttemptToRegisterApi(String first, String last, String email, String no, String pancard, String refer_code, String aadhar_no, String aadharF, String aadharB, String panCardPic) {
+    private void AttemptToRegisterApi(String first, String last, String email, String no,
+                                      String pancard, String refer_code, String aadhar_no) {
         progressDialog.show();
         regServiceProvider.getReg(first, last, email, no, pancard, refer_code,
-                aadhar_no, aadharF, aadharB, panCardPic, new APICallback() {
+                aadhar_no, new APICallback() {
                     @Override
                     public <T> void onSuccess(T serviceResponse) {
                         try {
                             String status = ((RegModel) serviceResponse).getStatus();
                             String message = ((RegModel) serviceResponse).getMessage();
-                            int user_id = ((RegModel) serviceResponse).getData().getUserID();
+                            String user_id = String.valueOf(((RegModel) serviceResponse).getData().getUserID());
 
 
                             if (status.equals("200")) {
-                                if (String.valueOf(user_id) != null) {
-                                    Log.i("TAG", "onSuccess: " + user_id);
-                                    uploadDocument(String.valueOf(user_id), ImagePanCard, ImageAadharBack, ImageAadharFont);
-
+                                if (!TextUtils.isEmpty(user_id)) {
+                                    uploadDocument(user_id, ImagePanCard, ImageAadharBack, ImageAadharFont);
                                 }
 
 
@@ -367,7 +364,9 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
             if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
                 uri = imageUri;
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                }
             } else {
                 startCrop(imageUri);
             }
@@ -433,14 +432,14 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
 
                     if (status.equals("200")) {
                         progressDialog.hide();
-                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Image Uploaded Successfully",
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Image Uploaded Successfully",
+//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
                         AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
                                 getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
                     } else {
-                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
                         AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
                                 getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
@@ -468,6 +467,5 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                 }
             }
         });
-
     }
 }

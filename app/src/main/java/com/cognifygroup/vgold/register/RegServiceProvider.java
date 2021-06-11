@@ -24,9 +24,9 @@ public class RegServiceProvider {
     }
 
     public void getReg(String first, String last, String email, String no, String pancard, String refer_code,
-                       String aadhar_no, String aadharF, String aadharB, String panPic, final APICallback apiCallback) {
+                       String aadhar_no, final APICallback apiCallback) {
         Call<RegModel> call = null;
-        call = regService.getReg(first, last, email, no, pancard, refer_code, panPic, aadharF, aadharB, aadhar_no);
+        call = regService.getReg(first, last, email, no, pancard, refer_code, aadhar_no);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<RegModel>() {

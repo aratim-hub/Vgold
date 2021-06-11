@@ -18,7 +18,7 @@ public interface GetSingleImageService0 {
 
 
     @FormUrlEncoded
-    @POST("update_profile_photo.php?")
+    @POST("update_user_document.php")
     Call<GetSingleImage0> uploadImage(@Field("user_id") String client_id,
                                       @Field("identity_proff") String identity_proff,
                                       @Field("aadhar_back") String aadhar_back,

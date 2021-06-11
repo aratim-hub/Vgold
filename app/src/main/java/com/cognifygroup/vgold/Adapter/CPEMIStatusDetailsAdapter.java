@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ public class CPEMIStatusDetailsAdapter extends RecyclerView.Adapter<CPEMIStatusD
         holder.txtDate.setText(dataList.getTransaction_date());
         if(dataList.getIs_paid().equalsIgnoreCase("1")){
             holder.txtIsPaid.setText("Paid");
+            holder.imgPaid.setVisibility(View.VISIBLE);
         }else{
             holder.txtIsPaid.setText("Pending");
         }
@@ -79,6 +81,8 @@ public class CPEMIStatusDetailsAdapter extends RecyclerView.Adapter<CPEMIStatusD
 
         @InjectView(R.id.txtNextDueDate)
         TextView txtNextDueDate;
+        @InjectView(R.id.imgPaid)
+        ImageView imgPaid;
 
         public MyViewHolder(View itemView) {
             super(itemView);

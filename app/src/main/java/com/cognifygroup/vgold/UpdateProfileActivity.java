@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 
 import androidx.appcompat.widget.AppCompatImageView;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -92,7 +94,9 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     @InjectView(R.id.btnUploadImage)
     Button btnUploadImage;
 
-    private String first_name, email, mobile_no, city, state;
+
+    private GetSingleImage0.Data ImgData = null;
+    private String first_name, email, mobile_no, city, state, panNo, aadharno;
 
     AlertDialogs mAlert;
     UpdateUserServiceProvider updateUserServiceProvider;
@@ -138,8 +142,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         edtAddress.setText(VGoldApp.onGetAddress());
         edtCity.setText(VGoldApp.onGetCity());
         edtState.setText(VGoldApp.onGetState());
-        // edtPan.setText(VGoldApp.onGetPanNo());
-
+        edtPan.setText(VGoldApp.onGetPanNo());
+        edtAadhar.setText(VGoldApp.onGetAadharNo());
 
         Log.d("TAG", VGoldApp.onGetUserImg());
 
@@ -166,6 +170,29 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                             Log.d("TAG", "Error while setting");
                         }
                     });*/
+        }
+
+        if (VGoldApp.onGetIdentityImg() != null && !TextUtils.isEmpty(VGoldApp.onGetIdentityImg()) && !VGoldApp.onGetIdentityImg().equalsIgnoreCase("null")) {
+
+            Glide.with(this).load(VGoldApp.onGetIdentityImg())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(iv_pancard);
+        }
+        if (VGoldApp.onGetAddressImg1() != null && !TextUtils.isEmpty(VGoldApp.onGetAddressImg1()) && !VGoldApp.onGetAddressImg1().equalsIgnoreCase("null")) {
+
+            Glide.with(this).load(VGoldApp.onGetAddressImg1())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(iv_aadharFront);
+        }
+
+        if (VGoldApp.onGetAddressImg2() != null && !TextUtils.isEmpty(VGoldApp.onGetAddressImg2()) && !VGoldApp.onGetAddressImg2().equalsIgnoreCase("null")) {
+
+            Glide.with(this).load(VGoldApp.onGetAddressImg2())
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(iv_aadharBack);
         }
 
         loginStatusServiceProvider = new LoginStatusServiceProvider(this);
@@ -204,13 +231,13 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
             }
         });
 
-        btnUploadImage.setVisibility(View.GONE);
-        btnUploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
-            }
-        });
+//        btnUploadImage.setVisibility(View.GONE);
+//        btnUploadImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
+//            }
+//        });
     }
 
     private void checkLoginSession() {
@@ -310,7 +337,9 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
             if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
                 uri = imageUri;
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+                }
             } else {
                 startCrop(imageUri);
             }
@@ -364,6 +393,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         mobile_no = edtMobileNumber.getText().toString();
         city = edtCity.getText().toString();
         state = edtState.getText().toString();
+        panNo = edtPan.getText().toString();
+        aadharno = edtAadhar.getText().toString();
 
         if (first_name.length() == 0 && email.length() == 0 && mobile_no.length() == 0 && city.length() == 0 && state.length() == 0) {
             AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "All data required",
@@ -382,7 +413,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         } /*else if (edtAadhar.getText().toString().length() < 12) {
           //  edtAadhar.setError("Enter 12 digit Aadhar Number");
         }*/ else {
-            AttemptToUpdateUser(VGoldApp.onGetUerId(), email, mobile_no, first_name, city, state, edtAadhar.getText().toString(), edtPan.getText().toString());
+            AttemptToUpdateUser(VGoldApp.onGetUerId(), email, mobile_no, first_name,
+                    city, state, aadharno, panNo);
         }
     }
 
@@ -400,18 +432,17 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
                     if (status.equals("200")) {
 
-                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, message);
 
-                        if (TextUtils.isEmpty(ImagePanCard) && TextUtils.isEmpty(ImageAadharBack) && TextUtils.isEmpty(ImageAadharFont)){
-                            AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
-                                    getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
-                        }else {
-                            uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
-                        }
-
+//                        if (TextUtils.isEmpty(ImagePanCard) && TextUtils.isEmpty(ImageAadharBack) && TextUtils.isEmpty(ImageAadharFont)){
+//                            AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
+//                                    getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+//                        }else {
+                        uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
+//                        }
 
 
                     } else {
@@ -465,7 +496,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                                 VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(),
                                 VGoldApp.onGetCity(), VGoldApp.onGetState(),
                                 url,
-                                VGoldApp.onGetIsCP());
+                                VGoldApp.onGetIsCP(),
+                                VGoldApp.onGetIdentityImg(),
+                                VGoldApp.onGetAddressImg1(),
+                                VGoldApp.onGetAddressImg2(),
+                                VGoldApp.onGetAadharNo());
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
@@ -510,9 +545,12 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                     String status = ((GetSingleImage0) serviceResponse).getStatus();
                     String message = ((GetSingleImage0) serviceResponse).getMessage();
                     String url = ((GetSingleImage0) serviceResponse).getPath();
+                    ImgData = ((GetSingleImage0) serviceResponse).getData();
 
                     if (status.equals("200")) {
                         progressDialog.hide();
+
+
                        /* VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
                                 VGoldApp.onGetLast(), VGoldApp.onGetEmail(),
                                 VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
@@ -520,13 +558,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                                 VGoldApp.onGetCity(), VGoldApp.onGetState(),
                                 url,
                                 VGoldApp.onGetIsCP());*/
-                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
+                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Profile updated successfully",
                                 getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
-//                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
                     } else {
-//                        mAlert.onShowToastNotification(UpdateProfileActivity.this, message);
-                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Profile updated successfully",
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -551,7 +587,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 }
             }
         });
-
     }
 
     @Override
@@ -561,12 +596,60 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 Intent intent = new Intent(UpdateProfileActivity.this, MainActivity.class);
                 startActivity(intent);
 
-                VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
-                        VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
-                        VGoldApp.onGetPanNo(),
-                        first_name, city, state,
-                        VGoldApp.onGetUserImg(), VGoldApp.onGetIsCP()
-                );
+
+                if (ImgData != null) {
+//                    if ((ImgData.getIdentity_photo() != null && !TextUtils.isEmpty(ImgData.getIdentity_photo()) && !ImgData.getIdentity_photo().equalsIgnoreCase("null"))
+//                            && (ImgData.getAddress_photo() != null && !TextUtils.isEmpty(ImgData.getAddress_photo()) && !ImgData.getAddress_photo().equalsIgnoreCase("null"))
+//                            && (ImgData.getAddress_photo_back() != null && !TextUtils.isEmpty(ImgData.getAddress_photo_back()) && !ImgData.getAddress_photo_back().equalsIgnoreCase("null"))) {
+
+                    if (ImgData.getIdentity_photo() != null && !TextUtils.isEmpty(ImgData.getIdentity_photo()) && !ImgData.getIdentity_photo().equalsIgnoreCase("null")) {
+                        VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                                VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
+                                panNo,
+                                first_name, city, state,
+                                VGoldApp.onGetUserImg(),
+                                VGoldApp.onGetIsCP(),
+                                ImgData.getIdentity_photo(),
+                                VGoldApp.onGetAddressImg1(),
+                                VGoldApp.onGetAddressImg2(), aadharno);
+                    }
+
+                    if (ImgData.getAddress_photo() != null && !TextUtils.isEmpty(ImgData.getAddress_photo()) && !ImgData.getAddress_photo().equalsIgnoreCase("null")) {
+                        VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                                VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
+                                panNo,
+                                first_name, city, state,
+                                VGoldApp.onGetUserImg(),
+                                VGoldApp.onGetIsCP(),
+                                VGoldApp.onGetIdentityImg(),
+                                ImgData.getAddress_photo(),
+                                VGoldApp.onGetAddressImg2(), aadharno);
+                    }
+
+                    if (ImgData.getAddress_photo_back() != null && !TextUtils.isEmpty(ImgData.getAddress_photo_back()) && !ImgData.getAddress_photo_back().equalsIgnoreCase("null")) {
+                        VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                                VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
+                                panNo,
+                                first_name, city, state,
+                                VGoldApp.onGetUserImg(),
+                                VGoldApp.onGetIsCP(),
+                                VGoldApp.onGetIdentityImg(),
+                                VGoldApp.onGetAddressImg1(),
+                                ImgData.getAddress_photo_back(), aadharno);
+                    }
+
+                } else {
+                    VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                            VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
+//                        VGoldApp.onGetPanNo(),
+                            panNo,
+                            first_name, city, state,
+                            VGoldApp.onGetUserImg(),
+                            VGoldApp.onGetIsCP(),
+                            VGoldApp.onGetIdentityImg(),
+                            VGoldApp.onGetAddressImg1(),
+                            VGoldApp.onGetAddressImg2(), aadharno);
+                }
                 break;
 
             case 11:
@@ -575,6 +658,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 finish();
                 break;
         }
+
     }
 
     private String imagetostring(Bitmap bitmap) {

@@ -466,7 +466,11 @@ public class OtpVarificationActivity extends AppCompatActivity implements
                                 loginModelArrayList.get(0).getCity(),
                                 loginModelArrayList.get(0).getState(),
                                 loginModelArrayList.get(0).getProfile_photo(),
-                                loginModelArrayList.get(0).getIs_cp());
+                                loginModelArrayList.get(0).getIs_cp(),
+                                loginModelArrayList.get(0).getIdentity_photo(),
+                                loginModelArrayList.get(0).getAddress_photo(),
+                                loginModelArrayList.get(0).getAddress_photo_back(),
+                                loginModelArrayList.get(0).getAadhar_no());
 
                         VGoldApp.onSetUserRole(loginModelArrayList.get(0).getUser_role(), loginModelArrayList.get(0).getValidity_date());
 
