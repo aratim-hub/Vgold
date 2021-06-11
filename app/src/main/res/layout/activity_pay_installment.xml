@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.cognifygroup.vgold.PayInstallmentActivity">
 
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.cognifygroup.vgold.PayInstallmentActivity">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/llPayInstallment"
@@ -60,7 +61,7 @@
                     <RadioButton
                         android:id="@+id/radioMinAmt"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/height_35"
                         android:checked="true"
                         android:layout_marginBottom="4dp"
                         android:text="Minimum Amount"
@@ -69,7 +70,7 @@
                     <RadioButton
                         android:id="@+id/radioOtherAmt"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/height_40"
                         android:checked="false"
                         android:layout_marginBottom="4dp"
                         android:text="Other Amount"
@@ -78,7 +79,7 @@
                     <RadioButton
                         android:id="@+id/radioMoneyWallet"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/height_35"
                         android:checked="false"
                         android:layout_marginBottom="4dp"
                         android:text="Money Wallet"
@@ -87,7 +88,7 @@
                     <RadioButton
                         android:id="@+id/radioGoldWallet"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/height_35"
                         android:checked="false"
                         android:layout_marginBottom="4dp"
                         android:text="Gold Wallet"
@@ -101,7 +102,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_35"
                         android:orientation="horizontal"
                         android:paddingTop="6dp"
                         android:layout_marginBottom="4dp"
@@ -131,25 +132,25 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_40"
                         android:orientation="horizontal"
                         android:layout_marginBottom="4dp">
 
                         <EditText
                             android:id="@+id/txtOtherAmount"
                             android:layout_width="match_parent"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:hint="Enter Payable Amount"
                             android:inputType="numberDecimal"
                             android:textColor="@color/colorblack"
-                            android:textSize="15sp"/>
+                            android:textSize="14sp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/moneyWalletLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_35"
                         android:orientation="horizontal"
                         android:paddingTop="6dp"
                         android:layout_marginBottom="4dp"
@@ -180,7 +181,7 @@
                     <LinearLayout
                         android:id="@+id/goldWalletLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/height_35"
                         android:orientation="horizontal"
                         android:paddingTop="6dp"
                         android:layout_marginBottom="4dp"
@@ -193,7 +194,7 @@
                             android:gravity="center_vertical"
                             android:textSize="15sp"
                             android:textAppearance="?android:attr/textAppearanceMedium"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/txtGoldValue"
