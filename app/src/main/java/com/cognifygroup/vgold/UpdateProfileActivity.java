@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -203,7 +204,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
             }
         });
 
-
+        btnUploadImage.setVisibility(View.GONE);
         btnUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -400,9 +401,17 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                     if (status.equals("200")) {
 
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
-                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
 
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, message);
+
+                        if (TextUtils.isEmpty(ImagePanCard) && TextUtils.isEmpty(ImageAadharBack) && TextUtils.isEmpty(ImageAadharFont)){
+                            AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
+                                    getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                        }else {
+                            uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
+                        }
+
 
 
                     } else {
@@ -512,7 +521,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                                 url,
                                 VGoldApp.onGetIsCP());*/
                         AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
                     } else {
 //                        mAlert.onShowToastNotification(UpdateProfileActivity.this, message);
