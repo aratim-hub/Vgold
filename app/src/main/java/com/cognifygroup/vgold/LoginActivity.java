@@ -476,7 +476,6 @@ public class LoginActivity extends AppCompatActivity implements AlertDialogOkLis
     }
 
     private void VerifyOTPApi(String mEmail, String mOTP, String token) {
-
         progressDialog.show();
         mLoginServiceProvider.callVerifyUserLogin(mEmail, mOTP, token, new APICallback() {
             @Override

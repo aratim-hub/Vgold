@@ -18,5 +18,7 @@ public interface UpdateUserService {
                                      @Field("no") String no,
                                      @Field("address") String address,
                                      @Field("city") String city,
-                                     @Field("state") String state);
+                                     @Field("state") String state,
+                                     @Field("aadhar_no") String aadhar_no,
+                                     @Field("pan_no") String pan_no);
 }

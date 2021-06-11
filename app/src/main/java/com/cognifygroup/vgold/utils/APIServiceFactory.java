@@ -21,8 +21,8 @@ import static com.cognifygroup.vgold.utils.Constant.SERVER_URL;
 public class APIServiceFactory {
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-            .readTimeout(120, TimeUnit.SECONDS)
-            .connectTimeout(120, TimeUnit.SECONDS);
+            .readTimeout(120, TimeUnit.MINUTES)
+            .connectTimeout(120, TimeUnit.MINUTES);
     private static Retrofit.Builder builder = new Retrofit
             .Builder()
             .baseUrl(SERVER_URL)

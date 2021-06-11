@@ -22,9 +22,9 @@ public class UpdateUserServiceProvider {
         updateUserService = APIServiceFactory.createService(UpdateUserService.class, context);
     }
 
-    public void getReg(String user_id,String email,String no, String address,String city,String state,final APICallback apiCallback) {
+    public void getReg(String user_id,String email,String no, String address,String city,String state,String aadhar_no,String pan_no,final APICallback apiCallback) {
         Call<UpdateUserModel> call = null;
-        call = updateUserService.updateUser(user_id,email,no,address,city,state);
+        call = updateUserService.updateUser(user_id,email,no,address,city,state,aadhar_no,pan_no);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<UpdateUserModel>() {

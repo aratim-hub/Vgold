@@ -26,7 +26,35 @@ public class GetSingleImageServiceProvider0 {
 
     public void getReg(String client_id, String image, final APICallback apiCallback) {
         Call<GetSingleImage0> call = null;
-        call = getSingleImageService0.getReg(client_id,image);
+        call = getSingleImageService0.getReg(client_id, image);
+        String url = call.request().url().toString();
+
+        call.enqueue(new Callback<GetSingleImage0>() {
+            @Override
+            public void onResponse(Call<GetSingleImage0> call, Response<GetSingleImage0> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("200")) {
+                    apiCallback.onSuccess(response.body());
+
+                } else if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("400")) {
+                    apiCallback.onSuccess(response.body());
+                } else {
+                    BaseServiceResponseModel model = ErrorUtils.parseError(response);
+                    apiCallback.onFailure(model, response.errorBody());
+                    // apiCallback.onFailure(response.body(), response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetSingleImage0> call, Throwable t) {
+                apiCallback.onFailure(null, null);
+            }
+        });
+    }
+
+
+    public void uploadImage(String client_id, String identity_proff, String aadhar_back, String aadhar_front, final APICallback apiCallback) {
+        Call<GetSingleImage0> call = null;
+        call = getSingleImageService0.uploadImage(client_id, identity_proff,aadhar_back,aadhar_front);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<GetSingleImage0>() {

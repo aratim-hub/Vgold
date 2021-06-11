@@ -16,4 +16,12 @@ public interface GetSingleImageService0 {
     Call<GetSingleImage0> getReg(@Field("user_id") String client_id,
                                  @Field("image") String image);
 
+
+    @FormUrlEncoded
+    @POST("update_profile_photo.php?")
+    Call<GetSingleImage0> uploadImage(@Field("user_id") String client_id,
+                                      @Field("identity_proff") String identity_proff,
+                                      @Field("aadhar_back") String aadhar_back,
+                                      @Field("aadhar_front") String aadhar_front);
+
 }

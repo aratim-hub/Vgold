@@ -24,6 +24,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.getImageUpload.GetSingleImage0;
+import com.cognifygroup.vgold.getImageUpload.GetSingleImageServiceProvider0;
 import com.cognifygroup.vgold.register.RegModel;
 import com.cognifygroup.vgold.register.RegServiceProvider;
 import com.cognifygroup.vgold.utils.APICallback;
@@ -85,12 +88,15 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
     @InjectView(R.id.iv_pancard)
     AppCompatImageView iv_pancard;
 
+    @InjectView(R.id.btnUploadImage)
+    Button btnUploadImage;
+
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
     private static final int IMG_AADHAR_FRONT = 111, IMG_AADHAR_BACK = 222, IMG_PAN = 333;
     private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
     public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
-
+    GetSingleImageServiceProvider0 getSingleImageServiceProvider0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,8 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         tb_subservices.setContentInsetStartWithNavigation(0);
+
+        getSingleImageServiceProvider0 = new GetSingleImageServiceProvider0(this);
 
 
         init();
@@ -152,6 +160,13 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, IMG_PAN);
+            }
+        });
+
+        btnUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
             }
         });
     }
@@ -223,9 +238,9 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
 //            AttemptToRegisterApi(first, last, email, no, pass, pancard, refercode);
             AttemptToRegisterApi(first, last, email, no, pancard, refercode,
                     edtAadarCard.getText().toString(),
-                    ImageAadharFont,
-                    ImageAadharBack,
-                    ImagePanCard);
+                    "",
+                    "",
+                    "");
         }
     }
 
@@ -238,13 +253,19 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                         try {
                             String status = ((RegModel) serviceResponse).getStatus();
                             String message = ((RegModel) serviceResponse).getMessage();
-
+                            int user_id = ((RegModel) serviceResponse).getData().getUserID();
 
                             if (status.equals("200")) {
 
-                                AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
-                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                                if (String.valueOf(user_id) != null) {
+                                    Log.i("TAG", "onSuccess: " + user_id);
+                                    uploadDocument(String.valueOf(user_id), ImagePanCard, ImageAadharBack, ImageAadharFont);
+                                }
 
+
+                              /*  AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
+                                        getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+*/
 //                        mAlert.onShowToastNotification(RegisterActivity.this, "Registration Successfully done");
 //                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
 //                        startActivity(intent);
@@ -342,4 +363,55 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
     }
 
+    private void uploadDocument(String user_id, String identity_proff, String aadhar_back, String aadhar_front) {
+        progressDialog.show();
+        getSingleImageServiceProvider0.uploadImage(user_id, identity_proff, aadhar_back, aadhar_front, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    Log.i("TAG", "onSuccess: ");
+                    String status = ((GetSingleImage0) serviceResponse).getStatus();
+                    String message = ((GetSingleImage0) serviceResponse).getMessage();
+                    String url = ((GetSingleImage0) serviceResponse).getPath();
+
+                    if (status.equals("200")) {
+                        Log.i("TAG", "onSuccess: ");
+                        progressDialog.hide();
+                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Image Uploaded Successfully",
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+
+                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                    } else {
+                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+
+                        AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Registration Successfully done",
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(RegisterActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+
+    }
 }

@@ -1,6 +1,10 @@
 package com.cognifygroup.vgold;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -13,6 +17,7 @@ import android.util.Base64;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,14 +39,19 @@ import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.http.Url;
 
 public class UpdateProfileActivity extends AppCompatActivity implements AlertDialogOkListener {
     @InjectView(R.id.edtAddress)
@@ -52,6 +62,13 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     EditText edtState;
     @InjectView(R.id.edtEmail)
     EditText edtEmail;
+
+    @InjectView(R.id.edtAadhar)
+    EditText edtAadhar;
+
+    @InjectView(R.id.edtPan)
+    EditText edtPan;
+
     @InjectView(R.id.edtMobileNumber)
     EditText edtMobileNumber;
     @InjectView(R.id.btn_submit_sign_up)
@@ -61,6 +78,18 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     CircleImageView userImg;
     @InjectView(R.id.imgUserProfile)
     ImageView imgUserProfile;
+
+    @InjectView(R.id.iv_aadharFront)
+    AppCompatImageView iv_aadharFront;
+
+    @InjectView(R.id.iv_aadharBack)
+    AppCompatImageView iv_aadharBack;
+
+    @InjectView(R.id.iv_pancard)
+    AppCompatImageView iv_pancard;
+
+    @InjectView(R.id.btnUploadImage)
+    Button btnUploadImage;
 
     private String first_name, email, mobile_no, city, state;
 
@@ -73,7 +102,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
     private LoginStatusServiceProvider loginStatusServiceProvider;
-
+    private static final int IMG_AADHAR_FRONT = 111, IMG_AADHAR_BACK = 222, IMG_PAN = 333;
+    private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
+    public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
+    private final int RESULT_CROP = 400;
+    Uri uri;
 
     //String name,email,mobile;
 
@@ -102,6 +135,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         edtAddress.setText(VGoldApp.onGetAddress());
         edtCity.setText(VGoldApp.onGetCity());
         edtState.setText(VGoldApp.onGetState());
+        // edtPan.setText(VGoldApp.onGetPanNo());
 
 
         Log.d("TAG", VGoldApp.onGetUserImg());
@@ -133,6 +167,46 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
         loginStatusServiceProvider = new LoginStatusServiceProvider(this);
         checkLoginSession();
+
+        iv_aadharFront.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_AADHAR_FRONT);
+
+                //   CropImage.startPickImageActivity(UpdateProfileActivity.this);
+            }
+        });
+
+        iv_aadharBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_AADHAR_BACK);
+            }
+        });
+
+        iv_pancard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, IMG_PAN);
+            }
+        });
+
+
+        btnUploadImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
+            }
+        });
     }
 
     private void checkLoginSession() {
@@ -229,20 +303,73 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
         if (requestCode == IMG_REQUEST && resultCode == RESULT_OK && data != null) {
             Uri path = data.getData();
-
             try {
-
-
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
                 userImg.setImageBitmap(bitmap);
                 String ImageUpload = imagetostring();
                 AttemptToUploadSingleImageApi0(VGoldApp.onGetUerId(), ImageUpload);
-
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        if (requestCode == IMG_AADHAR_FRONT && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_aadharFront.setImageBitmap(bitmapAadharFront);
+                ImageAadharFont = imagetostring(bitmapAadharFront);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (requestCode == IMG_AADHAR_BACK && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_aadharBack.setImageBitmap(bitmapAadharBack);
+                ImageAadharBack = imagetostring(bitmapAadharBack);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (requestCode == IMG_PAN && resultCode == RESULT_OK && data != null) {
+            Uri path = data.getData();
+            try {
+                bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
+                iv_pancard.setImageBitmap(bitmapPanCard);
+                ImagePanCard = imagetostring(bitmapPanCard);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+       /* if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri imageUri = CropImage.getPickImageResultUri(this, data);
+            if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
+                uri = imageUri;
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+            } else {
+                startCrop(imageUri);
+            }
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                iv_aadharFront.setImageURI(result.getUri());
+                Toast.makeText(this, "abcd", Toast.LENGTH_SHORT).show();
+            }
+        }*/
+    }
+
+    private void startCrop(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .start(this);
     }
 
 
@@ -269,15 +396,19 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
             edtEmail.setError("Enter valid email");
         } else if (mobile_no.length() < 10) {
             edtMobileNumber.setError("Enter 10 digit contact number");
-        } else {
-            AttemptToUpdateUser(VGoldApp.onGetUerId(), email, mobile_no, first_name, city, state);
+        } /*else if (edtAadhar.getText().toString().length() < 12) {
+          //  edtAadhar.setError("Enter 12 digit Aadhar Number");
+        }*/ else {
+            AttemptToUpdateUser(VGoldApp.onGetUerId(), email, mobile_no, first_name, city, state, edtAadhar.getText().toString(), edtPan.getText().toString());
         }
     }
 
 
-    private void AttemptToUpdateUser(String user_id, final String email, final String no, final String address, final String city, final String state) {
+    private void AttemptToUpdateUser(String user_id, final String email, final String no, final String address,
+                                     final String city, final String state, final String aadhar_no, final String pan_no) {
         progressDialog.show();
-        updateUserServiceProvider.getReg(user_id, email, no, address, city, state, new APICallback() {
+
+        updateUserServiceProvider.getReg(user_id, email, no, address, city, state, aadhar_no, pan_no, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
@@ -378,6 +509,60 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         });
     }
 
+
+    private void uploadDocument(String user_id, String identity_proff, String aadhar_back, String aadhar_front) {
+        progressDialog.show();
+        getSingleImageServiceProvider0.uploadImage(user_id, identity_proff, aadhar_back, aadhar_front, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetSingleImage0) serviceResponse).getStatus();
+                    String message = ((GetSingleImage0) serviceResponse).getMessage();
+                    String url = ((GetSingleImage0) serviceResponse).getPath();
+
+                    if (status.equals("200")) {
+                        progressDialog.hide();
+                       /* VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
+                                VGoldApp.onGetLast(), VGoldApp.onGetEmail(),
+                                VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
+                                VGoldApp.onGetPanNo(), VGoldApp.onGetAddress(),
+                                VGoldApp.onGetCity(), VGoldApp.onGetState(),
+                                url,
+                                VGoldApp.onGetIsCP());*/
+                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", "Image Uploaded Successfully",
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+//                        mAlert.onShowToastNotification(UpdateProfileActivity.this, "Image Uploaded Successfully");
+                    } else {
+//                        mAlert.onShowToastNotification(UpdateProfileActivity.this, message);
+                        AlertDialogs.alertDialogOk(UpdateProfileActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(UpdateProfileActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(UpdateProfileActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(UpdateProfileActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+
+    }
+
     @Override
     public void onDialogOk(int resultCode) {
         switch (resultCode) {
@@ -389,8 +574,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                         VGoldApp.onGetLast(), email, mobile_no, VGoldApp.onGetQrCode(),
                         VGoldApp.onGetPanNo(),
                         first_name, city, state,
-                        VGoldApp.onGetUserImg(),VGoldApp.onGetIsCP()
-                        );
+                        VGoldApp.onGetUserImg(), VGoldApp.onGetIsCP()
+                );
                 break;
 
             case 11:
@@ -399,5 +584,57 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                 finish();
                 break;
         }
+    }
+
+    private String imagetostring(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+        byte[] imgbyte = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
+    }
+
+    private void performCrop(String picUri) {
+        try {
+            //Start Crop Activity
+
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            File f = new File(picUri);
+            Uri contentUri = Uri.fromFile(f);
+
+            cropIntent.setDataAndType(contentUri, "image/*");
+            // set crop properties
+            cropIntent.putExtra("crop", "true");
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 280);
+            cropIntent.putExtra("outputY", 280);
+
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            // start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, RESULT_CROP);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            String errorMessage = "your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    public String getAbsolutePath(Uri uri) {
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        @SuppressWarnings("deprecation")
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
     }
 }
