@@ -107,7 +107,9 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
     private final int RESULT_CROP = 400;
     Uri uri;
-
+    Boolean aBooleanAadhar_f = false;
+    Boolean aBooleanAadhar_b = false;
+    Boolean aBoolean_pan = false;
     //String name,email,mobile;
 
     @Override
@@ -171,32 +173,33 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         iv_aadharFront.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_AADHAR_FRONT);
-
-                //   CropImage.startPickImageActivity(UpdateProfileActivity.this);
+                // crop image
+                aBooleanAadhar_f = true;
+                aBooleanAadhar_b = false;
+                aBoolean_pan = false;
+                CropImage.startPickImageActivity(UpdateProfileActivity.this);
             }
         });
 
         iv_aadharBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_AADHAR_BACK);
+                // crop image
+                aBooleanAadhar_b = true;
+                aBooleanAadhar_f = false;
+                aBoolean_pan = false;
+                CropImage.startPickImageActivity(UpdateProfileActivity.this);
             }
         });
 
         iv_pancard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_PAN);
+                // crop image
+                aBoolean_pan = true;
+                aBooleanAadhar_b = false;
+                aBooleanAadhar_f = false;
+                CropImage.startPickImageActivity(UpdateProfileActivity.this);
             }
         });
 
@@ -301,52 +304,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == IMG_REQUEST && resultCode == RESULT_OK && data != null) {
-            Uri path = data.getData();
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                userImg.setImageBitmap(bitmap);
-                String ImageUpload = imagetostring();
-                AttemptToUploadSingleImageApi0(VGoldApp.onGetUerId(), ImageUpload);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (requestCode == IMG_AADHAR_FRONT && resultCode == RESULT_OK && data != null) {
-            Uri path = data.getData();
-            try {
-                bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                iv_aadharFront.setImageBitmap(bitmapAadharFront);
-                ImageAadharFont = imagetostring(bitmapAadharFront);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (requestCode == IMG_AADHAR_BACK && resultCode == RESULT_OK && data != null) {
-            Uri path = data.getData();
-            try {
-                bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                iv_aadharBack.setImageBitmap(bitmapAadharBack);
-                ImageAadharBack = imagetostring(bitmapAadharBack);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (requestCode == IMG_PAN && resultCode == RESULT_OK && data != null) {
-            Uri path = data.getData();
-            try {
-                bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
-                iv_pancard.setImageBitmap(bitmapPanCard);
-                ImagePanCard = imagetostring(bitmapPanCard);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-       /* if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        // crop image
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
             if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
                 uri = imageUri;
@@ -359,10 +318,33 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                iv_aadharFront.setImageURI(result.getUri());
-                Toast.makeText(this, "abcd", Toast.LENGTH_SHORT).show();
+                if (aBooleanAadhar_f) {
+                    iv_aadharFront.setImageURI(result.getUri());
+                    try {
+                        bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImageAadharFont = imagetostring(bitmapAadharFront);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (aBooleanAadhar_b) {
+                    iv_aadharBack.setImageURI(result.getUri());
+                    try {
+                        bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImageAadharBack = imagetostring(bitmapAadharBack);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (aBoolean_pan) {
+                    iv_pancard.setImageURI(result.getUri());
+                    try {
+                        bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImagePanCard = imagetostring(bitmapPanCard);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }*/
+        }
     }
 
     private void startCrop(Uri imageUri) {
@@ -588,53 +570,10 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
     private String imagetostring(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
         byte[] imgbyte = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
     }
 
-    private void performCrop(String picUri) {
-        try {
-            //Start Crop Activity
 
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
-            File f = new File(picUri);
-            Uri contentUri = Uri.fromFile(f);
-
-            cropIntent.setDataAndType(contentUri, "image/*");
-            // set crop properties
-            cropIntent.putExtra("crop", "true");
-            // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
-            cropIntent.putExtra("outputX", 280);
-            cropIntent.putExtra("outputY", 280);
-
-            // retrieve data on return
-            cropIntent.putExtra("return-data", true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, RESULT_CROP);
-        }
-        // respond to users whose devices do not support the crop action
-        catch (ActivityNotFoundException anfe) {
-            // display an error message
-            String errorMessage = "your device doesn't support the crop action!";
-            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
-        }
-    }
-
-    public String getAbsolutePath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        @SuppressWarnings("deprecation")
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
-    }
 }

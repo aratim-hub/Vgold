@@ -1,5 +1,8 @@
 package com.cognifygroup.vgold;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -40,6 +43,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -94,9 +99,15 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
     private static final int IMG_AADHAR_FRONT = 111, IMG_AADHAR_BACK = 222, IMG_PAN = 333;
-    private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
     public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
     GetSingleImageServiceProvider0 getSingleImageServiceProvider0;
+    Uri uri;
+    private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
+
+    Boolean aBooleanAadhar_f = false;
+    Boolean aBooleanAadhar_b = false;
+    Boolean aBoolean_pan = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,39 +147,36 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
         iv_aadharFront.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_AADHAR_FRONT);
+                // crop image
+                aBooleanAadhar_f = true;
+                aBooleanAadhar_b = false;
+                aBoolean_pan = false;
+                CropImage.startPickImageActivity(RegisterActivity.this);
             }
         });
 
         iv_aadharBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_AADHAR_BACK);
+                // crop image
+                aBooleanAadhar_b = true;
+                aBooleanAadhar_f = false;
+                aBoolean_pan = false;
+                CropImage.startPickImageActivity(RegisterActivity.this);
             }
         });
 
         iv_pancard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, IMG_PAN);
+                // crop image
+                aBoolean_pan = true;
+                aBooleanAadhar_b = false;
+                aBooleanAadhar_f = false;
+                CropImage.startPickImageActivity(RegisterActivity.this);
             }
         });
 
-        btnUploadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadDocument(VGoldApp.onGetUerId(), ImagePanCard, ImageAadharBack, ImageAadharFont);
-            }
-        });
     }
 
     private void checkDeepLink() {
@@ -255,8 +263,8 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                             String message = ((RegModel) serviceResponse).getMessage();
                             int user_id = ((RegModel) serviceResponse).getData().getUserID();
 
-                            if (status.equals("200")) {
 
+                            if (status.equals("200")) {
                                 if (String.valueOf(user_id) != null) {
                                     Log.i("TAG", "onSuccess: " + user_id);
                                     uploadDocument(String.valueOf(user_id), ImagePanCard, ImageAadharBack, ImageAadharFont);
@@ -287,7 +295,6 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                     public <T> void onFailure(T apiErrorModel, T extras) {
                         try {
                             if (apiErrorModel != null) {
-                                Log.i("TAGTAG", "onFailure: " + ((BaseServiceResponseModel) apiErrorModel).getMessage());
                                 if (((BaseServiceResponseModel) apiErrorModel).getMessage() == null || TextUtils.isEmpty(((BaseServiceResponseModel) apiErrorModel).getMessage()) ||
                                         ((BaseServiceResponseModel) apiErrorModel).getMessage().equalsIgnoreCase("null")) {
 
@@ -299,7 +306,6 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Log.i("TAGTAG", "onFailure: " + e.getMessage());
                             PrintUtil.showNetworkAvailableToast(RegisterActivity.this);
                         } finally {
                             progressDialog.hide();
@@ -322,7 +328,7 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMG_AADHAR_FRONT && resultCode == RESULT_OK && data != null) {
+         /* if (requestCode == IMG_AADHAR_FRONT && resultCode == RESULT_OK && data != null) {
             Uri path = data.getData();
             try {
                 bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), path);
@@ -352,13 +358,64 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }*/
+
+
+        // crop image
+        if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri imageUri = CropImage.getPickImageResultUri(this, data);
+            if (CropImage.isReadExternalStoragePermissionsRequired(this, imageUri)) {
+                uri = imageUri;
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+            } else {
+                startCrop(imageUri);
+            }
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                if (aBooleanAadhar_f) {
+                    iv_aadharFront.setImageURI(result.getUri());
+                    try {
+                        bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImageAadharFont = imagetostring(bitmapAadharFront);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (aBooleanAadhar_b) {
+                    iv_aadharBack.setImageURI(result.getUri());
+                    try {
+                        bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImageAadharBack = imagetostring(bitmapAadharBack);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (aBoolean_pan) {
+                    iv_pancard.setImageURI(result.getUri());
+                    try {
+                        bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        ImagePanCard = imagetostring(bitmapPanCard);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
     }
 
+    private void startCrop(Uri imageUri) {
+        CropImage.activity(imageUri)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setMultiTouchEnabled(true)
+                .start(this);
+    }
+
+
     private String imagetostring(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStream);
         byte[] imgbyte = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgbyte, Base64.NO_WRAP);
     }
@@ -369,13 +426,11 @@ public class RegisterActivity extends AppCompatActivity implements AlertDialogOk
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
-                    Log.i("TAG", "onSuccess: ");
                     String status = ((GetSingleImage0) serviceResponse).getStatus();
                     String message = ((GetSingleImage0) serviceResponse).getMessage();
                     String url = ((GetSingleImage0) serviceResponse).getPath();
 
                     if (status.equals("200")) {
-                        Log.i("TAG", "onSuccess: ");
                         progressDialog.hide();
                         AlertDialogs.alertDialogOk(RegisterActivity.this, "Alert", "Image Uploaded Successfully",
                                 getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
