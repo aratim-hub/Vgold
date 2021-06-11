@@ -52,7 +52,7 @@ public class CPUserCommissionDetailsAdapter extends RecyclerView.Adapter<CPUserC
 
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cp_user_commission_details_adapter, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cp_user_commission_details_adapter, parent,false);
         return new MyViewHolder(view);
     }
 

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,7 +77,11 @@ public class CPCommissionFragment extends Fragment implements AlertDialogOkListe
         AppCompatEditText etCommissionSearch = view.findViewById(R.id.etCommissionSearch);
         noData = (TextView) view.findViewById(R.id.noData);
         recyclerCommissionDetails = (RecyclerView) view.findViewById(R.id.recyclerCommissionDetails);
-        recyclerCommissionDetails.setLayoutManager(new LinearLayoutManager(activity));
+
+        recyclerCommissionDetails.setHasFixedSize(true);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        recyclerCommissionDetails.setLayoutManager(mLayoutManager);
+        recyclerCommissionDetails.setItemAnimator(new DefaultItemAnimator());
 
 
         etCommissionSearch.addTextChangedListener(new TextWatcher() {
@@ -118,8 +123,7 @@ public class CPCommissionFragment extends Fragment implements AlertDialogOkListe
                     if (Status.equals("200")) {
                         if (userGoldCommssionDetailsArrayList != null && userGoldCommssionDetailsArrayList.size() > 0) {
                             noData.setVisibility(View.GONE);
-                            recyclerCommissionDetails.setLayoutManager(new LinearLayoutManager(activity));
-                             mAdapter = new CPUserCommissionDetailsAdapter(activity, userGoldCommssionDetailsArrayList, uid);
+                            mAdapter = new CPUserCommissionDetailsAdapter(activity, userGoldCommssionDetailsArrayList, uid);
                             recyclerCommissionDetails.setAdapter(mAdapter);
                         } else {
                             noData.setVisibility(View.VISIBLE);
