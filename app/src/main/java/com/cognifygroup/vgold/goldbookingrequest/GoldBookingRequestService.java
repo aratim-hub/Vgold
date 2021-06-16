@@ -30,6 +30,7 @@ public interface GoldBookingRequestService {
                                           @Field("cheque_no") String cheque_no,
                                           @Field("initial_booking_charges") String initBookCharges,
                                           @Field("booking_charges_discount") String bookChargeDisc,
-                                          @Field("booking_charges") String bookingCharge
+                                          @Field("booking_charges") String bookingCharge,
+                                          @Field("confirmed") String confirmedVal
                                           );
 }

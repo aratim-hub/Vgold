@@ -29,7 +29,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerGoldDetails"
         android:layout_width="match_parent"
-        android:layout_below="@+id/et_patient"
+        android:layout_below="@+id/etGoldSearch"
         android:layout_height="wrap_content"/>
 
     <TextView

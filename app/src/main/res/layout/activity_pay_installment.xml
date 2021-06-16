@@ -143,7 +143,8 @@
                             android:hint="Enter Payable Amount"
                             android:inputType="numberDecimal"
                             android:textColor="@color/colorblack"
-                            android:textSize="14sp" />
+                            android:textSize="14sp"
+                            android:visibility="gone"/>
 
                     </LinearLayout>
 
@@ -231,7 +232,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
                 android:orientation="vertical"
+                android:background="@color/colorLittleGraylight"
                 android:visibility="gone">
 
                 <TextView

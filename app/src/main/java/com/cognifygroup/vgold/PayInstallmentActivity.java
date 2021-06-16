@@ -153,6 +153,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     TextView txtBalanceRemainId;
 
     private String moneyWalletBal;
+    private String GoldAmt;
 
     final int UPI_PAYMENT = 0;
     String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
@@ -198,9 +199,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         getGoldBookingIdServiceProvider = new GetGoldBookingIdServiceProvider(this);
         fetchDownPaymentServiceProvider = new FetchDownPaymentServiceProvider(this);
         payInstallmentServiceProvider = new PayInstallmentServiceProvider(this);
+        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
         getAllTransactionMoneyServiceProvider = new GetAllTransactionMoneyServiceProvider(this);
         getAllTransactionGoldServiceProvider = new GetAllTransactionGoldServiceProvider(this);
-        loginStatusServiceProvider = new LoginStatusServiceProvider(this);
         getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -249,6 +250,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (radioMinAmt.isChecked()) {
+                    calculationLayout.setVisibility(View.GONE);
                     txtAmount.setVisibility(View.VISIBLE);
                     txtOtherAmount.setVisibility(View.GONE);
                     txtPayableAmount.setVisibility(View.GONE);
@@ -259,6 +261,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     api.setVisibility(View.VISIBLE);
 
                 } else if (radioOtherAmt.isChecked()) {
+                    calculationLayout.setVisibility(View.GONE);
                     txtOtherAmount.setText("");
                     txtOtherAmount.setVisibility(View.VISIBLE);
                     txtPayableAmount.setVisibility(View.GONE);
@@ -270,6 +273,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 } else if (radioMoneyWallet.isChecked()) {
                     AttemptToGetMoneyBalance(VGoldApp.onGetUerId());
                     txtPayableAmount.setText("");
+                    txtPayableAmount.setError(null);
                     txtOtherAmount.setVisibility(View.GONE);
                     calculationLayout.setVisibility(View.GONE);
                     txtPayableAmount.setVisibility(View.VISIBLE);
@@ -281,6 +285,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 } else {
                     AttemptToGetGoldBalance(VGoldApp.onGetUerId());
                     txtPayableAmount.setText("");
+                    txtPayableAmount.setError(null);
                     calculationLayout.setVisibility(View.GONE);
                     txtOtherAmount.setVisibility(View.GONE);
                     txtPayableAmount.setVisibility(View.VISIBLE);
@@ -323,7 +328,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                                 "", "",
                                 txtPayableAmount.getText().toString(),
                                 "", "0");
-                    }else {
+                    } else {
                         txtWalletAmount.setText(moneyWalletBal);
                         calculationLayout.setVisibility(View.GONE);
                     }
@@ -338,10 +343,11 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     private void calculateMoneyAmount(String payableAmt) {
         if (moneyWalletBal != null && !TextUtils.isEmpty(moneyWalletBal) && !moneyWalletBal.equalsIgnoreCase("null")) {
             remainWalletAmt = Double.parseDouble(moneyWalletBal) - Double.parseDouble(payableAmt);
-            if (remainWalletAmt > 0) {
-                txtWalletAmount.setText(String.format("%.2f", remainWalletAmt));
-            } else {
+            if (remainWalletAmt < 0) {
                 txtPayableAmount.setError("Amount Exceed");
+//                txtWalletAmount.setText(String.format("%.2f", remainWalletAmt));
+            } else {
+
             }
         }
         calculationLayout.setVisibility(View.VISIBLE);
@@ -449,10 +455,10 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
                     String todayGoldPurchaseRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
 
-                    double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
+                     double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
 
-                    String amt = new DecimalFormat("##.##").format(sellingRate);
-                    txtGoldValue.setText("(Worth ₹ " + amt + ")");
+                     GoldAmt = new DecimalFormat("##.##").format(sellingRate);
+                    txtGoldValue.setText("(Worth ₹ " + GoldAmt + ")");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -547,11 +553,11 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     public void OnClickOfProceedToPayment1() {
         if (spinner_goldBookingId.getSelectedItemPosition() != 0) {
 
-            if (radioMinAmt.isChecked()) {
-                txtOtherAmount.setVisibility(View.GONE);
-            } else {
-                txtOtherAmount.setVisibility(View.VISIBLE);
-            }
+//            if (radioMinAmt.isChecked()) {
+//                txtOtherAmount.setVisibility(View.GONE);
+//            } else {
+//                txtOtherAmount.setVisibility(View.VISIBLE);
+//            }
 
             if (api.getVisibility() == View.VISIBLE) {
                 if (spinner_payment_option.getSelectedItemPosition() != 0) {
@@ -677,29 +683,61 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
             } else if (radioMoneyWallet.isChecked()) {
                 if (txtPayableAmount.getText().toString() != null && !TextUtils.isEmpty(txtPayableAmount.getText().toString())) {
                     double otherAmt = Double.valueOf(txtPayableAmount.getText().toString());
-                    if (otherAmt > 0) {
-                        ShowPopupDialog(null, "moneyWallet");
+
+                    if (moneyWalletBal != null && !TextUtils.isEmpty(moneyWalletBal) && !moneyWalletBal.equalsIgnoreCase("null")) {
+                        remainWalletAmt = Double.parseDouble(moneyWalletBal) - otherAmt;
+                        if (remainWalletAmt > 0) {
+                            if (otherAmt > 0) {
+                                ShowPopupDialog(null, "moneyWallet");
+                            } else {
+                                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
+                                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                            }
+                        } else {
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Money Wallet balance is less then entered amount",
+                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        }
                     } else {
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        if (otherAmt > 0) {
+                            ShowPopupDialog(null, "moneyWallet");
+                        } else {
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
+                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        }
                     }
                 } else {
-                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
-                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-            }
+                    AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
             } else if (radioGoldWallet.isChecked()) {
                 if (txtPayableAmount.getText().toString() != null && !TextUtils.isEmpty(txtPayableAmount.getText().toString())) {
                     double otherAmt = Double.valueOf(txtPayableAmount.getText().toString());
-                    if (otherAmt > 0) {
-                        ShowPopupDialog(dataModel, "goldWallet");
+                    if (GoldAmt != null && !TextUtils.isEmpty(GoldAmt) && !GoldAmt.equalsIgnoreCase("null")) {
+                        remainWalletAmt = Double.parseDouble(GoldAmt) - otherAmt;
+                        if (remainWalletAmt > 0) {
+                            if (otherAmt > 0) {
+
+                                ShowPopupDialog(dataModel, "goldWallet");
+                            } else {
+                                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
+                                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                            }
+                        } else {
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Gold Wallet balance is less then entered amount",
+                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        }
                     } else {
-                        AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
-                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        if (otherAmt > 0) {
+                            ShowPopupDialog(dataModel, "goldWallet");
+                        } else {
+                            AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Payable amount should be greater than 0",
+                                    getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                        }
                     }
                 } else {
-                AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
-                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-            }
+                    AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please enter Payable Amount",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
             } else {
                 AlertDialogs.alertDialogOk(PayInstallmentActivity.this, "Alert", "Please Select Payment Mode",
                         getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
@@ -749,7 +787,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                 txtDeductedGoldId.setVisibility(View.VISIBLE);
                 txtSaleRateId.setVisibility(View.VISIBLE);
 
-                txtPayableAmtId.setText("Payable Amount : " +getResources().getString(R.string.rs)
+                txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
                         + dataModel.getAmount_to_pay());
                 txtWalletAmtId.setText("Gold in Wallet : " + dataModel.getGold_in_wallet() + " gm");
                 txtSaleRateId.setText("Today's Gold Sale Rate : " + getResources().getString(R.string.rs)
@@ -978,14 +1016,13 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
                         txtAmount.setText(amount);
                         txtRupee.setText(getResources().getString(R.string.rs));
+                        txtAmount.setVisibility(View.VISIBLE);
 
-                        if (radioMinAmt.isChecked()) {
-                            txtAmount.setVisibility(View.VISIBLE);
-                            txtOtherAmount.setVisibility(View.GONE);
-                        } else {
-                            txtAmount.setVisibility(View.GONE);
-                            txtOtherAmount.setVisibility(View.VISIBLE);
-                        }
+//                        if (radioOtherAmt.isChecked()) {
+//                            txtOtherAmount.setVisibility(View.GONE);
+//                        } else {
+//                            txtOtherAmount.setVisibility(View.VISIBLE);
+//                        }
 
 
                     } else {

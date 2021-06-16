@@ -62,7 +62,7 @@ public class CPUserCommissionDetailsAdapter extends RecyclerView.Adapter<CPUserC
         UserCommissionDetailsModel.Data dataList = userCommissionDetailsArrayList.get(position);
 
         holder.txtDate.setText(dataList.getCreated_date());
-        holder.txtGoldBookingId.setText(dataList.getBooking_id() + " " + dataList.getGold() + " gm");
+        holder.txtGoldBookingId.setText(dataList.getBooking_id() + " - " + dataList.getGold() + " gm");
         holder.txtCommssion.setText(mContext.getResources().getString(R.string.rs) + dataList.getCommission_amount());
 
     }

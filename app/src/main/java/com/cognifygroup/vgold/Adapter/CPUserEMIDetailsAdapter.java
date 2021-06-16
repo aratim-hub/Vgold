@@ -57,7 +57,6 @@ public class CPUserEMIDetailsAdapter extends RecyclerView.Adapter<CPUserEMIDetai
 
         UserEMIDetailsModel.Data dataList = userEmiDetailsArrayList.get(position);
 
-
         if (dataList.getLast_paid_date() != null && !TextUtils.isEmpty(dataList.getLast_paid_date())) {
             holder.txtDate.setText(dataList.getLast_paid_date());
             holder.lastPaidLayout.setVisibility(View.VISIBLE);
@@ -66,20 +65,16 @@ public class CPUserEMIDetailsAdapter extends RecyclerView.Adapter<CPUserEMIDetai
         }
 
         holder.txtGoldBookingId.setText(dataList.getGold_booking_id());
-        holder.txtGoldQty.setText(dataList.getGold() + " gm");
-        holder.txtDownPayment.setText(mContext.getResources().getString(R.string.rs) + dataList.getDown_payment());
-        holder.txtGoldBookingValue.setText(mContext.getResources().getString(R.string.rs) + dataList.getBooking_amount());
-        holder.txtInstallment.setText(mContext.getResources().getString(R.string.rs) + dataList.getMonthly_installment());
-        holder.txtTenure.setText(dataList.getTennure());
-        holder.txtBookingCharge.setText(mContext.getResources().getString(R.string.rs) + dataList.getBooking_charge());
+        holder.txtEmiAmt.setText(mContext.getResources().getString(R.string.rs) + dataList.getMonthly_installment());
+        holder.txtNextInstallment.setText(dataList.getUpcoming_installment_no());
 
-        holder.detailLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onItemClick(dataList);
-            }
-        });
 
+//        holder.detailLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                listener.onItemClick(dataList);
+//            }
+//        });
     }
 
     @Override
@@ -96,23 +91,11 @@ public class CPUserEMIDetailsAdapter extends RecyclerView.Adapter<CPUserEMIDetai
         @InjectView(R.id.txtGoldBookingId)
         TextView txtGoldBookingId;
 
-        @InjectView(R.id.txtGoldQty)
-        TextView txtGoldQty;
+        @InjectView(R.id.txtEmiAmt)
+        TextView txtEmiAmt;
 
-        @InjectView(R.id.txtDownPayment)
-        TextView txtDownPayment;
-
-        @InjectView(R.id.txtGoldBookingValue)
-        TextView txtGoldBookingValue;
-
-        @InjectView(R.id.txtInstallment)
-        TextView txtInstallment;
-
-        @InjectView(R.id.txtTenure)
-        TextView txtTenure;
-
-        @InjectView(R.id.txtBookingCharge)
-        TextView txtBookingCharge;
+        @InjectView(R.id.txtNextInstallment)
+        TextView txtNextInstallment;
 
         @InjectView(R.id.detailLayout)
         LinearLayout detailLayout;

@@ -75,6 +75,9 @@ public class UserEMIDetailsModel implements Serializable{
         @Expose
         @SerializedName("booking_charge")
         private String booking_charge;
+        @Expose
+        @SerializedName("upcoming_installment_no")
+        private String upcoming_installment_no;
 
         public String getGold_booking_id() {
             return gold_booking_id;
@@ -146,6 +149,14 @@ public class UserEMIDetailsModel implements Serializable{
 
         public void setBooking_charge(String booking_charge) {
             this.booking_charge = booking_charge;
+        }
+
+        public String getUpcoming_installment_no() {
+            return upcoming_installment_no;
+        }
+
+        public void setUpcoming_installment_no(String upcoming_installment_no) {
+            this.upcoming_installment_no = upcoming_installment_no;
         }
     }
 }

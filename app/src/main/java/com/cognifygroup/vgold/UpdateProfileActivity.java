@@ -174,24 +174,26 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
         if (VGoldApp.onGetIdentityImg() != null && !TextUtils.isEmpty(VGoldApp.onGetIdentityImg()) && !VGoldApp.onGetIdentityImg().equalsIgnoreCase("null")) {
 
-            Glide.with(this).load(VGoldApp.onGetIdentityImg())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
+            String img = VGoldApp.onGetIdentityImg();
+
+            Glide.with(this).load(img)
+                    .placeholder(R.drawable.ic_personal_identificat)
+                    .error(R.drawable.ic_personal_identificat)
                     .into(iv_pancard);
         }
         if (VGoldApp.onGetAddressImg1() != null && !TextUtils.isEmpty(VGoldApp.onGetAddressImg1()) && !VGoldApp.onGetAddressImg1().equalsIgnoreCase("null")) {
 
             Glide.with(this).load(VGoldApp.onGetAddressImg1())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
+                    .placeholder(R.drawable.ic_personal_identificat)
+                    .error(R.drawable.ic_personal_identificat)
                     .into(iv_aadharFront);
         }
 
         if (VGoldApp.onGetAddressImg2() != null && !TextUtils.isEmpty(VGoldApp.onGetAddressImg2()) && !VGoldApp.onGetAddressImg2().equalsIgnoreCase("null")) {
 
             Glide.with(this).load(VGoldApp.onGetAddressImg2())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
+                    .placeholder(R.drawable.ic_personal_identificat)
+                    .error(R.drawable.ic_personal_identificat)
                     .into(iv_aadharBack);
         }
 
@@ -349,26 +351,29 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 if (aBooleanAadhar_f) {
-                    iv_aadharFront.setImageURI(result.getUri());
+//                    iv_aadharFront.setImageURI(result.getUri());
                     try {
                         bitmapAadharFront = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                         ImageAadharFont = imagetostring(bitmapAadharFront);
+                        iv_aadharFront.setImageBitmap(bitmapAadharFront);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (aBooleanAadhar_b) {
-                    iv_aadharBack.setImageURI(result.getUri());
+//                    iv_aadharBack.setImageURI(result.getUri());
                     try {
                         bitmapAadharBack = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                         ImageAadharBack = imagetostring(bitmapAadharBack);
+                        iv_aadharBack.setImageBitmap(bitmapAadharBack);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (aBoolean_pan) {
-                    iv_pancard.setImageURI(result.getUri());
+//                    iv_pancard.setImageURI(result.getUri());
                     try {
                         bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                         ImagePanCard = imagetostring(bitmapPanCard);
+                        iv_pancard.setImageBitmap(bitmapPanCard);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

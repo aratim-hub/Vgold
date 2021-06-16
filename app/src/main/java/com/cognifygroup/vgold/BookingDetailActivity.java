@@ -1,9 +1,12 @@
 package com.cognifygroup.vgold;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,8 +30,15 @@ import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.addGold.AddGoldModel;
+import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldModel;
+import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldServiceProvider;
+import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
+import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyServiceProvider;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
 import com.cognifygroup.vgold.goldbookingrequest.GoldBookingRequestModel;
 import com.cognifygroup.vgold.goldbookingrequest.GoldBookingRequestServiceProvider;
+import com.cognifygroup.vgold.payInstallment.PayInstallmentModel;
 import com.cognifygroup.vgold.utils.APICallback;
 import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
@@ -36,6 +47,7 @@ import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -83,6 +95,27 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     @InjectView(R.id.discLbl)
     TextView discLbl;
 
+
+    @InjectView(R.id.calculationLayout)
+    LinearLayoutCompat calculationLayout;
+    @InjectView(R.id.txtPayableAmtId)
+    TextView txtPayableAmtId;
+    @InjectView(R.id.txtWalletAmtId)
+    TextView txtWalletAmtId;
+    @InjectView(R.id.txtSaleRateId)
+    TextView txtSaleRateId;
+    @InjectView(R.id.txtGSTAmtId)
+    TextView txtGSTAmtId;
+    @InjectView(R.id.txtGSTPayableAmtId)
+    TextView txtGSTPayableAmtId;
+    @InjectView(R.id.txtDeductedGoldId)
+    TextView txtDeductedGoldId;
+    @InjectView(R.id.txtBalanceRemainId)
+    TextView txtBalanceRemainId;
+
+    double remainWalletAmt = 0.0;
+    private String GoldAmt;
+
     String payment_option;
     String monthly;
     String booking_value;
@@ -95,15 +128,21 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
     String disc;
     String booking_charge;
     final int UPI_PAYMENT = 0;
+    GetAllTransactionMoneyServiceProvider getAllTransactionMoneyServiceProvider;
+    GetAllTransactionGoldServiceProvider getAllTransactionGoldServiceProvider;
+    GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
 
     String GOOGLE_PAY_PACKAGE_NAME = "com.google.android.apps.nbu.paisa.user";
     int GOOGLE_PAY_REQUEST_CODE = 123;
+    private String moneyWalletBal;
 
     AlertDialogs mAlert;
     GoldBookingRequestServiceProvider goldBookingRequestServiceProvider;
     private TransparentProgressDialog progressDialog;
     private AlertDialogOkListener alertDialogOkListener = this;
     private LoginStatusServiceProvider loginStatusServiceProvider;
+
+    private GoldBookingRequestModel.Data dataModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +171,9 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
         mAlert = AlertDialogs.getInstance();
 
         goldBookingRequestServiceProvider = new GoldBookingRequestServiceProvider(this);
+        getAllTransactionMoneyServiceProvider = new GetAllTransactionMoneyServiceProvider(this);
+        getAllTransactionGoldServiceProvider = new GetAllTransactionGoldServiceProvider(this);
+        getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
 
         if (getIntent().hasExtra("monthly")) {
 
@@ -171,7 +213,7 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
 
 
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                    R.array.payment_option, android.R.layout.simple_spinner_item);
+                    R.array.payment_option_wallet, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(R.layout.custom_spinner_item);
 // Apply the adapter to the spinner
@@ -182,17 +224,32 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                     String paymentoption = (String) parent.getItemAtPosition(pos);
                     if (paymentoption.equals("cheque")) {
                         payment_option = "Cheque";
+                        calculationLayout.setVisibility(View.GONE);
                         llCheque.setVisibility(View.VISIBLE);
                         llRTGS.setVisibility(View.GONE);
                     } else if (paymentoption.equals("NEFT/RTGS/Online Transfer")) {
                         payment_option = "Online";
+                        calculationLayout.setVisibility(View.GONE);
                         llRTGS.setVisibility(View.VISIBLE);
                         llCheque.setVisibility(View.GONE);
-                    } else if (paymentoption.equals("Wallet")) {
-                        payment_option = "Wallet";
+                    } else if (paymentoption.equals("Gold Wallet")) {
+                        payment_option = "Gold Wallet";
+                        calculationLayout.setVisibility(View.VISIBLE);
+                        llCheque.setVisibility(View.GONE);
+                        llRTGS.setVisibility(View.GONE);
+
+                        AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                                monthly, gold_rate, quantity, tennure, pc, payment_option,
+                                edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "",
+                                initBookingCharge, disc, booking_charge,"0");
+                    } else if (paymentoption.equals("Money Wallet")) {
+                        calculateMoneyAmount(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()));
+                        payment_option = "Money Wallet";
+                        calculationLayout.setVisibility(View.VISIBLE);
                         llCheque.setVisibility(View.GONE);
                         llRTGS.setVisibility(View.GONE);
                     } else if (paymentoption.equals("UPI Payment")) {
+                        calculationLayout.setVisibility(View.GONE);
                         payment_option = "UPI Payment";
                         llCheque.setVisibility(View.GONE);
                         llRTGS.setVisibility(View.GONE);
@@ -208,6 +265,9 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             loginStatusServiceProvider = new LoginStatusServiceProvider(this);
 
             checkLoginSession();
+            AttemptToGetMoneyBalance(VGoldApp.onGetUerId());
+            AttemptToGetGoldBalance(VGoldApp.onGetUerId());
+
         }
     }
 
@@ -266,6 +326,151 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
         });
     }
 
+    private void calculateMoneyAmount(Double payableAmt) {
+
+        if (moneyWalletBal != null && !TextUtils.isEmpty(moneyWalletBal) && !moneyWalletBal.equalsIgnoreCase("null")) {
+            remainWalletAmt = Double.parseDouble(moneyWalletBal) - payableAmt;
+            if (remainWalletAmt > 0) {
+                txtWalletAmtId.setText(String.format("%.2f", remainWalletAmt));
+            } else {
+                AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", "Low balance in money wallet",
+                        getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+            }
+        }
+        calculationLayout.setVisibility(View.VISIBLE);
+        txtGSTAmtId.setVisibility(View.GONE);
+        txtGSTPayableAmtId.setVisibility(View.GONE);
+        txtDeductedGoldId.setVisibility(View.GONE);
+        txtSaleRateId.setVisibility(View.GONE);
+        txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                + payableAmt);
+        txtWalletAmtId.setText("Money in Wallet : " + getResources().getString(R.string.rs)
+                + moneyWalletBal);
+        txtBalanceRemainId.setText("Remaining Money in Wallet : "
+                + getResources().getString(R.string.rs) + remainWalletAmt);
+    }
+
+    private void AttemptToGetMoneyBalance(String user_id) {
+        progressDialog.show();
+        getAllTransactionMoneyServiceProvider.getAllTransactionMoneyHistory(user_id, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetAllTransactionMoneyModel) serviceResponse).getStatus();
+                    String message = ((GetAllTransactionMoneyModel) serviceResponse).getMessage();
+                    moneyWalletBal = ((GetAllTransactionMoneyModel) serviceResponse).getWallet_Balance();
+
+//                    txtWalletRupee.setText(getResources().getString(R.string.rs));
+//                    txtWalletAmount.setText(moneyWalletBal);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void AttemptToGetGoldBalance(String user_id) {
+        progressDialog.show();
+        getAllTransactionGoldServiceProvider.getAllTransactionGoldHistory(user_id, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetAllTransactionGoldModel) serviceResponse).getStatus();
+                    String message = ((GetAllTransactionGoldModel) serviceResponse).getMessage();
+                    String balance = ((GetAllTransactionGoldModel) serviceResponse).getGold_Balance();
+                    double gold = Double.parseDouble(balance);
+                    DecimalFormat numberFormat = new DecimalFormat("#.000");
+                    gold = Double.parseDouble(numberFormat.format(gold));
+//                    txtGoldAmount.setText(gold + " GM");
+
+                    AttemptToGetTodayGoldRate(gold);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void AttemptToGetTodayGoldRate(double gold) {
+        getTodayGoldRateServiceProvider.getTodayGoldRate(new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((GetTodayGoldRateModel) serviceResponse).getStatus();
+                    String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
+                    String todayGoldPurchaseRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
+
+                    double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
+
+                    GoldAmt = new DecimalFormat("##.##").format(sellingRate);
+//                    txtGoldValue.setText("(Worth ₹ " + amt + ")");
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(BookingDetailActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(BookingDetailActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
     @OnClick(R.id.btnPayOnline)
     public void onClickOfBtnPayOnline() {
 
@@ -274,21 +479,44 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
             AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
                     monthly, gold_rate, quantity, tennure, pc, payment_option,
                     edtBankDetail.getText().toString(), "",
-                    edtChequeNo.getText().toString(), initBookingCharge, disc, booking_charge
-            );
+                    edtChequeNo.getText().toString(), initBookingCharge, disc, booking_charge,"0" );
         } else if (payment_option.equals("Online")) {
 
             AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
                     monthly, gold_rate, quantity, tennure, pc, payment_option,
                     edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), ""
-                    , initBookingCharge, disc, booking_charge);
+                    , initBookingCharge, disc, booking_charge,"0");
 
-        } else if (payment_option.equals("Wallet")) {
+        } else if (payment_option.equals("Money Wallet")) {
 
-            AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
-                    monthly, gold_rate, quantity, tennure, pc, payment_option,
-                    edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "",
-                    initBookingCharge, disc, booking_charge);
+            double payableAmt = Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim());
+            if (moneyWalletBal != null && !TextUtils.isEmpty(moneyWalletBal) && !moneyWalletBal.equalsIgnoreCase("null")) {
+                double remainWalletAmt = Double.parseDouble(moneyWalletBal) - payableAmt;
+                if (remainWalletAmt > 0) {
+                    ShowPopupDialog(null, "moneyWallet", payableAmt);
+                } else {
+                    AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", "Money Wallet balance is less then entered amount",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
+            } else {
+                ShowPopupDialog(null, "moneyWallet", payableAmt);
+            }
+
+        } else if (payment_option.equals("Gold Wallet")) {
+
+            double payableAmt = Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim());
+            if (GoldAmt != null && !TextUtils.isEmpty(GoldAmt) && !GoldAmt.equalsIgnoreCase("null")) {
+                remainWalletAmt = Double.parseDouble(GoldAmt) - payableAmt;
+                if (remainWalletAmt > 0) {
+
+                    ShowPopupDialog(dataModel, "goldWallet",payableAmt);
+                } else {
+                    AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", "Gold Wallet balance is less then entered amount",
+                            getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                }
+            } else {
+                ShowPopupDialog(dataModel, "goldWallet",payableAmt);
+            }
 
         } else if (payment_option.equals("UPI Payment")) {
             integrateGpay(Double.parseDouble(down_payment) + Double.parseDouble(txtBookingCharge.getText().toString().trim()),
@@ -296,6 +524,88 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
         }
 
     }
+
+    private void ShowPopupDialog(GoldBookingRequestModel.Data dataModel, String key, double payableAmt) {
+        final Dialog dialog = new Dialog(BookingDetailActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.wallet_payment_dialog);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        AppCompatButton btnYes = dialog.findViewById(R.id.btnYes);
+        AppCompatButton btnNo = dialog.findViewById(R.id.btnNo);
+        TextView txtBalanceRemainId = dialog.findViewById(R.id.txtBalanceRemainId);
+        TextView txtPayableAmtId = dialog.findViewById(R.id.txtPayableAmtId);
+        TextView txtSaleRateId = dialog.findViewById(R.id.txtSaleRateId);
+        TextView txtGSTAmtId = dialog.findViewById(R.id.txtGSTAmtId);
+        TextView txtWalletAmtId = dialog.findViewById(R.id.txtWalletAmtId);
+        TextView txtGSTPayableAmtId = dialog.findViewById(R.id.txtGSTPayableAmtId);
+        TextView txtDeductedGoldId = dialog.findViewById(R.id.txtDeductedGoldId);
+
+        if (key.equalsIgnoreCase("moneyWallet")) {
+            txtGSTAmtId.setVisibility(View.GONE);
+            txtGSTPayableAmtId.setVisibility(View.GONE);
+            txtDeductedGoldId.setVisibility(View.GONE);
+            txtSaleRateId.setVisibility(View.GONE);
+            txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                    + payableAmt);
+            txtWalletAmtId.setText("Money in Wallet : " + getResources().getString(R.string.rs)
+                    + moneyWalletBal);
+            txtBalanceRemainId.setText("Remaining Money in Wallet : "
+                    + getResources().getString(R.string.rs) + remainWalletAmt);
+        } else {
+            if (dataModel != null) {
+                txtGSTAmtId.setVisibility(View.VISIBLE);
+                txtGSTPayableAmtId.setVisibility(View.VISIBLE);
+                txtDeductedGoldId.setVisibility(View.VISIBLE);
+                txtSaleRateId.setVisibility(View.VISIBLE);
+
+                txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                        + dataModel.getAmount_to_pay());
+                txtWalletAmtId.setText("Gold in Wallet : " + dataModel.getGold_in_wallet() + " gm");
+                txtSaleRateId.setText("Today's Gold Sale Rate : " + getResources().getString(R.string.rs)
+                        + dataModel.getToday_sale_rate());
+                txtGSTAmtId.setText("GST for Today's Gold Sale Rate : " + dataModel.getGst_per() + "%");
+                txtGSTPayableAmtId.setText("GST on Payable Amount : " + getResources().getString(R.string.rs)
+                        + dataModel.getAmount_to_pay_gst());
+                txtDeductedGoldId.setText("Deducted Gold from Wallet : " + dataModel.getGold_reduce() + " gm");
+                txtBalanceRemainId.setText("Remaining Gold in Wallet : "
+                        + dataModel.getReduced_gold_in_wallet() + " gm");
+            }
+        }
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (key.equalsIgnoreCase("moneyWallet")) {
+                    AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                            monthly, gold_rate, quantity, tennure, pc, payment_option,
+                            edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "",
+                            initBookingCharge, disc, booking_charge,"0");
+                } else {
+                    AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment,
+                            monthly, gold_rate, quantity, tennure, pc, payment_option,
+                            edtRtgsBankDetail.getText().toString(), edtTxnId.getText().toString(), "",
+                            initBookingCharge, disc, booking_charge,"1");
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        btnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
 
     private void integrateGpay(double amt, String goldRate, String weight) {
         String no = "00000";
@@ -418,7 +728,7 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                 AttemptToGoldBookingRequest(VGoldApp.onGetUerId(), booking_value, down_payment, monthly,
                         gold_rate, quantity, tennure, pc, payment_option,
                         edtRtgsBankDetail.getText().toString(), approvalRefNo, "",
-                        initBookingCharge, disc, booking_charge);
+                        initBookingCharge, disc, booking_charge,"0");
 
             } else if ("Payment cancelled by user.".equals(paymentCancel)) {
                 Toast.makeText(BookingDetailActivity.this, "Payment cancelled by user.", Toast.LENGTH_SHORT).show();
@@ -452,23 +762,56 @@ public class BookingDetailActivity extends AppCompatActivity implements AlertDia
                                              String gold_weight, String tennure, String pc,
                                              String payment_option, String bank_details,
                                              String tr_id, String cheque_no, String initBookingCharge,
-                                             String disc, String booking_charge) {
+                                             String disc, String booking_charge, String confirmedVal) {
         // mAlert.onShowProgressDialog(AddBankActivity.this, true);
         goldBookingRequestServiceProvider.getGoldBookingRequest(user_id,
                 booking_value, down_payment, monthly, rate, gold_weight, tennure, pc,
-                payment_option, bank_details, tr_id, cheque_no,initBookingCharge, disc,booking_charge,new APICallback() {
+                payment_option, bank_details, tr_id, cheque_no, initBookingCharge, disc, booking_charge,
+                confirmedVal, new APICallback() {
                     @Override
                     public <T> void onSuccess(T serviceResponse) {
                         try {
                             String status = ((GoldBookingRequestModel) serviceResponse).getStatus();
                             String message = ((GoldBookingRequestModel) serviceResponse).getMessage();
+                            dataModel = ((GoldBookingRequestModel) serviceResponse).getData();
 
                             if (status.equals("200")) {
 
+                                if (payment_option.equalsIgnoreCase("Gold Wallet") &&
+                                        confirmedVal.equalsIgnoreCase("0")) {
+
+                                    calculationLayout.setVisibility(View.VISIBLE);
+                                    txtGSTAmtId.setVisibility(View.VISIBLE);
+                                    txtGSTPayableAmtId.setVisibility(View.VISIBLE);
+                                    txtDeductedGoldId.setVisibility(View.VISIBLE);
+                                    txtSaleRateId.setVisibility(View.VISIBLE);
+
+                                    txtPayableAmtId.setText("Payable Amount : " + getResources().getString(R.string.rs)
+                                            + dataModel.getAmount_to_pay());
+                                    txtWalletAmtId.setText("Gold in Wallet : " + dataModel.getGold_in_wallet() + " gm");
+                                    txtSaleRateId.setText("Today's Gold Sale Rate : " + getResources().getString(R.string.rs)
+                                            + dataModel.getToday_sale_rate());
+                                    txtGSTAmtId.setText("GST for Today's Gold Sale Rate : " + dataModel.getGst_per() + "%");
+                                    txtGSTPayableAmtId.setText("GST on Payable Amount : " + getResources().getString(R.string.rs)
+                                            + dataModel.getAmount_to_pay_gst());
+                                    txtDeductedGoldId.setText("Deducted Gold from Wallet : " + dataModel.getGold_reduce() + " gm");
+                                    txtBalanceRemainId.setText("Remaining Gold in Wallet : "
+                                            + dataModel.getReduced_gold_in_wallet() + " gm");
+
+//                                    ShowPopupDialog(dataModel, "goldWallet");
+
+                                } else {
+                                    Intent intent = new Intent(BookingDetailActivity.this, SuccessActivity.class);
+                                    intent.putExtra("message", message);
+                                    startActivity(intent);
+                                }
+
+
+
+
+
                                 //   mAlert.onShowToastNotification(BookingDetailActivity.this, message);
-                                Intent intent = new Intent(BookingDetailActivity.this, SuccessActivity.class);
-                                intent.putExtra("message", message);
-                                startActivity(intent);
+
                             } else {
 
                                 AlertDialogs.alertDialogOk(BookingDetailActivity.this, "Alert", message,

@@ -191,6 +191,94 @@
             android:layout_height="wrap_content">
         </Spinner>
 
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/calculationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:background="@color/colorLittleGraylight"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txtPayableAmtId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtWalletAmtId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtSaleRateId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/txtGSTAmtId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtGSTPayableAmtId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtDeductedGoldId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+
+            <TextView
+                android:id="@+id/txtBalanceRemainId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="@dimen/height_10"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorblack"
+                android:textSize="14sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
         <LinearLayout
             android:id="@+id/llCheque"
             android:layout_marginTop="@dimen/height_10"

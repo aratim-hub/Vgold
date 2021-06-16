@@ -30,12 +30,12 @@ public class GoldBookingRequestServiceProvider {
                                       String tennure, String pc, String payment_option,
                                       String bank_details, String tr_id, String cheque_no,
                                       String initBookingCharge,
-                                      String disc, String booking_charge,
+                                      String disc, String booking_charge,String confirmedVal,
                                       final APICallback apiCallback) {
         Call<GoldBookingRequestModel> call = null;
         call = goldBookingRequestService.addGold(user_id, booking_value, down_payment, monthly, rate,
                 gold_weight, tennure, pc, payment_option, bank_details, tr_id, cheque_no, initBookingCharge,
-                disc, booking_charge);
+                disc, booking_charge,confirmedVal);
         String url = call.request().url().toString();
 
         call.enqueue(new Callback<GoldBookingRequestModel>() {

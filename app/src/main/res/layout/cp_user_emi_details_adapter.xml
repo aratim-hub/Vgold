@@ -14,7 +14,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="#fff"
         app:cardCornerRadius="5dp"
-        app:cardElevation="7dp"
+        app:cardElevation="5dp"
         app:cardUseCompatPadding="true">
 
         <RelativeLayout
@@ -37,7 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginLeft="@dimen/height_15"
+                    android:layout_marginLeft="10dp"
                     android:layout_toLeftOf="@+id/txtRupee"
                     android:layout_toRightOf="@+id/imageViewExercise"
                     android:text=""
@@ -45,13 +45,13 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txtGoldQty"
+                    android:id="@+id/txtEmiAmt"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:layout_below="@+id/dateSeparator"
                     android:text=""
-                    android:layout_marginRight="@dimen/height_15"
+                    android:layout_marginRight="10dp"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textStyle="bold" />
 
@@ -63,7 +63,7 @@
                 android:layout_height="0.5dp"
                 android:layout_below="@+id/ll"
                 android:layout_marginTop="@dimen/height_5"
-                android:layout_marginBottom="@dimen/height_10"
+                android:layout_marginBottom="@dimen/height_5"
                 android:background="@color/colorblack" />
 
 
@@ -76,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -83,98 +84,13 @@
                     android:weightSum="3">
 
                     <TextView
-                        android:text="Gold Booking Value"
-                        android:layout_marginLeft="@dimen/height_10"
+                        android:text="Upcoming installment No"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"/>
 
                     <TextView
-                        android:id="@+id/txtGoldBookingValue"
-                        android:text=""
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:text="Booking Charge"
-                        android:layout_marginLeft="@dimen/height_10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/txtBookingCharge"
-                        android:text=""
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:text="Booking Amount"
-                        android:layout_marginLeft="@dimen/height_10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/txtDownPayment"
-                        android:text=""
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:text="Installment"
-                        android:layout_marginLeft="@dimen/height_10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/txtInstallment"
-                        android:text=""
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"/>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:text="Tenure"
-                        android:layout_marginLeft="@dimen/height_10"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/txtTenure"
+                        android:id="@+id/txtNextInstallment"
                         android:text=""
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -191,7 +107,6 @@
 
                     <TextView
                         android:text="Last Paid"
-                        android:layout_marginLeft="@dimen/height_10"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"/>
