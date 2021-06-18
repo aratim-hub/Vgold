@@ -43,6 +43,7 @@ public class AskPermissions {
     public boolean checkAndRequestPermissions() {
         int read_external_storage = ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE);
         int write_external_storage = ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int camera = ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA);
 //        int receive_sms = ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECEIVE_SMS);
 //        int read_sms = ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_SMS);
 
@@ -53,6 +54,9 @@ public class AskPermissions {
         }
         if (write_external_storage != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (camera != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
         }
 //        if (receive_sms != PackageManager.PERMISSION_GRANTED) {
 //            listPermissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
@@ -76,6 +80,7 @@ public class AskPermissions {
 
                 perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
                 perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
 //                perms.put(Manifest.permission.RECEIVE_SMS, PackageManager.PERMISSION_GRANTED);
 //                perms.put(Manifest.permission.READ_SMS, PackageManager.PERMISSION_GRANTED);
 
@@ -85,13 +90,15 @@ public class AskPermissions {
 
                     if (perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                             && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                            && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
 //                            && perms.get(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
 //                            && perms.get(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
                     ) {
                         checkToLaunch();
                     } else {
                         if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                                ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                                ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)
 //                               || ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.RECEIVE_SMS) ||
 //                                ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.READ_SMS)
                                 ) {
