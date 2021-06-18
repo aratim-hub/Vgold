@@ -13,6 +13,13 @@
         android:orientation="vertical"
         android:padding="@dimen/height_10">
 
+        <ImageView
+            android:id="@+id/imgContact"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:src="@drawable/phonebook"/>
+
         <EditText
             android:id="@+id/edtNameR"
             android:layout_width="match_parent"
