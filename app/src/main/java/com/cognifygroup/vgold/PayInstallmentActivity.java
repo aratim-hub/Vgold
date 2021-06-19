@@ -1,19 +1,12 @@
 package com.cognifygroup.vgold;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -38,21 +30,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cognifygroup.vgold.Adapter.GoldTransactionAdapter;
-import com.cognifygroup.vgold.Adapter.MoneyTransactionAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
 import com.cognifygroup.vgold.Payumoney.PayUMoneyActivity;
-import com.cognifygroup.vgold.addGold.AddGoldModel;
 import com.cognifygroup.vgold.fetchDownPayment.FetchDownPaymentModel;
 import com.cognifygroup.vgold.fetchDownPayment.FetchDownPaymentServiceProvider;
 import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldModel;
 import com.cognifygroup.vgold.getAllTransactionForGold.GetAllTransactionGoldServiceProvider;
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyModel;
 import com.cognifygroup.vgold.getAllTransactionForMoney.GetAllTransactionMoneyServiceProvider;
-import com.cognifygroup.vgold.getBankDetails.GetBankModel;
-import com.cognifygroup.vgold.getBankDetails.GetBankServiceProvider;
 import com.cognifygroup.vgold.getBookingId.GetBookingIdModel;
 import com.cognifygroup.vgold.getBookingId.GetGoldBookingIdServiceProvider;
 import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
@@ -64,6 +51,7 @@ import com.cognifygroup.vgold.utils.AlertDialogOkListener;
 import com.cognifygroup.vgold.utils.AlertDialogs;
 import com.cognifygroup.vgold.utils.BaseActivity;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
+import com.cognifygroup.vgold.utils.ColorSpinnerAdapter;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
 
@@ -73,8 +61,6 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-
-import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
 public class PayInstallmentActivity extends AppCompatActivity implements AlertDialogOkListener {
 
@@ -455,9 +441,9 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     String message = ((GetTodayGoldRateModel) serviceResponse).getMessage();
                     String todayGoldPurchaseRate = ((GetTodayGoldRateModel) serviceResponse).getGold_purchase_rate();
 
-                     double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
+                    double sellingRate = gold * Double.parseDouble(todayGoldPurchaseRate);
 
-                     GoldAmt = new DecimalFormat("##.##").format(sellingRate);
+                    GoldAmt = new DecimalFormat("##.##").format(sellingRate);
                     txtGoldValue.setText("(Worth ₹ " + GoldAmt + ")");
 
                 } catch (Exception e) {
@@ -1069,13 +1055,71 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                     String status = ((GetBookingIdModel) serviceResponse).getStatus();
                     String message = ((GetBookingIdModel) serviceResponse).getMessage();
                     final ArrayList<GetBookingIdModel.Data> mArrCity = ((GetBookingIdModel) serviceResponse).getData();
-
+                    // Log.i("TAG", "onSuccess: " + mArrCity.toString());
 
                     if (status.equals("200")) {
+
+                    /*   *//* // Initializing an ArrayAdapter
+                        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapte<String>(
+                                this, R.layout.support_simple_spinner_dropdown_item, mArrCity) {
+                            @Override
+                            public View getDropDownView(int position, View convertView,
+                                                        ViewGroup parent) {
+                                View view = super.getDropDownView(position, convertView, parent);
+                                TextView tv = (TextView) view;
+                                if (position % 2 == 1) {
+                                    // Set the item text color
+                                    tv.setTextColor(Color.parseColor("#FF7C7967"));
+                                    // Set the item background color
+                                    tv.setBackgroundColor(Color.parseColor("#FFC3C0AA"));
+                                } else {
+                                    // Set the alternate item text color
+                                    tv.setTextColor(Color.parseColor("#FF657A86"));
+                                    // Set the alternate item background color
+                                    tv.setBackgroundColor(Color.parseColor("#FFB5DCE8"));
+                                }
+                                return view;
+                            }
+                        };*//*
+
+
                         ArrayAdapter<GetBookingIdModel.Data> adapter =
                                 new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-                        adapter.setDropDownViewResource(R.layout.custom_spinner_item);
-                        spinner_goldBookingId.setAdapter(adapter);
+
+
+                        ArrayAdapter<GetBookingIdModel.Data> adapteraa =
+                                new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity) {
+                                    @Override
+                                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                        View view = super.getDropDownView(position, convertView, parent);
+                                        TextView tv = (TextView) view;
+                                       *//* for (int i = 0; i < mArrCity.size(); i++) {
+                                            if (mArrCity.get(i).getIs_paid().equals("1")) {
+                                                Log.i("TAG", "getDropDownView: " + mArrCity.get(i).getIs_paid());
+                                               // tv.setBackgroundColor(Color.GREEN);
+                                            }
+                                        }*//*
+
+
+                                        if(position%2 == 1) {
+                                            // Set the item text color
+                                            tv.setTextColor(Color.parseColor("#FF7C7967"));
+                                            // Set the item background color
+                                            tv.setBackgroundColor(Color.parseColor("#FFC3C0AA"));
+                                        }
+                                        else {
+                                            // Set the alternate item text color
+                                            tv.setTextColor(Color.parseColor("#FF657A86"));
+                                            // Set the alternate item background color
+                                            tv.setBackgroundColor(Color.parseColor("#FFB5DCE8"));
+                                        }
+
+
+                                        return view;
+                                    }
+                                };
+                        adapteraa.setDropDownViewResource(R.layout.custom_spinner_item);
+                        spinner_goldBookingId.setAdapter(adapteraa);
                         spinner_goldBookingId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1091,6 +1135,14 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
                             }
                         });
+*/
+
+                        ColorSpinnerAdapter maritalStatusSpinnerAdapter = new ColorSpinnerAdapter(PayInstallmentActivity.this,
+                                R.layout.support_simple_spinner_dropdown_item, mArrCity);
+                        maritalStatusSpinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_item);
+                        maritalStatusSpinnerAdapter.notifyDataSetChanged();
+                        spinner_goldBookingId.setAdapter(maritalStatusSpinnerAdapter);
+
 
 
                     } else {
