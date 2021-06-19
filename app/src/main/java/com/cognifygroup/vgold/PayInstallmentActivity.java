@@ -1048,102 +1048,22 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
 
     private void AttemptTogetBookingId(String user_id) {
         // mAlert.onShowProgressDialog(SignUpActivity.this, true);
-        getGoldBookingIdServiceProvider.getGoldBookingId(user_id, new APICallback() {
+//        getGoldBookingIdServiceProvider.getGoldBookingId(user_id, new APICallback() {
+        getGoldBookingIdServiceProvider.getGoldBookingId("1113", new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
                     String status = ((GetBookingIdModel) serviceResponse).getStatus();
                     String message = ((GetBookingIdModel) serviceResponse).getMessage();
                     final ArrayList<GetBookingIdModel.Data> mArrCity = ((GetBookingIdModel) serviceResponse).getData();
-                    // Log.i("TAG", "onSuccess: " + mArrCity.toString());
 
                     if (status.equals("200")) {
-
-                    /*   *//* // Initializing an ArrayAdapter
-                        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapte<String>(
-                                this, R.layout.support_simple_spinner_dropdown_item, mArrCity) {
-                            @Override
-                            public View getDropDownView(int position, View convertView,
-                                                        ViewGroup parent) {
-                                View view = super.getDropDownView(position, convertView, parent);
-                                TextView tv = (TextView) view;
-                                if (position % 2 == 1) {
-                                    // Set the item text color
-                                    tv.setTextColor(Color.parseColor("#FF7C7967"));
-                                    // Set the item background color
-                                    tv.setBackgroundColor(Color.parseColor("#FFC3C0AA"));
-                                } else {
-                                    // Set the alternate item text color
-                                    tv.setTextColor(Color.parseColor("#FF657A86"));
-                                    // Set the alternate item background color
-                                    tv.setBackgroundColor(Color.parseColor("#FFB5DCE8"));
-                                }
-                                return view;
-                            }
-                        };*//*
-
-
-                        ArrayAdapter<GetBookingIdModel.Data> adapter =
-                                new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity);
-
-
-                        ArrayAdapter<GetBookingIdModel.Data> adapteraa =
-                                new ArrayAdapter<GetBookingIdModel.Data>(PayInstallmentActivity.this, R.layout.support_simple_spinner_dropdown_item, mArrCity) {
-                                    @Override
-                                    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                                        View view = super.getDropDownView(position, convertView, parent);
-                                        TextView tv = (TextView) view;
-                                       *//* for (int i = 0; i < mArrCity.size(); i++) {
-                                            if (mArrCity.get(i).getIs_paid().equals("1")) {
-                                                Log.i("TAG", "getDropDownView: " + mArrCity.get(i).getIs_paid());
-                                               // tv.setBackgroundColor(Color.GREEN);
-                                            }
-                                        }*//*
-
-
-                                        if(position%2 == 1) {
-                                            // Set the item text color
-                                            tv.setTextColor(Color.parseColor("#FF7C7967"));
-                                            // Set the item background color
-                                            tv.setBackgroundColor(Color.parseColor("#FFC3C0AA"));
-                                        }
-                                        else {
-                                            // Set the alternate item text color
-                                            tv.setTextColor(Color.parseColor("#FF657A86"));
-                                            // Set the alternate item background color
-                                            tv.setBackgroundColor(Color.parseColor("#FFB5DCE8"));
-                                        }
-
-
-                                        return view;
-                                    }
-                                };
-                        adapteraa.setDropDownViewResource(R.layout.custom_spinner_item);
-                        spinner_goldBookingId.setAdapter(adapteraa);
-                        spinner_goldBookingId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                                bookingId = String.valueOf(mArrCity.get(position).getId());
-
-                                AttemptTogetDownPayment(bookingId);
-
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-*/
 
                         ColorSpinnerAdapter maritalStatusSpinnerAdapter = new ColorSpinnerAdapter(PayInstallmentActivity.this,
                                 R.layout.support_simple_spinner_dropdown_item, mArrCity);
                         maritalStatusSpinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         maritalStatusSpinnerAdapter.notifyDataSetChanged();
                         spinner_goldBookingId.setAdapter(maritalStatusSpinnerAdapter);
-
-
 
                     } else {
 

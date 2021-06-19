@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.cognifygroup.vgold.R;
 import com.cognifygroup.vgold.getBookingId.GetBookingIdModel;
 
 import java.util.List;
@@ -47,6 +48,11 @@ public class ColorSpinnerAdapter extends ArrayAdapter<GetBookingIdModel.Data> {
         label.setTextColor(Color.BLACK);
         label.setText(values.get(position).getId());
 
+        if (values.get(position).getIs_paid() != null) {
+            if (values.get(position).getIs_paid() == 1)
+                label.setBackgroundColor(Color.GREEN);
+        }
+
         return label;
     }
 
@@ -57,14 +63,10 @@ public class ColorSpinnerAdapter extends ArrayAdapter<GetBookingIdModel.Data> {
         label.setTextColor(Color.BLACK);
         label.setText(values.get(position).getId());
 
-        if (values.get(position).getId() == null) {
-            label.setBackgroundColor(Color.WHITE);
-        } /*else if (values.get(position).getIs_paid().equals(0)) {
-            label.setBackgroundColor(Color.WHITE);
-        }*/ else {
-            label.setBackgroundColor(Color.GREEN);
+        if (values.get(position).getIs_paid() != null) {
+            if (values.get(position).getIs_paid() == 1)
+                label.setBackgroundColor(Color.GREEN);
         }
-
         return label;
     }
 
