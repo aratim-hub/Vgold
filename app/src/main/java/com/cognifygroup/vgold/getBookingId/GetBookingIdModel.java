@@ -52,6 +52,10 @@ public class GetBookingIdModel {
         @SerializedName("id")
         private String id;
 
+        @Expose
+        @SerializedName("is_paid")
+        private Integer is_paid;
+
         public String getId() {
             return id;
         }
@@ -64,5 +68,14 @@ public class GetBookingIdModel {
         public String toString() {
             return id;
         }
+
+        public Integer getIs_paid() {
+            return is_paid;
+        }
+
+        public void setIs_paid(Integer is_paid) {
+            this.is_paid = is_paid;
+        }
     }
+
 }
