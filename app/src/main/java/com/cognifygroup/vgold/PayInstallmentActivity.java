@@ -1047,9 +1047,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
     }
 
     private void AttemptTogetBookingId(String user_id) {
-        // mAlert.onShowProgressDialog(SignUpActivity.this, true);
-//        getGoldBookingIdServiceProvider.getGoldBookingId(user_id, new APICallback() {
-        getGoldBookingIdServiceProvider.getGoldBookingId("1113", new APICallback() {
+        getGoldBookingIdServiceProvider.getGoldBookingId(user_id, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
                 try {
