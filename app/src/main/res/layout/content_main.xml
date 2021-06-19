@@ -35,6 +35,23 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
 
+
+            <TextView
+                android:id="@+id/total_gain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Total Gain : 5000/-"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@drawable/border_for_button"
+                android:textColor="@android:color/white" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

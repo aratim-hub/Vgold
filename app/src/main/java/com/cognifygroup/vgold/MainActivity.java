@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -46,6 +47,7 @@ import com.cognifygroup.vgold.getReferCode.ReferModel;
 import com.cognifygroup.vgold.getReferCode.ReferServiceProvider;
 import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateModel;
 import com.cognifygroup.vgold.getTodaysGoldRate.GetTodayGoldRateServiceProvider;
+import com.cognifygroup.vgold.getTodaysGoldRate.GetTotalGoldGainModel;
 import com.cognifygroup.vgold.getVendorOffer.VendorOfferModel;
 import com.cognifygroup.vgold.getVendorOffer.VendorOfferServiceProvider;
 import com.cognifygroup.vgold.plan.PlanActivity;
@@ -121,6 +123,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @InjectView(R.id.rate_scroll_title)
     TextView rate_scroll_title;
+    @InjectView(R.id.total_gain)
+    TextView total_gain;
 
     @InjectView(R.id.btnBookGold)
     Button btnBookGold;
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Menu nav_Menu = navigationView.getMenu();
         if (VGoldApp.onGetIsCP().equals(1)) {
             nav_Menu.findItem(R.id.nav_channel_partner).setVisible(true);
-        }else{
+        } else {
             nav_Menu.findItem(R.id.nav_channel_partner).setVisible(false);
         }
 
@@ -273,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         checkLoginSession();
         AttemptToGetTodayGoldRate();
+        AttemptToTotalGain();
         checkWalletAmt(VGoldApp.onGetUerId());
     }
 
@@ -732,6 +737,85 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     }
                 });
+    }
+
+    private void AttemptToTotalGain() {
+        // progressDialog.show();
+        getTodayGoldRateServiceProvider.getTotalGain(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    progressDialog.hide();
+                    String status = ((GetTotalGoldGainModel) serviceResponse).getStatus();
+                    String message = ((GetTotalGoldGainModel) serviceResponse).getMessage();
+                    GetTotalGoldGainModel.Data data = ((GetTotalGoldGainModel) serviceResponse).getData();
+
+                    if (status.equals("200")) {
+                        blink(data.getGain());
+
+//                        total_gain.setVisibility(View.VISIBLE);
+//                        total_gain.setText("Total Gain : " + getResources().getString(R.string.rs)
+//                                + data.getGain());
+                    } else {
+                        total_gain.setVisibility(View.GONE);
+//                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+
+                    }
+                } catch (Exception e) {
+                    //  progressDialog.hide();
+                    e.printStackTrace();
+                } finally {
+                    //  progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    progressDialog.hide();
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    progressDialog.hide();
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void blink(String gainVal) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int timeToBlink = 1000;    //in milissegunds
+                try {
+                    Thread.sleep(timeToBlink);
+                } catch (Exception e) {
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (total_gain.getVisibility() == View.VISIBLE) {
+                            total_gain.setVisibility(View.INVISIBLE);
+                            total_gain.setText("Total Gain : " + getResources().getString(R.string.rs)
+                                    + gainVal);
+                        } else {
+                            total_gain.setVisibility(View.VISIBLE);
+                        }
+                        blink(gainVal);
+                    }
+                });
+            }
+        }).start();
     }
 
     private void AttemptToGetTodayGoldRate() {

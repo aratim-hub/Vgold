@@ -91,6 +91,15 @@ public class GetGoldBookingHistoryModel {
         @SerializedName("totalPaidInstallment")
         private String paidInstallmentCount;
 
+        @SerializedName("total_paid_amount")
+        private String total_paid_amount;
+
+        @SerializedName("total_balance_amount")
+        private String total_balance_amount;
+
+        @SerializedName("todays_gain")
+        private String todays_gain;
+
 
 //        @Override
 //        public int compareTo(Data o) {
@@ -203,5 +212,29 @@ public class GetGoldBookingHistoryModel {
         public void setGold_booking_id(String gold_booking_id) {
             this.gold_booking_id = gold_booking_id;
         }
+
+    public String getTotal_paid_amount() {
+        return total_paid_amount;
     }
+
+    public void setTotal_paid_amount(String total_paid_amount) {
+        this.total_paid_amount = total_paid_amount;
+    }
+
+    public String getTotal_balance_amount() {
+        return total_balance_amount;
+    }
+
+    public void setTotal_balance_amount(String total_balance_amount) {
+        this.total_balance_amount = total_balance_amount;
+    }
+
+    public String getTodays_gain() {
+        return todays_gain;
+    }
+
+    public void setTodays_gain(String todays_gain) {
+        this.todays_gain = todays_gain;
+    }
+}
 }

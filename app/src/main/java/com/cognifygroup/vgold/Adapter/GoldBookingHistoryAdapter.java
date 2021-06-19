@@ -152,6 +152,9 @@ public class GoldBookingHistoryAdapter extends RecyclerView.Adapter<GoldBookingH
         holder.txtDownPayment1.setText(goldBookingHistoryArrayList.get(position).getDown_payment());
         holder.txtInstallment1.setText(goldBookingHistoryArrayList.get(position).getMonthly_installment());
         holder.txtTenure1.setText(goldBookingHistoryArrayList.get(position).getTennure());
+        holder.txtPaidAmt.setText(goldBookingHistoryArrayList.get(position).getTotal_paid_amount());
+        holder.txtBalAmt.setText(goldBookingHistoryArrayList.get(position).getTotal_balance_amount());
+        holder.txtGain.setText(goldBookingHistoryArrayList.get(position).getTodays_gain());
 
         if (goldBookingHistoryArrayList.get(position).getAccount_status().equals("1")) {
             holder.txtAccountStatus.setText("Active");
@@ -219,6 +222,12 @@ public class GoldBookingHistoryAdapter extends RecyclerView.Adapter<GoldBookingH
         TextView txtInstallment1;
         @InjectView(R.id.txtTenure1)
         TextView txtTenure1;
+        @InjectView(R.id.txtPaidAmt)
+        TextView txtPaidAmt;
+        @InjectView(R.id.txtBalAmt)
+        TextView txtBalAmt;
+        @InjectView(R.id.txtGain)
+        TextView txtGain;
         @InjectView(R.id.txtAccountStatus)
         TextView txtAccountStatus;
         @InjectView(R.id.imgGoldBookingHistory)

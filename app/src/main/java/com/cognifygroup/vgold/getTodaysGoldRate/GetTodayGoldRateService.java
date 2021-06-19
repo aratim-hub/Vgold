@@ -15,4 +15,8 @@ import retrofit2.http.POST;
 public interface GetTodayGoldRateService {
     @GET("get_purchase_rate.php?")
     Call<GetTodayGoldRateModel> getTodayGoldRate();
+
+    @POST("total_gold_booking_gain.php?")
+    @FormUrlEncoded
+    Call<GetTotalGoldGainModel> getTotalGoldGain(@Field("user_id") String userId);
 }
