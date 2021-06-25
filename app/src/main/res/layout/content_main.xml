@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-               android:layout_margin="8dp"
+                android:layout_margin="5dp"
                 android:ellipsize="marquee"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
@@ -32,30 +33,151 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <!--            <com.daimajia.slider.library.SliderLayout-->
+            <!--                android:id="@+id/slider"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:fitsSystemWindows="true"-->
+            <!--                custom:indicator_visibility="invisible" />-->
 
 
-            <TextView
-                android:id="@+id/total_gain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="Total Gain : 5000/-"
-                android:singleLine="true"
-                android:textStyle="bold"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:background="@drawable/border_for_button"
-                android:textColor="@android:color/white" />
+            <LinearLayout
+                android:id="@+id/gainLayout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/ribbon"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="3dp"
+                    android:singleLine="true"
+                    android:text="TOTAL GAIN"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/total_gain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/border_transparent"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="6dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="6dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/partnerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/ribbon"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="3dp"
+                    android:singleLine="true"
+                    android:text="Connect with us"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/border_transparent"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="6dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="6dp"
+                    android:singleLine="true"
+                    android:text="Be a Partner"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/loanLayout"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/ribbon"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="3dp"
+                    android:singleLine="true"
+                    android:text="You can apply for loan of up to"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/loanAmt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/border_transparent"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="6dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="6dp"
+                    android:singleLine="true"
+                    android:text="0"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/height_10"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal"
                 android:padding="@dimen/height_5"
                 android:weightSum="4">
@@ -336,21 +458,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:orientation="horizontal"
-                android:weightSum="4">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/height_10">
+                    android:padding="6dp">
 
                     <ImageView
                         android:id="@+id/imgGoldBooking"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
                         android:src="@drawable/book" />
@@ -368,9 +490,9 @@
                 <View
                     android:layout_width="0.8dp"
                     android:layout_height="match_parent"
-                    android:background="@color/colorLittleGraylight"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorLittleGraylight" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -378,23 +500,23 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/height_10">
+                    android:padding="6dp">
 
                     <ImageView
                         android:id="@+id/imgPay"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
-                        android:src="@mipmap/installment"/>
+                        android:src="@mipmap/installment" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/imgWithdrawMoney"
                         android:layout_marginTop="@dimen/height_5"
-                        android:gravity="center_horizontal"
                         android:ellipsize="end"
+                        android:gravity="center_horizontal"
                         android:text="Pay Installment"
                         android:textSize="@dimen/height_10" />
                 </LinearLayout>
@@ -402,23 +524,23 @@
                 <View
                     android:layout_width="0.8dp"
                     android:layout_height="match_parent"
-                    android:background="@color/colorLittleGraylight"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorLittleGraylight" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:layout_gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/height_10">
+                    android:padding="6dp">
 
                     <ImageView
                         android:id="@+id/imgGoldDeposite"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
                         android:src="@drawable/depos" />
@@ -436,9 +558,9 @@
                 <View
                     android:layout_width="0.8dp"
                     android:layout_height="match_parent"
-                    android:background="@color/colorLittleGraylight"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorLittleGraylight" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -446,12 +568,12 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="@dimen/height_10">
+                    android:padding="6dp">
 
                     <ImageView
                         android:id="@+id/imgPlan"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:scaleType="fitXY"
                         android:src="@drawable/plan1" />
@@ -466,6 +588,38 @@
                         android:textSize="@dimen/height_10" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="0.8dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/colorLittleGraylight" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <ImageView
+                        android:id="@+id/imgLoan"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/loan" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/imgWithdrawMoney"
+                        android:layout_marginTop="@dimen/height_5"
+                        android:gravity="center_horizontal"
+                        android:text="Loan"
+                        android:textSize="@dimen/height_10" />
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -530,18 +684,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/height_10"
                 android:layout_marginRight="@dimen/height_10"
-                android:visibility="gone"></androidx.recyclerview.widget.RecyclerView>
+                android:visibility="gone" />
 
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/height_10"
-                android:layout_marginTop="@dimen/height_10"
+                android:layout_marginTop="8dp"
                 android:text="Membership"
                 android:textColor="@color/colorblack"
                 android:textSize="@dimen/height_15"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
 
             <androidx.cardview.widget.CardView
@@ -549,6 +704,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
+                android:visibility="gone"
                 app:cardBackgroundColor="#fff"
                 app:cardCornerRadius="1dp"
                 app:cardElevation="10dp"
@@ -619,17 +775,39 @@
 
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/btnBookGold"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Book Gold"
                 android:layout_marginLeft="@dimen/height_10"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="@dimen/height_10"
                 android:layout_marginBottom="@dimen/height_5"
-                android:background="@drawable/border_for_button"
-                android:textColor="@color/colorwhite"
-                android:layout_alignParentBottom="true"/>
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btnBookGold"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/height_10"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_for_button"
+                    android:text="Book Gold"
+                    android:textColor="@color/colorwhite" />
+
+                <Button
+                    android:id="@+id/btnPartner"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/height_10"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_for_button"
+                    android:text="Be a Partner"
+                    android:textColor="@color/colorwhite" />
+
+            </LinearLayout>
 
 
         </LinearLayout>

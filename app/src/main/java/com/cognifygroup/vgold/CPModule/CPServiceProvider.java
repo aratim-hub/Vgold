@@ -158,4 +158,31 @@ public class CPServiceProvider {
             }
         });
     }
+
+    public void requetToBePartner(String id,final APICallback apiCallback) {
+        Call<UserEMIStatusDetailsModel> call = null;
+        call = cpService.beChannelPartner(id);
+        String url = call.request().url().toString();
+
+        call.enqueue(new Callback<UserEMIStatusDetailsModel>() {
+            @Override
+            public void onResponse(Call<UserEMIStatusDetailsModel> call, Response<UserEMIStatusDetailsModel> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("200")) {
+                    apiCallback.onSuccess(response.body());
+                } else if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("300")) {
+                    apiCallback.onSuccess(response.body());
+                } else {
+                    BaseServiceResponseModel model = ErrorUtils.parseError(response);
+                    apiCallback.onFailure(model, response.errorBody());
+                    // apiCallback.onFailure(response.body(), response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserEMIStatusDetailsModel> call, Throwable t) {
+                apiCallback.onFailure(null, null);
+            }
+        });
+    }
 }
+

@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.TextView;
@@ -40,8 +41,12 @@ import android.widget.ViewFlipper;
 import com.bumptech.glide.Glide;
 import com.cognifygroup.vgold.Adapter.VendorOfferAdapter;
 import com.cognifygroup.vgold.Application.VGoldApp;
+import com.cognifygroup.vgold.CPModule.CPServiceProvider;
+import com.cognifygroup.vgold.ChannelPartner.UserEMIStatusDetailsModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginSessionModel;
 import com.cognifygroup.vgold.CheckLoginStatus.LoginStatusServiceProvider;
+import com.cognifygroup.vgold.Loan.LoanModel;
+import com.cognifygroup.vgold.Loan.LoanServiceProvider;
 import com.cognifygroup.vgold.addGold.AddGoldServiceProvider;
 import com.cognifygroup.vgold.getReferCode.ReferModel;
 import com.cognifygroup.vgold.getReferCode.ReferServiceProvider;
@@ -57,6 +62,10 @@ import com.cognifygroup.vgold.utils.AlertDialogs;
 import com.cognifygroup.vgold.utils.BaseServiceResponseModel;
 import com.cognifygroup.vgold.utils.PrintUtil;
 import com.cognifygroup.vgold.utils.TransparentProgressDialog;
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.dynamiclinks.DynamicLink;
@@ -125,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView rate_scroll_title;
     @InjectView(R.id.total_gain)
     TextView total_gain;
+    @InjectView(R.id.loanAmt)
+    TextView loanAmt;
 
     @InjectView(R.id.btnBookGold)
     Button btnBookGold;
@@ -134,6 +145,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @InjectView(R.id.imgPay)
     ImageView imgPay;
+
+    @InjectView(R.id.imgLoan)
+    ImageView imgLoan;
+
+    @InjectView(R.id.btnPartner)
+    Button btnPartner;
+
+    @InjectView(R.id.gainLayout)
+    LinearLayout gainLayout;
+
+    @InjectView(R.id.partnerLayout)
+    LinearLayout partnerLayout;
+
+    @InjectView(R.id.loanLayout)
+    LinearLayout loanLayout;
+
+    private String gain;
+    private String loanVal;
 
 
     AlertDialogs mAlert;
@@ -147,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     GetTodayGoldRateServiceProvider getTodayGoldRateServiceProvider;
     LoginStatusServiceProvider loginStatusServiceProvider;
     AddGoldServiceProvider addGoldServiceProvider;
+    LoanServiceProvider getLoanServiceProvider;
+    CPServiceProvider cpServiceProvider;
     private int pressBack = 0;
 
     @Override
@@ -197,11 +228,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loginStatusServiceProvider = new LoginStatusServiceProvider(this);
         getTodayGoldRateServiceProvider = new GetTodayGoldRateServiceProvider(this);
         addGoldServiceProvider = new AddGoldServiceProvider(this);
+        cpServiceProvider = new CPServiceProvider(this);
+        getLoanServiceProvider = new LoanServiceProvider(this);
 
         txtCrnNo.setText("CRN - " + VGoldApp.onGetUerId());
         txtClientName.setText("" + VGoldApp.onGetFirst() + " " + VGoldApp.onGetLast());
 
 
+//        TextSliderView textSliderView = new TextSliderView(getApplicationContext());
+//        textSliderView.image(bannersUrl).setScaleType(BaseSliderView.ScaleType.CenterCrop);
+//        slider.addSlider(textSliderView);
+//        slider.setCustomAnimation(new DescriptionAnimation());
+//        slider.setDuration(3000);
 
         /*try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -276,10 +314,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         checkLoginSession();
-        AttemptToGetTodayGoldRate();
         AttemptToTotalGain();
+        AttemptToLoanDetails(VGoldApp.onGetUerId());
+        blink();
+        AttemptToGetTodayGoldRate();
         checkWalletAmt(VGoldApp.onGetUerId());
+
     }
+
 
     private void checkLoginSession() {
         loginStatusServiceProvider.getLoginStatus(VGoldApp.onGetUerId(), new APICallback() {
@@ -583,6 +625,70 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(new Intent(this, PayInstallmentActivity.class));
     }
 
+
+    @OnClick(R.id.imgLoan)
+    public void onClickImgLoan() {
+        startActivity(new Intent(this, LoanActivity.class));
+    }
+
+    @OnClick(R.id.btnPartner)
+    public void onClickImgPartner() {
+        bePartnerCall();
+    }
+
+    @OnClick(R.id.partnerLayout)
+    public void onClickPartnerLayout() {
+        bePartnerCall();
+    }
+
+    @OnClick(R.id.loanLayout)
+    public void onClickLoanLayout() {
+        startActivity(new Intent(this, LoanActivity.class));
+    }
+
+    private void bePartnerCall() {
+        progressDialog.show();
+        cpServiceProvider.requetToBePartner(VGoldApp.onGetUerId(), new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((UserEMIStatusDetailsModel) serviceResponse).getStatus();
+                    String message = ((UserEMIStatusDetailsModel) serviceResponse).getMessage();
+
+                    if (status.equalsIgnoreCase("200")) {
+                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 1, false, alertDialogOkListener);
+                    } else {
+                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
+                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
     public void OnShare() {
         AttemptToRefer(VGoldApp.onGetUerId());
     }
@@ -751,16 +857,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     GetTotalGoldGainModel.Data data = ((GetTotalGoldGainModel) serviceResponse).getData();
 
                     if (status.equals("200")) {
-                        blink(data.getGain());
-
-//                        total_gain.setVisibility(View.VISIBLE);
-//                        total_gain.setText("Total Gain : " + getResources().getString(R.string.rs)
-//                                + data.getGain());
-                    } else {
-                        total_gain.setVisibility(View.GONE);
-//                        AlertDialogs.alertDialogOk(MainActivity.this, "Alert", message,
-//                                getResources().getString(R.string.btn_ok), 0, false, alertDialogOkListener);
-
+                        gain = data.getGain();
+                        total_gain.setText(getResources().getString(R.string.rs) + data.getGain() + "/-");
+                        gainLayout.setVisibility(View.VISIBLE);
+                        loanLayout.setVisibility(View.GONE);
                     }
                 } catch (Exception e) {
                     //  progressDialog.hide();
@@ -791,12 +891,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void blink(String gainVal) {
+    private void AttemptToLoanDetails(String user_id) {
+        progressDialog.show();
+        getLoanServiceProvider.getLoanEligibility(user_id, new APICallback() {
+            @Override
+            public <T> void onSuccess(T serviceResponse) {
+                try {
+                    String status = ((LoanModel) serviceResponse).getStatus();
+                    String message = ((LoanModel) serviceResponse).getMessage();
+                    LoanModel.Data loanModel = ((LoanModel) serviceResponse).getData();
+
+                    if (status.equalsIgnoreCase("200")) {
+                        loanVal = loanModel.getLoan_amount();
+                        loanAmt.setText(getResources().getString(R.string.rs) + loanVal + "/-");
+                        if(gainLayout.getVisibility()==View.VISIBLE){
+                            loanLayout.setVisibility(View.GONE);
+                        }else{
+                            loanLayout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+
+            @Override
+            public <T> void onFailure(T apiErrorModel, T extras) {
+
+                try {
+                    if (apiErrorModel != null) {
+                        PrintUtil.showToast(MainActivity.this, ((BaseServiceResponseModel) apiErrorModel).getMessage());
+                    } else {
+                        PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    PrintUtil.showNetworkAvailableToast(MainActivity.this);
+                } finally {
+                    progressDialog.hide();
+                }
+            }
+        });
+    }
+
+    private void blink() {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int timeToBlink = 1000;    //in milissegunds
+                int timeToBlink = 4000;    //in milissegunds
                 try {
                     Thread.sleep(timeToBlink);
                 } catch (Exception e) {
@@ -804,14 +949,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (total_gain.getVisibility() == View.VISIBLE) {
-                            total_gain.setVisibility(View.INVISIBLE);
-                            total_gain.setText("Total Gain : " + getResources().getString(R.string.rs)
-                                    + gainVal);
+                        if (gain != null && !TextUtils.isEmpty(gain) && !gain.equalsIgnoreCase("null")) {
+                            if (loanVal != null && !TextUtils.isEmpty(loanVal) && !loanVal.equalsIgnoreCase("null")) {
+                                if (gainLayout.getVisibility() == View.VISIBLE) {
+                                    gainLayout.setVisibility(View.GONE);
+                                    partnerLayout.setVisibility(View.VISIBLE);
+                                    loanLayout.setVisibility(View.GONE);
+                                } else if (partnerLayout.getVisibility() == View.VISIBLE) {
+                                    gainLayout.setVisibility(View.GONE);
+                                    partnerLayout.setVisibility(View.GONE);
+                                    loanLayout.setVisibility(View.VISIBLE);
+                                } else if (loanLayout.getVisibility() == View.VISIBLE) {
+                                    gainLayout.setVisibility(View.VISIBLE);
+                                    partnerLayout.setVisibility(View.GONE);
+                                    loanLayout.setVisibility(View.GONE);
+                                }
+                            } else {
+                                loanLayout.setVisibility(View.GONE);
+
+                                if (gainLayout.getVisibility() == View.VISIBLE) {
+                                    gainLayout.setVisibility(View.GONE);
+                                    partnerLayout.setVisibility(View.VISIBLE);
+                                } else if (partnerLayout.getVisibility() == View.VISIBLE) {
+                                    gainLayout.setVisibility(View.VISIBLE);
+                                    partnerLayout.setVisibility(View.GONE);
+                                }
+                            }
+                        } else if (loanVal != null && !TextUtils.isEmpty(loanVal) && !loanVal.equalsIgnoreCase("null")) {
+                            gainLayout.setVisibility(View.GONE);
+                            loanLayout.setVisibility(View.VISIBLE);
+
+                            if (partnerLayout.getVisibility() == View.VISIBLE) {
+                                partnerLayout.setVisibility(View.GONE);
+                                loanLayout.setVisibility(View.VISIBLE);
+                            } else if (loanLayout.getVisibility() == View.VISIBLE) {
+                                partnerLayout.setVisibility(View.VISIBLE);
+                                loanLayout.setVisibility(View.GONE);
+                            }
+
                         } else {
-                            total_gain.setVisibility(View.VISIBLE);
+                            loanLayout.setVisibility(View.GONE);
+                            partnerLayout.setVisibility(View.VISIBLE);
                         }
-                        blink(gainVal);
+                        blink();
                     }
                 });
             }
@@ -893,6 +1073,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             startActivity(new Intent(this, ProfileActivity.class));
 
+        } else if (id == R.id.nav_membership) {
+            startActivity(new Intent(this, MyMembershipActivity.class));
         } else if (id == R.id.nav_eGoldWallet) {
             startActivity(new Intent(this, GoldWalletActivity.class));
 

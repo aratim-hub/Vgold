@@ -37,4 +37,8 @@ public interface CPService {
     @POST("cp_gold_booking_transactions.php?")
     @FormUrlEncoded
     Call<UserEMIStatusDetailsModel> getCPUserEMIStatusDetails(@Field("gold_booking_id") String id);
+
+    @POST("save_become_cp_request.php?")
+    @FormUrlEncoded
+    Call<UserEMIStatusDetailsModel> beChannelPartner(@Field("user_id") String id);
 }

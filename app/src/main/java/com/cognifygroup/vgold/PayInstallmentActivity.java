@@ -849,7 +849,7 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                         .appendQueryParameter("tn", "Inst " + name + "(" + bookingId + ")")
                         .appendQueryParameter("am", amount)
                         .appendQueryParameter("cu", "INR")
-//                        .appendQueryParameter("url", "your-transaction-url")
+                        .appendQueryParameter("url", "your-transaction-url")
                         .build();
 
        /* Uri uri =
@@ -1062,6 +1062,23 @@ public class PayInstallmentActivity extends AppCompatActivity implements AlertDi
                         maritalStatusSpinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_item);
                         maritalStatusSpinnerAdapter.notifyDataSetChanged();
                         spinner_goldBookingId.setAdapter(maritalStatusSpinnerAdapter);
+
+
+                        spinner_goldBookingId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                bookingId = String.valueOf(mArrCity.get(position).getId());
+
+                                AttemptTogetDownPayment(bookingId);
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
 
                     } else {
 
