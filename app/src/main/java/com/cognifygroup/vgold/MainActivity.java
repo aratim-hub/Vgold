@@ -892,7 +892,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void AttemptToLoanDetails(String user_id) {
-        progressDialog.show();
+//        progressDialog.show();
         getLoanServiceProvider.getLoanEligibility(user_id, new APICallback() {
             @Override
             public <T> void onSuccess(T serviceResponse) {
@@ -913,7 +913,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    progressDialog.hide();
+//                    progressDialog.hide();
                 }
             }
 
@@ -930,7 +930,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     e.printStackTrace();
                     PrintUtil.showNetworkAvailableToast(MainActivity.this);
                 } finally {
-                    progressDialog.hide();
+//                    progressDialog.hide();
                 }
             }
         });

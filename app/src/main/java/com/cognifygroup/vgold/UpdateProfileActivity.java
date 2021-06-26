@@ -109,7 +109,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
     private LoginStatusServiceProvider loginStatusServiceProvider;
     private static final int IMG_AADHAR_FRONT = 111, IMG_AADHAR_BACK = 222, IMG_PAN = 333;
     private Bitmap bitmapAadharFront, bitmapAadharBack, bitmapPanCard;
-    public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "";
+    public String ImageAadharFont = "", ImageAadharBack = "", ImagePanCard = "", profileImg = "";
     private final int RESULT_CROP = 400;
     Uri uri;
     Boolean aBooleanAadhar_f = false;
@@ -309,8 +309,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
     @OnClick(R.id.imgUserProfile)
     public void ImageUpload() {
-
-        selectImage();
+        CropImage.startPickImageActivity(UpdateProfileActivity.this);
+//        selectImage();
 
     }
 
@@ -374,6 +374,14 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
                         bitmapPanCard = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                         ImagePanCard = imagetostring(bitmapPanCard);
                         iv_pancard.setImageBitmap(bitmapPanCard);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        Bitmap bitmapProfile = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                        profileImg = imagetostring(bitmapProfile);
+                        AttemptToUploadSingleImageApi0(VGoldApp.onGetUerId(), profileImg,bitmapProfile);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -483,7 +491,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
         });
     }
 
-    private void AttemptToUploadSingleImageApi0(String user_id, String image) {
+    private void AttemptToUploadSingleImageApi0(String user_id, String image, Bitmap bitmapProfile ) {
         progressDialog.show();
         getSingleImageServiceProvider0.getReg(user_id, image, new APICallback() {
             @Override
@@ -495,6 +503,14 @@ public class UpdateProfileActivity extends AppCompatActivity implements AlertDia
 
                     if (status.equals("200")) {
                         progressDialog.hide();
+
+
+                        Glide.with(UpdateProfileActivity.this).load(url)
+                                .placeholder(R.mipmap.ic_launcher)
+                                .error(R.mipmap.ic_launcher)
+                                .into(userImg);
+
+
                         VGoldApp.onSetUserDetails(VGoldApp.onGetUerId(), VGoldApp.onGetFirst(),
                                 VGoldApp.onGetLast(), VGoldApp.onGetEmail(),
                                 VGoldApp.onGetNo(), VGoldApp.onGetQrCode(),
