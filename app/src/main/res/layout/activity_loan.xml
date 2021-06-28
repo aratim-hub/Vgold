@@ -6,92 +6,21 @@
     android:layout_margin="10dp"
     android:orientation="vertical">
 
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/loanLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     <TextView
         android:id="@+id/loanEligibleAmt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Congratulations Priyanka! You can apply for a loan of up to, Rs. 1000"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/colorblack"
         android:textStyle="bold"/>
-
-    <LinearLayout
-        android:id="@+id/llTotTrans"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/height_10"
-        android:layout_marginTop="@dimen/height_10"
-        android:layout_marginRight="@dimen/height_10"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Total Transaction"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
-
-
-        <TextView
-            android:id="@+id/transAmt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/colorblack"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llLoan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llTotTrans"
-        android:layout_marginLeft="@dimen/height_10"
-        android:layout_marginTop="@dimen/height_10"
-        android:layout_marginRight="@dimen/height_10"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Eligible For Loan"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textStyle="bold" />
-
-
-        <TextView
-            android:id="@+id/applyAmt"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:backgroundTint="@color/colorblack"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/intrestedId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/llLoan"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="@dimen/height_10"
-        android:checked="false"
-        android:text="Are you intrested to take a loan?"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorfaintblack"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/amtLbl"
@@ -146,6 +75,8 @@
         android:textColor="@color/colorwhite"
         android:visibility="visible" />
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
     <TextView
         android:id="@+id/txtError"
         android:layout_width="wrap_content"
@@ -154,7 +85,7 @@
         android:layout_marginLeft="@dimen/height_10"
         android:layout_marginTop="@dimen/height_10"
         android:layout_weight="1"
-        android:text="Not Eligible for Loan"
+        android:text="Not eligible for loan"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold"
         android:visibility="gone" />

@@ -67,11 +67,6 @@ import butterknife.OnClick;
 
 public class LoanActivity extends AppCompatActivity implements AlertDialogOkListener {
 
-//    @InjectView(R.id.intrestedId)
-//    CheckBox intrestedId;
-
-//    @InjectView(R.id.transAmt)
-//    TextView transAmt;
 
     @InjectView(R.id.loanEligibleAmt)
     TextView loanEligibleAmt;
@@ -85,6 +80,8 @@ public class LoanActivity extends AppCompatActivity implements AlertDialogOkList
     EditText edtPayableAmount;
     @InjectView(R.id.spinnerReason)
     Spinner spinnerReason;
+    @InjectView(R.id.loanLayout)
+    LinearLayoutCompat loanLayout;
 
     private String loanAmt;
 
@@ -195,18 +192,18 @@ public class LoanActivity extends AppCompatActivity implements AlertDialogOkList
                     String message = ((LoanModel) serviceResponse).getMessage();
                     LoanModel.Data loanModel = ((LoanModel) serviceResponse).getData();
 
-                    loanAmt = loanModel.getLoan_amount();
-
                     if (status.equalsIgnoreCase("200")) {
                         if (loanModel != null) {
-//                            transAmt.setText(getResources().getString(R.string.rs) + loanModel.getAmount_in_account());
+                            loanAmt = loanModel.getLoan_amount();
                             loanEligibleAmt.setText("Congratulations " + VGoldApp.onGetFirst() + "!" +
                                     " You can apply for a loan of up to, "
                                     + getResources().getString(R.string.rs) + loanModel.getLoan_amount() + "/-");
                             txtError.setVisibility(View.GONE);
+                            loanLayout.setVisibility(View.VISIBLE);
                         }
                     } else {
                         txtError.setVisibility(View.VISIBLE);
+                        loanLayout.setVisibility(View.GONE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

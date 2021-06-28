@@ -161,6 +161,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @InjectView(R.id.loanLayout)
     LinearLayout loanLayout;
 
+    @InjectView(R.id.loanServiceLayout)
+    LinearLayout loanServiceLayout;
+
     private String gain;
     private String loanVal;
 
@@ -902,6 +905,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     LoanModel.Data loanModel = ((LoanModel) serviceResponse).getData();
 
                     if (status.equalsIgnoreCase("200")) {
+                        loanServiceLayout.setVisibility(View.VISIBLE);
                         loanVal = loanModel.getLoan_amount();
                         loanAmt.setText(getResources().getString(R.string.rs) + loanVal + "/-");
                         if(gainLayout.getVisibility()==View.VISIBLE){
@@ -909,6 +913,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }else{
                             loanLayout.setVisibility(View.VISIBLE);
                         }
+                    }else{
+                        loanServiceLayout.setVisibility(View.GONE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
